@@ -1,0 +1,11 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <title>Modifiers_</title>
+  <g>
+    <polygon points="19 11 12 4 5 11 19 11"/>
+    <g>
+      <path d="M12.5,13H9v6h1.5V17h2A1.54,1.54,0,0,0,14,15.5v-1A1.54,1.54,0,0,0,12.5,13Zm0,2.5h-2v-1h2v1Z"/>
+      <path d="M8,14.5V13H4.5A1.54,1.54,0,0,0,3,14.5v3A1.54,1.54,0,0,0,4.5,19H8V17.5H4.5v-3H8Z"/>
+      <path d="M18.5,13v4.5h-2V13H15v4.5A1.54,1.54,0,0,0,16.5,19h2A1.54,1.54,0,0,0,20,17.5V13H18.5Z"/>
+    </g>
+  </g>
+</svg>

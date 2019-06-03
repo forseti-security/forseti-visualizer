@@ -1,0 +1,22 @@
+{
+	"host": "0.0.0.0",
+	"port": 8080,
+	
+	"bodyLimit": "100kb",
+	"corsHeaders": ["Link"],
+
+	"GCLOUD_PROJECT": "gwc-core",
+	"DATA_BACKEND": "datastore",
+
+    "MEMCACHE_URL": "",
+    "MEMCACHE_USERNAME": "",
+	"MEMCACHE_PASSWORD": "",
+	
+
+	"NODE_ENV": "",
+    "OAUTH2_CLIENT_ID": "1012227841684-ti4bh8220t5j8mhvsl8l6bjv9ipafkg5.apps.googleusercontent.com",
+    "OAUTH2_CLIENT_SECRET": "VdZhbSIC21DWrarX0ML7fUHc",
+    "OAUTH2_CALLBACK": "http://localhost:8080/auth/google/callback",
+	
+	"SECRET": "keyboardcat"
+}

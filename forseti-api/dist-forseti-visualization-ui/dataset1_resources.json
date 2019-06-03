@@ -1,0 +1,2231 @@
+[{
+    "id": 1086937,
+    "resource_type": "organization",
+    "category": "resource",
+    "resource_id": "358329783625",
+    "parent_id": null,
+    "resource_data_displayname": "mycloud.com",
+    "resource_data_name": "organizations/358329783625",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087269,
+    "resource_type": "folder",
+    "category": "resource",
+    "resource_id": "379678980128",
+    "parent_id": 1086937,
+    "resource_data_displayname": "Machine Learning",
+    "resource_data_name": "folders/379678980128",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087270,
+    "resource_type": "folder",
+    "category": "resource",
+    "resource_id": "631974286168",
+    "parent_id": 1086937,
+    "resource_data_displayname": "Common Services",
+    "resource_data_name": "folders/631974286168",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087271,
+    "resource_type": "folder",
+    "category": "resource",
+    "resource_id": "95108949912",
+    "parent_id": 1086937,
+    "resource_data_displayname": "Next2019",
+    "resource_data_name": "folders/95108949912",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087272,
+    "resource_type": "folder",
+    "category": "resource",
+    "resource_id": "429021693524",
+    "parent_id": 1086937,
+    "resource_data_displayname": "Audit",
+    "resource_data_name": "folders/429021693524",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087268,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "datadog",
+    "parent_id": 1086937,
+    "resource_data_displayname": "",
+    "resource_data_name": "datadog",
+    "qq": "DELETE_REQUESTED",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087273,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "actions-codelab2-c23dc",
+    "parent_id": 1086937,
+    "resource_data_displayname": "",
+    "resource_data_name": "actions-codelab2",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087274,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "actions-codelab-2b402",
+    "parent_id": 1086937,
+    "resource_data_displayname": "",
+    "resource_data_name": "actions-codelab",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087275,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "gwc-core",
+    "parent_id": 1086937,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-core",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087598,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "forsetiviz",
+    "parent_id": 1087271,
+    "resource_data_displayname": "",
+    "resource_data_name": "forsetiviz",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087601,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "machine-learning-space-60f8",
+    "parent_id": 1087269,
+    "resource_data_displayname": "",
+    "resource_data_name": "machine-learning-space",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087457,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "devops-1ca6",
+    "parent_id": 1087270,
+    "resource_data_displayname": "",
+    "resource_data_name": "devops",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087458,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "cloud-identity-log-export-e896",
+    "parent_id": 1087272,
+    "resource_data_displayname": "",
+    "resource_data_name": "cloud-identity-log-export",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087460,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "log-sinks-13e2",
+    "parent_id": 1087270,
+    "resource_data_displayname": "",
+    "resource_data_name": "log-sinks",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087461,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "billing-export-224721",
+    "parent_id": 1087272,
+    "resource_data_displayname": "",
+    "resource_data_name": "billing-export",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087462,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "gwc-service-accounts",
+    "parent_id": 1087270,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-service-accounts",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087476,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "forseti-security-1e88",
+    "parent_id": 1087272,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-security",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087486,
+    "resource_type": "project",
+    "category": "resource",
+    "resource_id": "sandbox-d24a",
+    "parent_id": 1087270,
+    "resource_data_displayname": "",
+    "resource_data_name": "sandbox",
+    "qq": "ACTIVE",
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087747,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "f870bb1119d03960447cf5607fdc23d983f5cba1",
+    "parent_id": 1087728,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/dialogflow-igjexa@sandbox-d24a.iam.gserviceaccount.com/keys/f870bb1119d03960447cf5607fdc23d983f5cba1",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087748,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "6682783915782212445",
+    "parent_id": 1087458,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087749,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "108061090596963688110",
+    "parent_id": 1087486,
+    "resource_data_displayname": "App Engine default service account",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/sandbox-d24a@appspot.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087519,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "log-sinks-13e2:billing_dataset",
+    "parent_id": 1087460,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087520,
+    "resource_type": "appengine_app",
+    "category": "resource",
+    "resource_id": "12895176895115487131",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "apps/sandbox-d24a",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087523,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "sandbox-d24a:_a0de8134e431651da41eebdd63aff3d91712bac0",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087526,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "sandbox-d24a:_f64394b2e029e57be754bd1289d9c6239a8233a4",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087276,
+    "resource_type": "appengine_app",
+    "category": "resource",
+    "resource_id": "13425635519886651018",
+    "parent_id": 1087273,
+    "resource_data_displayname": "",
+    "resource_data_name": "apps/actions-codelab2-c23dc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087277,
+    "resource_type": "appengine_app",
+    "category": "resource",
+    "resource_id": "7945097770081965604",
+    "parent_id": 1087274,
+    "resource_data_displayname": "",
+    "resource_data_name": "apps/actions-codelab-2b402",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087533,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "sandbox-d24a:demos",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087789,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "103637530803869903316",
+    "parent_id": 1087462,
+    "resource_data_displayname": "terraform",
+    "resource_data_name": "projects/gwc-service-accounts/serviceAccounts/terraform@gwc-service-accounts.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087278,
+    "resource_type": "appengine_app",
+    "category": "resource",
+    "resource_id": "12124268524944363433",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "apps/gwc-core",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087280,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "actions-codelab-2b402:_a0de8134e431651da41eebdd63aff3d91712bac0",
+    "parent_id": 1087274,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087538,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "2367329402438925077",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "cloud-sql-network",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087539,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "8520483207830141801",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "datalab-network",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087540,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "9166398486162884720",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087541,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "6783578822461276754",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "msad-1-net",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087542,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "3668895297047108157",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "test-vpc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087297,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "112216796485388173458",
+    "parent_id": 1087273,
+    "resource_data_displayname": "App Engine default service account",
+    "resource_data_name": "projects/actions-codelab2-c23dc/serviceAccounts/actions-codelab2-c23dc@appspot.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087810,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "181e7ae878a7aa904867465f56c56a1fa09c0aef",
+    "parent_id": 1087789,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-service-accounts/serviceAccounts/terraform@gwc-service-accounts.iam.gserviceaccount.com/keys/181e7ae878a7aa904867465f56c56a1fa09c0aef",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087299,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "110926080687946263114",
+    "parent_id": 1087274,
+    "resource_data_displayname": "Dialogflow Integrations",
+    "resource_data_name": "projects/actions-codelab-2b402/serviceAccounts/dialogflow-ldljmb@actions-codelab-2b402.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087811,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "70dadc2b7b6933386b2ec6785c01036a12fd5e5b",
+    "parent_id": 1087789,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-service-accounts/serviceAccounts/terraform@gwc-service-accounts.iam.gserviceaccount.com/keys/70dadc2b7b6933386b2ec6785c01036a12fd5e5b",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087812,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "115009270172643806285",
+    "parent_id": 1087486,
+    "resource_data_displayname": "firebase-adminsdk",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/firebase-adminsdk-bzpww@sandbox-d24a.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087813,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "3594925605044832310",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-client-vm-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087302,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "6bdb3d2678f354e7e135a1129bc13df98587bec1",
+    "parent_id": 1087299,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/actions-codelab-2b402/serviceAccounts/dialogflow-ldljmb@actions-codelab-2b402.iam.gserviceaccount.com/keys/6bdb3d2678f354e7e135a1129bc13df98587bec1",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087814,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "8486162231495969663",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-server-vm-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087303,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "110156228593365405487",
+    "parent_id": 1087273,
+    "resource_data_displayname": "firebase-adminsdk",
+    "resource_data_name": "projects/actions-codelab2-c23dc/serviceAccounts/firebase-adminsdk-ja904@actions-codelab2-c23dc.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087815,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "6813813017106770059",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-visualization",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087304,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "116253849059323265974",
+    "parent_id": 1087274,
+    "resource_data_displayname": "App Engine default service account",
+    "resource_data_name": "projects/actions-codelab-2b402/serviceAccounts/actions-codelab-2b402@appspot.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087305,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "117224473281259054462",
+    "parent_id": 1087273,
+    "resource_data_displayname": "Dialogflow Integrations",
+    "resource_data_name": "projects/actions-codelab2-c23dc/serviceAccounts/dialogflow-vwavgg@actions-codelab2-c23dc.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087306,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "111257885974099395354",
+    "parent_id": 1087274,
+    "resource_data_displayname": "firebase-adminsdk",
+    "resource_data_name": "projects/actions-codelab-2b402/serviceAccounts/firebase-adminsdk-su0if@actions-codelab-2b402.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087307,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "c361c09f92c96d133416fc8cd9be2765ddd5200c",
+    "parent_id": 1087305,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/actions-codelab2-c23dc/serviceAccounts/dialogflow-vwavgg@actions-codelab2-c23dc.iam.gserviceaccount.com/keys/c361c09f92c96d133416fc8cd9be2765ddd5200c",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087309,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "gwc-core:_4784c839abe01535aeb06117b4eadd1bdff4d036",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087822,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "107406175416283934817",
+    "parent_id": 1087462,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/gwc-service-accounts/serviceAccounts/724908491897-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087316,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "gwc-core:_a0de8134e431651da41eebdd63aff3d91712bac0",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087319,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "gwc-core:audit_logs",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087838,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "114644472468659911846",
+    "parent_id": 1087461,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/billing-export-224721/serviceAccounts/821978887269-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087839,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "103052378991472800101",
+    "parent_id": 1087486,
+    "resource_data_displayname": "Sandbox Service Account",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/sandbox-sa@sandbox-d24a.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087841,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "101412755338781731808",
+    "parent_id": 1087462,
+    "resource_data_displayname": "deployment-sa",
+    "resource_data_name": "projects/gwc-service-accounts/serviceAccounts/deployment-sa@gwc-service-accounts.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087844,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "8529250661964401263",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087589,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "114673245419123644810",
+    "parent_id": 1087275,
+    "resource_data_displayname": "cloud-identity-sa",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/cloud-identity-sa@gwc-core.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087845,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "112584810090416955649",
+    "parent_id": 1087458,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/cloud-identity-log-export-e896/serviceAccounts/716672103529-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087590,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "3b229bf74cc286f7cb7ecc5cac711c4f29f157b6",
+    "parent_id": 1087589,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/cloud-identity-sa@gwc-core.iam.gserviceaccount.com/keys/3b229bf74cc286f7cb7ecc5cac711c4f29f157b6",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087846,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "77983d81a130c15f09463ad216945ef586fa07ed",
+    "parent_id": 1087841,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-service-accounts/serviceAccounts/deployment-sa@gwc-service-accounts.iam.gserviceaccount.com/keys/77983d81a130c15f09463ad216945ef586fa07ed",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087591,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "619bbc3ffca7eaa79f4f65c893baa1e8cd3bade2",
+    "parent_id": 1087589,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/cloud-identity-sa@gwc-core.iam.gserviceaccount.com/keys/619bbc3ffca7eaa79f4f65c893baa1e8cd3bade2",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087592,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "105851209756305009829",
+    "parent_id": 1087275,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/1012227841684-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087848,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "1284527881802702040",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-tf-lb-https-gke-default-pool-25a75700-1cjx",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087593,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "113724968357944586915",
+    "parent_id": 1087275,
+    "resource_data_displayname": "App Engine default service account",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/gwc-core@appspot.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087849,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "1365024326368058543",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-tf-lb-https-gke-default-pool-25a75700-bn9k",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087594,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "115923635699569204829",
+    "parent_id": 1087275,
+    "resource_data_displayname": "Terraform service account",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/terraform-sa@gwc-core.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087850,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "1191788173398596818",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-tf-lb-https-gke-default-pool-25a75700-wzfq",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087595,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "6fbe7d606eee666ef72a93fbe5904ccd9a82c689",
+    "parent_id": 1087594,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/terraform-sa@gwc-core.iam.gserviceaccount.com/keys/6fbe7d606eee666ef72a93fbe5904ccd9a82c689",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087596,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "116560305678240202448",
+    "parent_id": 1087275,
+    "resource_data_displayname": "deployment-sa",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/deployment-sa@gwc-core.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087597,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "7e5d46ce5ed70b5efb0f6d5e7403f2f847019c4d",
+    "parent_id": 1087596,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/deployment-sa@gwc-core.iam.gserviceaccount.com/keys/7e5d46ce5ed70b5efb0f6d5e7403f2f847019c4d",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087599,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "117038248974815894357",
+    "parent_id": 1087275,
+    "resource_data_displayname": "Vault Admin",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/vault-admin@gwc-core.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087600,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "3bea3132931ff03185fe8c176cde8cc99dfbd977",
+    "parent_id": 1087599,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/gwc-core/serviceAccounts/vault-admin@gwc-core.iam.gserviceaccount.com/keys/3bea3132931ff03185fe8c176cde8cc99dfbd977",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087602,
+    "resource_type": "appengine_app",
+    "category": "resource",
+    "resource_id": "7406181609418660989",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "apps/machine-learning-space-60f8",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087605,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "forseti-visualization-icons",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-visualization-icons",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087606,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "garrettwong-buckettest",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "garrettwong-buckettest",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087609,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "gwc-core-cloud-identity-bucket",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-core-cloud-identity-bucket",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087610,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "gwc-core-terraform",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-core-terraform",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087866,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "5659742664575713443",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-cl-cluster-default-pool-9f8e83ea-5m8f",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087611,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "gwc-core-txf",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-core-txf",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087612,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1260466199391954455",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "allow-nat",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087868,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "1305210344048197795",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-cl-cluster-default-pool-9f8e83ea-lprx",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087613,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8408436723735118928",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-icmp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087614,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1879006215180436560",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087870,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "105374360607252435374",
+    "parent_id": 1087458,
+    "resource_data_displayname": "Cloud Identity Service Account",
+    "resource_data_name": "projects/cloud-identity-log-export-e896/serviceAccounts/cloud-identity-sa@cloud-identity-log-export-e896.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087615,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6104720101290067024",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-rdp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087871,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "8716914576440459428",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-cl-cluster-default-pool-9f8e83ea-w0gl",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087616,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2846317778922947664",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087617,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8190585790517272077",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "deny-nat-egress",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087873,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "1349542120304269820",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-forsetiviz-cluster-default-pool-d1b8ab4a-l9gq",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087618,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4681437096951735725",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "deny-to-nat",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087619,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "gwc-core-vault",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-core-vault",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087620,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "gwc-core-vault-assets",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-core-vault-assets",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087621,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "gwc-core.appspot.com",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gwc-core.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087622,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "staging.gwc-core.appspot.com",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "staging.gwc-core.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087623,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "us.artifacts.gwc-core.appspot.com",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "us.artifacts.gwc-core.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087879,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "7819493649714347229",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087624,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8840757871121191570",
+    "parent_id": 1087462,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-icmp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087880,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "6625292033309551567",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "tf-lb-https-gke",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087625,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "154428764001587858",
+    "parent_id": 1087462,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087626,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4730986369469043346",
+    "parent_id": 1087462,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-rdp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087627,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "3213663656032785042",
+    "parent_id": 1087462,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087883,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "6a1f60f162aff5348c3013658a524610904a67ef",
+    "parent_id": 1087870,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/cloud-identity-log-export-e896/serviceAccounts/cloud-identity-sa@cloud-identity-log-export-e896.iam.gserviceaccount.com/keys/6a1f60f162aff5348c3013658a524610904a67ef",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087628,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "2637731837486884872",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "nat-instance",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087629,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4959239979711782591",
+    "parent_id": 1087461,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-icmp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087885,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "5858401807007079739",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087630,
+    "resource_type": "instance",
+    "category": "resource",
+    "resource_id": "623843538070989298",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "natted-instance",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087886,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "113912014131861751716",
+    "parent_id": 1087460,
+    "resource_data_displayname": "log-sinks Project Service Account",
+    "resource_data_name": "projects/log-sinks-13e2/serviceAccounts/project-service-account@log-sinks-13e2.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087631,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1802803161659006655",
+    "parent_id": 1087461,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087632,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6936203938477825727",
+    "parent_id": 1087461,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-rdp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087633,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4085155770665197247",
+    "parent_id": 1087461,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087634,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1474260097917291323",
+    "parent_id": 1087458,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-icmp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087635,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1870970434454063931",
+    "parent_id": 1087458,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087636,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1981283667269684027",
+    "parent_id": 1087458,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-rdp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087637,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1723232115046517563",
+    "parent_id": 1087458,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087638,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "5586891510912435277",
+    "parent_id": 1087457,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087639,
+    "resource_type": "cloudsqlinstance",
+    "category": "resource",
+    "resource_id": "2949407881675395326",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-server-db-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087645,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "112534036763134582613",
+    "parent_id": 1087486,
+    "resource_data_displayname": "cloud-identity-sa",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/cloud-identity-sa@sandbox-d24a.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087906,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "110382659820927879347",
+    "parent_id": 1087476,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/forseti-security-1e88/serviceAccounts/521541240037-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087919,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "eb6651a1fdaff077959a5ede567614cabc9137b7",
+    "parent_id": 1087906,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/forseti-security-1e88/serviceAccounts/521541240037-compute@developer.gserviceaccount.com/keys/eb6651a1fdaff077959a5ede567614cabc9137b7",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087921,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "be66264f720a23f37ac32f847c9e28e57a0b9821",
+    "parent_id": 1087906,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/forseti-security-1e88/serviceAccounts/521541240037-compute@developer.gserviceaccount.com/keys/be66264f720a23f37ac32f847c9e28e57a0b9821",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087669,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "9167572ee699c606085ee658d0f2856b40c165a3",
+    "parent_id": 1087645,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/cloud-identity-sa@sandbox-d24a.iam.gserviceaccount.com/keys/9167572ee699c606085ee658d0f2856b40c165a3",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087671,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "7e42a7c738ec078a05533980ecad4173578d22d8",
+    "parent_id": 1087645,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/cloud-identity-sa@sandbox-d24a.iam.gserviceaccount.com/keys/7e42a7c738ec078a05533980ecad4173578d22d8",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087674,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "3559637054228243367",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "app-fw",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087930,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "artifacts.sandbox-d24a.appspot.com",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "artifacts.sandbox-d24a.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087675,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "3658969782248009627",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "block85",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087676,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "5419153792255191193",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-http",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087677,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1918152733254722973",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-http-8080",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087678,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2451771014981675160",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-https",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087679,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "100197118367544255719",
+    "parent_id": 1087486,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/147925056168-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087680,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "797528068453578342",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "express-fw",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087681,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "5789176365957240934",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "firewall-rules-grpc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087682,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2367746070100265389",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-client-allow-ssh-external-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087683,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6869999435676862902",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-client-deny-all-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087684,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6347185470600334096",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-server-allow-grpc-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087685,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "5794008895649695996",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-server-allow-ssh-external-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087686,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8354713138199218974",
+    "parent_id": 1087476,
+    "resource_data_displayname": "",
+    "resource_data_name": "forseti-server-deny-all-586f404",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087942,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "113486930990684019570",
+    "parent_id": 1087476,
+    "resource_data_displayname": "forseti-server-gcp-586f404",
+    "resource_data_name": "projects/forseti-security-1e88/serviceAccounts/forseti-server-gcp-586f404@forseti-security-1e88.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087687,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "d6e2676e4cd6e279cc9d26db08a8b3f1853d1ffd",
+    "parent_id": 1087679,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/147925056168-compute@developer.gserviceaccount.com/keys/d6e2676e4cd6e279cc9d26db08a8b3f1853d1ffd",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087943,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "113107835673196937238",
+    "parent_id": 1087601,
+    "resource_data_displayname": "firebase-adminsdk",
+    "resource_data_name": "projects/machine-learning-space-60f8/serviceAccounts/firebase-adminsdk-2gg81@machine-learning-space-60f8.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087688,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "106791106999041034442",
+    "parent_id": 1087457,
+    "resource_data_displayname": "Dev Ops Service Account",
+    "resource_data_name": "projects/devops-1ca6/serviceAccounts/devops-sa@devops-1ca6.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087944,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "eu-bucket-gcs",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "eu-bucket-gcs",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087689,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6561904487888682171",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-icmp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087690,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "2258776410475385487",
+    "parent_id": 1087462,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087691,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "5061568228366081308",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-icmp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087692,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "115085871534648005204",
+    "parent_id": 1087486,
+    "resource_data_displayname": "my translation lab service account",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/my-video-int-sa@sandbox-d24a.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087948,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "103741238050124993901",
+    "parent_id": 1087598,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/forsetiviz/serviceAccounts/656666665848-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087693,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "770007614534024379",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087949,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "117226999893450872731",
+    "parent_id": 1087476,
+    "resource_data_displayname": "forseti-client-gcp-586f404",
+    "resource_data_name": "projects/forseti-security-1e88/serviceAccounts/forseti-client-gcp-586f404@forseti-security-1e88.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087694,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8319158338057788701",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087950,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "sandbox-d24a-lb-assets-9c8b",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "sandbox-d24a-lb-assets-9c8b",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087695,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "7186315676718824635",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-rdp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087696,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "7513218054359735580",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-rdp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087697,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2702390912279215291",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087698,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1603709377119378717",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087954,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "105521825310981536781",
+    "parent_id": 1087601,
+    "resource_data_displayname": "Cloud Identity Service Account",
+    "resource_data_name": "projects/machine-learning-space-60f8/serviceAccounts/cloud-identity-sa@machine-learning-space-60f8.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087699,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "3803766427012574135",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-tf-lb-https-gke-aa62a218-all",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087700,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8591193285889392857",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-cl-cluster-044938d7-all",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087956,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "sandbox-d24a-txf",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "sandbox-d24a-txf",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087701,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "285018743533480888",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-tf-lb-https-gke-aa62a218-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087702,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4479623730538512602",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-cl-cluster-044938d7-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087958,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "817321bb30aa63c7ba5688e5308c1e597016eb60",
+    "parent_id": 1087954,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/machine-learning-space-60f8/serviceAccounts/cloud-identity-sa@machine-learning-space-60f8.iam.gserviceaccount.com/keys/817321bb30aa63c7ba5688e5308c1e597016eb60",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087703,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "927533043422604215",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-tf-lb-https-gke-aa62a218-vms",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087959,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "sandbox-d24a.appspot.com",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "sandbox-d24a.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087448,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "gwc-core:demos",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087704,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "273566788756209882",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-cl-cluster-044938d7-vms",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087960,
+    "resource_type": "kubernetes_cluster",
+    "category": "resource",
+    "resource_id": "6359115376722877353",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "cl-cluster",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087705,
+    "resource_type": "network",
+    "category": "resource",
+    "resource_id": "5928899249887698626",
+    "parent_id": 1087461,
+    "resource_data_displayname": "",
+    "resource_data_name": "default",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087961,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "104261382341648333601",
+    "parent_id": 1087601,
+    "resource_data_displayname": "Dialogflow Integrations",
+    "resource_data_name": "projects/machine-learning-space-60f8/serviceAccounts/dialogflow-viuvwl@machine-learning-space-60f8.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087706,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4834178662425487078",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-542aec7db3ea1d72-node-http-hc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087962,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "staging.sandbox-d24a.appspot.com",
+    "parent_id": 1087486,
+    "resource_data_displayname": "",
+    "resource_data_name": "staging.sandbox-d24a.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087707,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8187257422791432676",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-forsetiviz-cluster-f293571b-all",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087963,
+    "resource_type": "kubernetes_cluster",
+    "category": "resource",
+    "resource_id": "10556751157192063221",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "forsetiviz-cluster",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087708,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4288703620966606167",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-8c74983584882cf4-node-http-hc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087964,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "630a2263e95a102deacbcaccf97fb53c6e6dc038",
+    "parent_id": 1087961,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/machine-learning-space-60f8/serviceAccounts/dialogflow-viuvwl@machine-learning-space-60f8.iam.gserviceaccount.com/keys/630a2263e95a102deacbcaccf97fb53c6e6dc038",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087453,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "actions-codelab2-c23dc.appspot.com",
+    "parent_id": 1087273,
+    "resource_data_displayname": "",
+    "resource_data_name": "actions-codelab2-c23dc.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087965,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "118339782968778270113",
+    "parent_id": 1087601,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/machine-learning-space-60f8/serviceAccounts/428092455983-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087454,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "staging.actions-codelab2-c23dc.appspot.com",
+    "parent_id": 1087273,
+    "resource_data_displayname": "",
+    "resource_data_name": "staging.actions-codelab2-c23dc.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087710,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2321420806240459236",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-forsetiviz-cluster-f293571b-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087966,
+    "resource_type": "kubernetes_cluster",
+    "category": "resource",
+    "resource_id": "12655547366249308525",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "tf-lb-https-gke",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087455,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "actions-codelab-2b402.appspot.com",
+    "parent_id": 1087274,
+    "resource_data_displayname": "",
+    "resource_data_name": "actions-codelab-2b402.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087711,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8604191622166802776",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-923f70a0fe8acf4d-node-http-hc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087967,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "artifacts.forsetiviz.appspot.com",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "artifacts.forsetiviz.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087712,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4851948630043122148",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-forsetiviz-cluster-f293571b-vms",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087968,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "forsetiviz_cloudbuild",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "forsetiviz_cloudbuild",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087713,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "3266144110484138376",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "tf-lb-https-gke-hc-0",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087714,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6211942447999168195",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-95a374b364bdb4ad-node-http-hc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087970,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "artifacts.machine-learning-space-60f8.appspot.com",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "artifacts.machine-learning-space-60f8.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087459,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "staging.actions-codelab-2b402.appspot.com",
+    "parent_id": 1087274,
+    "resource_data_displayname": "",
+    "resource_data_name": "staging.actions-codelab-2b402.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087715,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "7867525312654377360",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-de802f70d972df6f-node-http-hc",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087971,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "machine-learning-space-60f8-lb-assets-19ff",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "machine-learning-space-60f8-lb-assets-19ff",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087716,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4379855750536135066",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-fw-a1658c9ab435411e9b70d42010a80006",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087972,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "machine-learning-space-60f8.appspot.com",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "machine-learning-space-60f8.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087717,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "7026258630888983571",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-fw-a5bb0df4e430011e9b5e142010a8a006",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087973,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "mls-bucket",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "mls-bucket",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087718,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4551384873048813262",
+    "parent_id": 1087598,
+    "resource_data_displayname": "",
+    "resource_data_name": "k8s-fw-a930c138442eb11e9b5e142010a8a006",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087463,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1951856080361073130",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "allow-example-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087719,
+    "resource_type": "serviceaccount_key",
+    "category": "resource",
+    "resource_id": "9a76c99c5ea3f67c397291befa3b0594fabd3312",
+    "parent_id": 1087692,
+    "resource_data_displayname": "",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/my-video-int-sa@sandbox-d24a.iam.gserviceaccount.com/keys/9a76c99c5ea3f67c397291befa3b0594fabd3312",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087464,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2480342816767322119",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "allow-example-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087465,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "994587516002990895",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "datalab-network-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087721,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "105806508553642215035",
+    "parent_id": 1087457,
+    "resource_data_displayname": "Compute Engine default service account",
+    "resource_data_name": "projects/devops-1ca6/serviceAccounts/168499148573-compute@developer.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087466,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1131391913826196724",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-http",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087467,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1506291513080683763",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-https",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087468,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "9157225028724115540",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-icmp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087469,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "4568142173340092500",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-internal",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087470,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "5856217382399952980",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-rdp",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087471,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2810349476565928020",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "default-allow-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087472,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1257583069503706716",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-standard-cluster-2-3beda741-all",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087728,
+    "resource_type": "serviceaccount",
+    "category": "resource",
+    "resource_id": "113878897713821412398",
+    "parent_id": 1087486,
+    "resource_data_displayname": "Dialogflow Integrations",
+    "resource_data_name": "projects/sandbox-d24a/serviceAccounts/dialogflow-igjexa@sandbox-d24a.iam.gserviceaccount.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087473,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "3820051603014047324",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-standard-cluster-2-3beda741-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087474,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "642963830582826588",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-standard-cluster-2-3beda741-vms",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087475,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6266273573893066929",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-standard-cluster-3-d2bbade1-all",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087477,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "6918141359070138545",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-standard-cluster-3-d2bbade1-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087478,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1342946987620716720",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "gke-standard-cluster-3-d2bbade1-vms",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087479,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1831428783725186312",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "istio-multicluster-test-pods",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087480,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8023956336684351714",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "ldap-389",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087481,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "8636955595501126196",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "msad-1-allow-internal-ports",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087482,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "863440702458741300",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "msad-1-tcp-3389",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087994,
+    "resource_type": "bucket",
+    "category": "resource",
+    "resource_id": "staging.machine-learning-space-60f8.appspot.com",
+    "parent_id": 1087601,
+    "resource_data_displayname": "",
+    "resource_data_name": "staging.machine-learning-space-60f8.appspot.com",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087483,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "2263909467577623833",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "natfirewall",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087484,
+    "resource_type": "firewall",
+    "category": "resource",
+    "resource_id": "1333156223082357601",
+    "parent_id": 1087275,
+    "resource_data_displayname": "",
+    "resource_data_name": "vault-us-central1-vm-ssh",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}, {
+    "id": 1087485,
+    "resource_type": "dataset",
+    "category": "resource",
+    "resource_id": "log-sinks-13e2:_a0de8134e431651da41eebdd63aff3d91712bac0",
+    "parent_id": 1087460,
+    "resource_data_displayname": "",
+    "resource_data_name": "",
+    "qq": null,
+    "inventory_index_id": 1552609278876965
+}]

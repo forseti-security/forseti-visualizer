@@ -1,0 +1,15 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <title>Cloud Load Balancing</title>
+  <g>
+    <path d="M126.47,58.12l-26.3-45.74A11.56,11.56,0,0,0,90.31,6.5H37.7a11.55,11.55,0,0,0-9.86,5.88L1.53,58a11.48,11.48,0,0,0,0,11.44l26.3,46a11.77,11.77,0,0,0,9.86,6.09H90.3a11.73,11.73,0,0,0,9.87-6.06l26.3-45.74A11.73,11.73,0,0,0,126.47,58.12Z" style="fill: #4285f4"/>
+    <path d="M79.64,42.47,54.42,50.33l-5.83,3.33L57,62.08l-11.5.67.25,10.83-6.38,8.1L79.19,121.5H90.3a11.73,11.73,0,0,0,9.87-6.06l19.14-33.29Z" style="opacity: 0.070000000298023;isolation: isolate"/>
+    <rect x="62" y="53" width="4" height="21.75" style="fill: #fff"/>
+    <path d="M44.93,63H48V76H44V63.93a.93.93,0,0,1,.93-.93Z" style="fill: #fff"/>
+    <path d="M80,63h3.07a.93.93,0,0,1,.93.93h0V76H80V63Z" style="fill: #fff"/>
+    <path d="M45,61H83a1,1,0,0,1,1,1v3H44V62a1,1,0,0,1,1-1Z" style="fill: #fff"/>
+    <rect x="48" y="42" width="32" height="12" rx="0.97" ry="0.97" style="fill: #fff"/>
+    <rect x="39" y="72" width="13" height="10" rx="0.98" ry="0.98" style="fill: #fff"/>
+    <rect x="76" y="72" width="13" height="10" rx="0.98" ry="0.98" style="fill: #fff"/>
+    <rect x="57" y="72" width="14" height="10" rx="1.01" ry="1.01" style="fill: #fff"/>
+  </g>
+</svg>
