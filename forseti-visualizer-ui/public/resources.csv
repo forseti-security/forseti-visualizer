@@ -1,0 +1,8 @@
+1,"organization","resource","organizations/123",,"mycloud.com","organizations/123","ACTIVE"
+2,"folder","resource","folders/24242421",1,"GWC Folder","folders/24242421","ACTIVE"
+5,"project","resource","gwc-infra",2,"gwc-infra","gwc-infra-d603","ACTIVE"
+6,"project","resource","gwc-app",2,"gwc-app","gwc-app-9c1f","ACTIVE"
+7,"project","resource","gwc-db",2,"gwc-db","gwc-db-0c8b","ACTIVE"
+8,"project","resource","gwc-network",2,"gwc-network","gwc-network-0c8b","ACTIVE"
+9,"bucket","resource","gwc-bucket",5,"gwc-bucket","gwc-bucket-0c8b","ACTIVE"
+10,"firewall","resource","gwc-fw",8,"gwc-fw","gwc-fw-0c8b","ACTIVE"

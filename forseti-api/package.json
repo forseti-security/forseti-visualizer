@@ -1,0 +1,70 @@
+{
+  "name": "forseti-visualizer-api",
+  "version": "1.0.1",
+  "description": "Forseti Viz API to serve Forseti Based GCP content",
+  "author": "Garrett Wong",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon -w src --exec \"babel-node server --presets es2015,stage-0\"",
+    "build": "babel src -s -D -d dist --presets es2015,stage-0",
+    "serve": "nodemon -w src --exec \"babel-node server --presets es2015,stage-0\"",
+    "start": "npm run serve",
+    "test": "eslint src"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 7,
+      "sourceType": "module"
+    },
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "no-console": 0,
+      "no-unused-vars": 1
+    }
+  },
+  "dependencies": {
+    "@google-cloud/bigtable": "^0.15.0",
+    "@google-cloud/kms": "^0.4.0",
+    "@grpc/proto-loader": "^0.4.0",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "connect-memjs": "^0.2.1",
+    "cors": "^2.8.4",
+    "express": "^4.16.1",
+    "express-session": "^1.15.6",
+    "grpc": "^1.18.0",
+<<<<<<< HEAD
+    "morgan": "^1.9.1",
+=======
+    "morgan": "^1.9.0",
+>>>>>>> 4365b36... initial commit
+    "mysql": "^2.16.0",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
+    "pug": "^2.0.3",
+    "resource-router-middleware": "^0.7.0",
+    "session-file-store": "^1.2.0",
+<<<<<<< HEAD
+    "uuid": "^3.3.2",
+    "axios": ">=0.19.0"
+=======
+    "uuid": "^3.3.2"
+>>>>>>> 4365b36... initial commit
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/npm.git"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^5.3.0",
+    "nodemon": "^1.18.3"
+  }
+}

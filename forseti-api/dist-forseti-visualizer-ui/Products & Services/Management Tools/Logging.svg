@@ -1,0 +1,16 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <title>Logging</title>
+  <g>
+    <path d="M126.47,58.12l-26.3-45.74A11.56,11.56,0,0,0,90.31,6.5H37.7a11.55,11.55,0,0,0-9.86,5.88L1.53,58a11.48,11.48,0,0,0,0,11.44l26.3,46a11.77,11.77,0,0,0,9.86,6.09H90.3a11.73,11.73,0,0,0,9.87-6.06l26.3-45.74A11.73,11.73,0,0,0,126.47,58.12Z" style="fill: #4285f4"/>
+    <path d="M94,38,76.4,46H60L49,35,42.23,46H42l-8,4,7.65,7.65L40,89l32.5,32.5H90.3a11.73,11.73,0,0,0,9.87-6.06l26-45.25Z" style="opacity: 0.070000000298023;isolation: isolate"/>
+    <rect id="Rectangle-path" x="57" y="38" width="37" height="11" style="fill: #fff"/>
+    <rect id="Rectangle-path-2" data-name="Rectangle-path" x="42" y="64" width="16" height="3" style="fill: #fff"/>
+    <rect id="Rectangle-path-3" data-name="Rectangle-path" x="57" y="60" width="37" height="11" style="fill: #fff"/>
+    <rect id="Rectangle-path-4" data-name="Rectangle-path" x="42" y="86" width="16" height="3" style="fill: #fff"/>
+    <rect id="Rectangle-path-5" data-name="Rectangle-path" x="40" y="50" width="3" height="39" style="fill: #fff"/>
+    <g id="Group">
+      <rect id="Rectangle-path-6" data-name="Rectangle-path" x="34" y="35" width="15" height="15" style="fill: #fff"/>
+      <rect id="Rectangle-path-7" data-name="Rectangle-path" x="57" y="82" width="37" height="11" style="fill: #fff"/>
+    </g>
+  </g>
+</svg>
