@@ -1,3 +1,6 @@
+# Ignore build files
+forseti-api/dist-forseti-visualizer-ui
+
 # Env/Encrypted
 clah_source.env
 clah_dockersource.env
