@@ -6,6 +6,10 @@ clah_source.env
 clah_dockersource.env
 dockersource.env
 asdf.env.enc
+source.env
+
+# Certs
+certs/
 
 # Keys
 sa-key.json
