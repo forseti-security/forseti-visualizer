@@ -71,4 +71,4 @@ npm start
 
 ## References
 
-* [Medium](https://medium.com/p/23<F8>70a4b048cd)
+* [Medium](https://medium.com/google-cloud/visualize-gcp-architecture-using-forseti-2-0-and-d3-js-ffc8fdf59450)
