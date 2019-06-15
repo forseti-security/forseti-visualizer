@@ -1,4 +1,0 @@
-#!/bin/sh
-
-echo "test" >> README.md
-git add README.md && git commit -m "README.md test" && git push -u origin master
