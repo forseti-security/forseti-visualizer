@@ -9,6 +9,26 @@ Multiple deployment pipelines for Forseti Visualizer:
 ## Overview
 
 * Each script should use Cloud Build to build the docker image and push it to the local gcr.io repository.  
+## Getting Started
+
+```bash
+# replace the variable (PROJECT_ID) at the top of the build-images.sh file
+./build-images.sh
+
+# create a file named "source.env"
+cat > source.env << EOF
+export CLOUDSQL_HOSTNAME="1.2.34.56"
+export CLOUDSQL_USERNAME="user"
+export CLOUDSQL_PASSWORD="password"
+export CLOUDSQL_SCHEMA="forseti_security"
+export FORSETI_SERVER_VM_CHANNEL="1.2.3.4:50051"
+export FORSETI_DATA_MODEL_HANDLE="abcdaa3a5bc9fd9acfaf50fdd3620534"
+EOF
+
+# replace the variable(s) (PROJECT_ID, REGION) at the top of the deployment file and then run to deploy the image
+./deploy-cloudrun.sh
+
+```
 
 ## Pipeline
 
