@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: esp-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  labels:
+    type: endpoints-app
+spec:
+  rules:
+  - host: api.endpoints.forseti-security-1e88.cloud.goog
+    http:
+      paths:
+      - backend:
+          serviceName: esp-srv
+          servicePort: 80

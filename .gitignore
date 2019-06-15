@@ -2,6 +2,7 @@
 forseti-api/dist-forseti-visualizer-ui
 
 # Env/Encrypted
+source.env
 clah_source.env
 clah_dockersource.env
 dockersource.env
