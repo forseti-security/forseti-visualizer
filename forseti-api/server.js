@@ -33,11 +33,11 @@ app.all('*', function (req, res, next) {
 
 // Override static assets to use public
 console.log(__dirname);
-const { resolve } = require('path')
+const { resolve } = require('path');
 // const publicPath = resolve(__dirname, '../forseti-visualizer-ui/dist')
-const publicPath = resolve(__dirname, 'dist-forseti-visualizer-ui')
-const staticConf = { maxAge: '1y', etag: false }
-app.use(express.static(publicPath, staticConf))
+const publicPath = resolve(__dirname, 'dist-forseti-visualizer-ui');
+const staticConf = { maxAge: '1y', etag: false };
+app.use(express.static(publicPath, staticConf));
 
 // set up /api routes
 app.use('/api', api({
@@ -67,7 +67,6 @@ app.post('/home', function (req, res) {
 
 const uuid = require('uuid/v4')
 const session = require('express-session');
-const MemcachedStore = require('connect-memjs')(session);
 const FileStore = require('session-file-store')(session);
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -81,21 +80,6 @@ const sessionConfig = {
   secret: config.SECRET,
   signed: true
 };
-
-// In production use the Memcache instance to store session data,
-// otherwise fallback to the default MemoryStore in development.
-if (config['NODE_ENV'] === 'production' && config['MEMCACHE_URL']) {
-  if (config['MEMCACHE_USERNAME'] && config['MEMCACHE_PASSWORD']) {
-    sessionConfig.store = new MemcachedStore({
-      servers: [config['MEMCACHE_URL']],
-      username: config['MEMCACHE_USERNAME'],
-      password: config['MEMCACHE_PASSWORD']});
-  } else {
-    sessionConfig.store = new MemcachedStore({
-      servers: [config['MEMCACHE_URL']]
-    });
-  }
-}
 
 app.use(session(sessionConfig));
 // [END session]

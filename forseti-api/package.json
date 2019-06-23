@@ -29,9 +29,9 @@
 		"@google-cloud/bigtable": "^0.15.0",
 		"@google-cloud/kms": "^0.4.0",
 		"@grpc/proto-loader": "^0.4.0",
+		"axios": "^0.19.0",
 		"body-parser": "^1.18.3",
 		"compression": "^1.7.3",
-		"connect-memjs": "^0.2.1",
 		"cors": "^2.8.4",
 		"express": "^4.16.1",
 		"express-session": "^1.15.6",
@@ -43,8 +43,7 @@
 		"pug": "^2.0.3",
 		"resource-router-middleware": "^0.7.0",
 		"session-file-store": "^1.2.0",
-		"uuid": "^3.3.2",
-		"axios": "^0.19.0"
+		"uuid": "^3.3.2"
 	},
 	"license": "Apache-2.0",
 	"repository": {
