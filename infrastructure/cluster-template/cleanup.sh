@@ -1,5 +1,4 @@
-#!/bin/bash -eu
-#
+#!/bin/sh
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/sh
-
-# create GKE cluster
-kubectl delete service forseti-api-deployment
-
-# wait for load balancer provisioned for the service to be deleted
-gcloud compute forwarding-rules list
-
-sleep 30000
-
-# delete cluster
-gcloud container clusters delete forseti-api-cluster
+gcloud container clusters delete forsetiviz-app-gke --region us-central1 -q
+gcloud compute addresses delete forsetiviz-app-endpoints-ip --region us-central1 -q

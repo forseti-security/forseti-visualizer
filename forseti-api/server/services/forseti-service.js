@@ -114,7 +114,7 @@ class ForsetiService {
      * @param {*} cb function for callback processing
      */
     getExplainIdentity(iamPrefix, cb) {
-        var PROTO_PATH = 'explain.proto';
+        var PROTO_PATH = 'protos/explain.proto';
         var grpc = require('grpc');
         var protoLoader = require('@grpc/proto-loader');
         // Suggested options for similarity to existing grpc.load behavior
