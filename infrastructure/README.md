@@ -1,6 +1,6 @@
 # Infrastructure
 
-Multiple deployment pipelines for Forseti Visualizer:
+Multiple deployment pipelines are provided as an example for Forseti Visualizer.
 
 1. Docker on GCE with COS
 2. Docker on GKE with COS
@@ -8,7 +8,8 @@ Multiple deployment pipelines for Forseti Visualizer:
 
 ## Overview
 
-* Each script should use Cloud Build to build the docker image and push it to the local gcr.io repository.  
+Each script requires a docker image to be pre-built and pushed to the local gcr.io repository.
+
 ## Getting Started
 
 ```bash
@@ -27,7 +28,6 @@ EOF
 
 # replace the variable(s) (PROJECT_ID, REGION) at the top of the deployment file and then run to deploy the image
 ./deploy-cloudrun.sh
-
 ```
 
 ## Pipeline
