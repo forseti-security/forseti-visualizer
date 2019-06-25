@@ -14,7 +14,7 @@
 
 import JSONBeautifier from "../../src/services/JSONBeautifier";
 
-describe("JSONBeautifier.test.js", () => {
+describe("JSONBeautifier.test", () => {
   let sut;
   beforeEach(() => {
     sut = JSONBeautifier;
