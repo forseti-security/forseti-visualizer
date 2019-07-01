@@ -1,6 +1,6 @@
 # Infrastructure
 
-Multiple deployment pipelines are provided as an example for Forseti Visualizer.
+Multiple deployment pipelines for Forseti Visualizer:
 
 1. Docker on GCE with COS
 2. Docker on GKE with COS
