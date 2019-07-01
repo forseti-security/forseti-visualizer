@@ -1,43 +1,56 @@
-# forseti-visualizer
+# Forseti Visualizer
 
-* A visualization solution with Forseti Integration to enable customers to better understand their GCP Organizational Structure, while communicating details around policy policy adherence through identification of violations.  
+Forseti Visualizer provides a visualization solution, based on [Forseti Security's](https://github.com/forseti-security/forseti-security) Inventorying and Violation modules.  Forseti Visualizer attempts to enable Google Cloud Platform users to better understand their GCP Organization Structure, while providing insights into policy adherence through identification of violations.
 
 ## Overview
 
-* This solution has a frontend and backend component.  
-* The frontend, "forseti-visualizer-ui/" and the backend, "forseti-api/" will need to be run concurrently.  
-* The frontend is configured is use port 8081, while the backend runs on port 8080.  
+This solution contains a frontend (forseti-visualizer-ui) and backend (forseti-api) component.  The frontend defaults to running on port 8081, while the backend runs on port 8080.  
 
-## Pre-Requisites
+### Frontend (forseti-visualizer-ui)
 
-* node.js - (Solution using v10.0.0)
+Written in:
+
+* [node.js v10.0.0+](https://nodejs.org/en/)
 * [vue-cli](https://cli.vuejs.org/guide/installation.html)
+* [d3v5](https://d3js.org/)
 
-## Deployment
+### Backend (forseti-api)
+
+Written in:
+
+* [express.js v4.16.1+](https://expressjs.com/)
+
+## Getting Started (Local Development)
+
+### forseti-visualizer-ui
+
+Navigate to the forseti-visualizer-ui/ directory, install npm packages.
 
 ```bash
-# end-to-end deployment script
-# docker builds and pushes the 3 images
-# creates a GCE VM with a startup script that will pull all three images down and use the docker run command to run each
-./deploy_all.sh
+cd forseti-visualizer-ui/
+
+# install the packages
+npm install
+
+# build the application
+npm build
+
+# for developing just the UI - app is served on :8081
+# npm start
 ```
 
-### Current Steps
+### forseti-api
 
-1. npm test
-2. gcloud builds submit --config cloudbuild.yaml #mycloud.com
-3. gcloud container clusters get-credentials cl-cluster
-4. kubectl get pods
-5. kubectl delete pod $POD_NAME
-6. wait 5 minutes
-
-
-## Getting Started - Local Development (forseti-api)
-
-* Create a source.env file
+Navigate to forseti-api/.  Create a source.env file, which will should be sourced and set prior to runtime.  You will need to populate the fields below.  The HANDLE and CHANNEL are leveraged for the IAM Explain functionality.
 
 ```bash
+# navigate to forseti-api
 cd forseti-api/
+
+# copy the most recent dist
+cp -R ../forseti-visualizer-ui/dist ../forseti-api/dist-forseti-visualizer-ui
+
+# create source.env file
 cat > source.env << EOF
 export CLOUDSQL_HOSTNAME="[IP HERE]"
 export CLOUDSQL_USERNAME="[YOUR_USER_HERE]"
@@ -48,26 +61,31 @@ export FORSETI_DATA_MODEL_HANDLE="[DATA_MODEL_HANDLE_HASH:21254f1de747879237a95c
 EOF
 ```
 
-* Navigate to Directory, Install packages and Run
+While still in the "forseti-api/" directory:
 
 ```bash
+# install npm packages
 npm install
 
-# served on localhost:8080/
+# set environment variables
 source source.env
+
+# run the app: served on localhost:8080
 npm start
 ```
 
-## Getting Started - Local Development (forseti-visualizer-ui)
+## Solution Deployment
 
-* Navigate to Directory, Install packages and run
+There are a few provided solution deployment pipelines.  First, you need to build the image.  Replace the variables at the top of the build-images.sh file with those from your environment.
 
-```bash
-# served on localhost:8081
-cd forseti-visualizer-ui/
-npm install
-npm start
-```
+1. cd infrastructure/
+2. ./build-images.sh
+
+For each of the scripts, replace the variables at the top of each file with those from your environment.
+
+1. infrastructure/deployments/deploy-gce.sh
+2. infrastructure/deployments/deploy-gke.sh
+3. infrastructure/deployments/deploy-cloudrun.sh
 
 ## References
 
