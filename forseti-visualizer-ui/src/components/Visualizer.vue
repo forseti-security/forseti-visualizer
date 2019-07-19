@@ -163,32 +163,18 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import * as d3 from 'd3';
 
-import D3Helpers from '../services/D3Helpers';
 import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataServiceFactory from '../services/DataServiceFactory';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import Orientation from '../models/Orientation';
-
-let cachedFileMap = {
-    resourcesFile: 'dataset1_resources.json',
-    violationsFile: 'dataset1_violations.json',
-    iamexplainbyuserFile: 'dataset1_iamexplainbyuser.json',
-
-    resourcesFile2: 'dataset2_resources.json',
-    violationsFile2: 'dataset2_violations.json',
-    iamexplainbyuserFile2: 'dataset2_iamexplainbyuser.json',
-};
 
 export default {
     /**
      * Vue: mounted() - onload function
      */
     mounted() {
-        window.$ = $; // remove this line
-
         // Use the parsed tree data to dynamically create height & width
         // want computed width
         this.width = this.defaultWidth - this.margin.left - this.margin.right;
@@ -234,8 +220,6 @@ export default {
         findResourceNodeByName(nodeName) {
             let resourceNode = null;
             
-            console.log('TD', this.treeData);
-
             // must expand all nodes
             this.treeData.each(this.expandNodes);
             this.treeData.each(function(d) {
@@ -252,12 +236,7 @@ export default {
          * @description filter resource array
          */
         filterResourceArray: function() {
-            console.log(
-                'resource array',
-                this.resourceArray,
-                this.selectedFilterResources
-            );
-
+            /*
             var distinctResourceTypes = [
                 ...new Set(
                     this.resourceArray.map(a => {
@@ -266,8 +245,6 @@ export default {
                 ),
             ];
             console.log('resourceTypes', distinctResourceTypes);
-            
-            /*
                 0: "firewall"
                 1: "folder"
                 2: "appengine_app"
@@ -300,12 +277,9 @@ export default {
                 return false;
             });
 
-            // Filter based on set parent ( setParent() ) being clicked            
-            console.log('HERE WE BEGIN', this.parentNode);
-
+            // Filter based on set parent ( setParent() ) being clicked
 
             // ensure at least one node has a parent_id of null
-            console.log(this.resourceArray);
             let resourceArrayHasOneNullParentId = false;
             for(let i = 0; i < this.resourceArray.length; i++) {
                 if (this.resourceArray[i].parent_id === null) resourceArrayHasOneNullParentId = true;
@@ -356,8 +330,6 @@ export default {
             } else {
                 return this.resourceArray;
             }
-
-            console.log('resulting resource array2', this.resourceArray);
         },
 
         /**
@@ -366,9 +338,6 @@ export default {
          * @param orientation - [Orientation.Vertical, Orientation.Horizontal]
          */
         init: function(orientation) {
-            let csv_data;
-            let treeData, margin, tree, table, svg, g;
-
             // Get DataService depending on useJson, useCache
             let dataServiceFactory = DataServiceFactory.getDataServiceFactory(
                 this.useJson,
@@ -461,8 +430,6 @@ export default {
             this.tree = d3
                 .tree()
                 .size([this.width - this.margin.top, this.height]);
-
-            console.log('initTree, data: ', data);
 
             // d3 tree data
             this.treeData = d3
@@ -592,9 +559,7 @@ export default {
          * @function toggle
          * @description Toggle children on node click (expand, collapse)
          */
-        toggle: function(node, tree, treeData) {
-            console.log('toggle', node);
-
+        toggle: function(node, tree) {
             if (node.children) {
                 node._children = node.children;
                 node.children = null;
@@ -614,8 +579,6 @@ export default {
             let circleRadius = this.circleRadius;
             let orientation = this.orientation;
             let duration = this.duration;
-
-            console.log('TREE DATA', treeData);
 
             // tooltip
             let tooltipDiv = d3
@@ -657,42 +620,34 @@ export default {
                 adjustedHeight += 100;
 
                 if (depthArr[i] > NUM_NODES_ACROSS_EXCEEDED) {
-                    console.log('adjusting.  width: ' + depthArr[i] * 100);
-
                     let newWidth = depthArr[i] * 100;
 
                     if (newWidth > adjustedWidth) {
-                        console.log('adjustedWidth', newWidth);
                         adjustedWidth = newWidth;
                     }
                     adjustSize = true;
                 }
             }
             if (adjustSize) {
-                /* comment this to use alternate sizing (once you exceed about 20 across) */
+                // comment this to use alternate sizing (once you exceed about 20 across)
                 if (!this.useWideView) {
                     if (adjustedWidth > this.width) {
                         adjustedWidth = this.width;
                     }
                 }
-                /* end comment this */
-
-                console.log(adjustedWidth, adjustedHeight);
                 tree.size([adjustedWidth, adjustedHeight]);
                 tree(treeData);
             }
-            console.log('depthArr', depthArr);
 
             let nodeEnter = node
                 .enter()
                 .append('g')
                 .attr('class', 'node')
-                .attr('transform', function(d) {
+                .attr('transform', function() {
                     return 'translate(' + source.x + ',' + source.y + ')';
-
-                    return orientation === Orientation.Vertical
-                        ? 'translate(' + source.x + ',' + source.y + ')'
-                        : 'translate(' + source.y + ',' + source.x + ')';
+                    // return orientation === Orientation.Vertical
+                    //     ? 'translate(' + source.x + ',' + source.y + ')'
+                    //     : 'translate(' + source.y + ',' + source.x + ')';
                 })
                 .on('click', d => {
                     this.toggle(d, tree, treeData);
@@ -755,7 +710,7 @@ export default {
                         .style('left', d3.event.pageX + 32 + 'px')
                         .style('top', d3.event.pageY - 32 + 'px');
                 })
-                .on('mouseout', function(d) {
+                .on('mouseout', function() {
                     tooltipDiv
                         .transition()
                         .duration(duration)
@@ -793,16 +748,14 @@ export default {
                 .attr('xlink:href', function(d) {
                     return d.data.image;
                 })
-                .attr('x', function(d) {
+                .attr('x', function() {
                     return -16;
                 })
-                .attr('y', function(d) {
+                .attr('y', function() {
                     return -16;
                 })
                 .attr('height', 35)
-                .attr('width', function(d) {
-                    // console.log("image", d);
-                    // if (d.depth === 2) return 35;
+                .attr('width', function() {
                     return 35;
                 });
 
@@ -855,14 +808,8 @@ export default {
                         ? 1
                         : 0;
                 })
-                .style('stroke', d => {
+                .style('stroke', (d) => {
                     // set to red
-                    console.log(
-                        'd.data.resource_id',
-                        d.data.resource_type,
-                        d.data,
-                        d.data.resource_id
-                    );
                     return this.violationsMap[d.data.resource_id] !== undefined
                         ? '#DB4437'
                         : 'black';
@@ -874,7 +821,7 @@ export default {
                 .exit()
                 .transition()
                 .duration(duration)
-                .attr('transform', function(d) {
+                .attr('transform', function() {
                     return orientation === Orientation.Vertical
                         ? 'translate(' + source.x + ',' + source.y + ')'
                         : 'translate(' + source.y + ',' + source.x + ')';
@@ -898,7 +845,7 @@ export default {
                     'd',
                     d3
                         .linkHorizontal()
-                        .x(function(d) {
+                        .x(function() {
                             return orientation === Orientation.Vertical
                                 ? source.x
                                 : source.y;
@@ -937,12 +884,12 @@ export default {
                     'd',
                     d3
                         .linkHorizontal()
-                        .x(function(d) {
+                        .x(function() {
                             return orientation === Orientation.Vertical
                                 ? source.x
                                 : source.y;
                         })
-                        .y(function(d) {
+                        .y(function() {
                             return orientation === Orientation.Vertical
                                 ? source.y
                                 : source.x;
@@ -972,8 +919,6 @@ export default {
          * @description Pulses a given node
          */
         pulsate: function(filterFn) {
-            console.log('filterFn', filterFn);
-
             this.g
                 .selectAll('.node')
                 .filter(filterFn)
@@ -982,20 +927,20 @@ export default {
                 .transition()
                 .duration(this.duration)
                 .attr('r', 50)
-                .style('fill', function(d) {
-                    return '#b3d4fc'; // some ugly green
+                .style('fill', function() {
+                    return '#b3d4fc'; // green
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 })
                 .transition()
                 .duration(this.duration)
                 //PULSATE CODE
                 .attr('r', 35)
-                .style('fill', function(d) {
-                    return '#b3d4fc'; // some ugly green
+                .style('fill', function() {
+                    return '#b3d4fc'; // green
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 });
         },
@@ -1024,8 +969,6 @@ export default {
          * @description Highlights a given node
          */
         highlight: function(filterFn) {
-            console.log('filterFn', filterFn);
-
             this.g
                 .selectAll('.node')
                 .filter(filterFn)
@@ -1034,10 +977,10 @@ export default {
                 .transition()
                 .duration(this.duration)
                 .attr('r', 40)
-                .style('fill', function(d) {
+                .style('fill', function() {
                     return '#b3d4fc'; // some ugly green
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 });
         },
@@ -1083,7 +1026,7 @@ export default {
 
                 // filter down our elements into only unique nodes
                 let uniqueMatchingDataElements = {}; // dictionary to track unique elements
-                matchingDataElements.forEach(function(d, i) {
+                matchingDataElements.forEach(function(d,) {
                     if (!uniqueMatchingDataElements[d.name]) {
                         uniqueMatchingDataElements[d.name] = [];
                     }
@@ -1112,7 +1055,6 @@ export default {
                     let delay = 1200 * ct;
 
                     let el = uniqueMatchingDataElements[uniqueKeys[i]][0]; // get first
-                    let ref = d3.selectAll(el);
 
                     let x = el.x;
                     let y = el.y;
@@ -1123,7 +1065,7 @@ export default {
                         // update data
                         this.pulsate(
                             (function(el) {
-                                return function(d, i) {
+                                return function(d) {
                                     if (d.id === el.id) {
                                         matchingCollection.push(d.id);
                                         return true;
@@ -1148,7 +1090,7 @@ export default {
                         this.g
                             .transition()
                             .duration(this.duration)
-                            .attr('transform', d => {
+                            .attr('transform', () => {
                                 if (this.orientation === Orientation.Vertical) {
                                     return (
                                         'translate(' +
@@ -1206,8 +1148,6 @@ export default {
          * @description Event executed when the resource filter multiselect box changes
          */
         filterResources: function() {
-            console.log(this.selectedFilterResources);
-
             this._resetSvg();
 
             this.init(this.orientation);
@@ -1229,8 +1169,6 @@ export default {
          * @description Sets the parent resource of the folder node
          */
         setParent: function() {
-            console.log('setParent', this.selectedFilterResources, this.treeData, this.nodeName);
-
             // set parent, and find from current tree data
             this.parentNode = this.findResourceNodeByName(this.nodeName);
 
@@ -1294,7 +1232,7 @@ export default {
             this.g
                 .transition()
                 .duration(this.duration)
-                .attr('transform', d => {
+                .attr('transform', () => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
@@ -1333,9 +1271,6 @@ export default {
                         this.zoomListener.transform,
                         d3.zoomIdentity.translate(transX, transY).scale(t.k)
                     );
-
-                    console.log(transX, transY, t.k);
-                    console.log(x, y, this.width, this.height);
                 });
 
             // reset existing node fx
@@ -1345,7 +1280,7 @@ export default {
             setTimeout(() => {
                 this.pulsate(
                     (function(el) {
-                        return function(d, i) {
+                        return function(d) {
                             if (d.id === el.id) {
                                 return true;
                             }
@@ -1424,12 +1359,6 @@ export default {
          * @description Expand/Collapse the entire tree hierarchy.
          */
         toggleExpandAll: function() {
-            let nodes = this.svg.selectAll('.node');
-            console.log('node()', nodes.node());
-            console.log('nodes', nodes);
-
-            let firstNode;
-
             if (!this.expandAll) {
                 // collapse all
                 this.collapse(this.treeData);
@@ -1463,8 +1392,8 @@ export default {
                 let nodes = this.svg.selectAll('.node');
 
                 let circleRadius = this.circleRadius;
-                let allCircles = nodes.selectAll('circle');
-                console.log(allCircles.nodes());
+                // let allCircles = nodes.selectAll('circle');
+                let violationsMap = this.violationsMap;
 
                 nodes
                     .selectAll('circle')
@@ -1489,8 +1418,6 @@ export default {
                             ? '#DB4437'
                             : 'black';
                     });
-
-                console.log('nodes', nodes);
             } else {
                 let nodes = this.svg.selectAll('.node');
 
@@ -1536,7 +1463,7 @@ export default {
             this.g
                 .transition()
                 .duration(this.duration)
-                .attr('transform', d => {
+                .attr('transform', () => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
@@ -1578,7 +1505,7 @@ export default {
             this.g
                 .transition()
                 .duration(this.duration)
-                .attr('transform', d => {
+                .attr('transform', () => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +

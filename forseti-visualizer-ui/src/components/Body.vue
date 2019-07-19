@@ -159,8 +159,6 @@ export default {
      * Vue: mounted() - onload function
      */
     mounted() {
-        window.$ = $; // remove this line
-
         // Use the parsed tree data to dynamically create height & width
         // want computed width
         
@@ -733,13 +731,14 @@ export default {
                     this.toggle(d, tree, treeData);
                 })
                 .on('mouseover', d => {
+                    console.log(this, this.duration, 'mouseover', d);
+                    
+
+
                     tooltipDiv
                         .transition()
-                        .duration(duration)
+                        .duration(this.duration)
                         .style('opacity', 0.9);
-
-                    // if d.data.resource_id matches a violations id
-                    // console.log(d.data.resource_id, this.violationsMap);
 
                     let tooltipContent = '';
                     if (this.violationsMap[d.data.resource_id]) {
@@ -851,7 +850,6 @@ export default {
                 .style('text-anchor', function(d) {
                     return d.children ? 'end' : 'start';
                 })
-
                 .attr('transform', function(d) {
                     if (d.data.resource_type === 'organization') {
                         // there is only one of these
@@ -1118,7 +1116,7 @@ export default {
 
                 // filter down our elements into only unique nodes
                 let uniqueMatchingDataElements = {}; // dictionary to track unique elements
-                matchingDataElements.forEach(function(d, i) {
+                matchingDataElements.forEach(function(d) {
                     if (!uniqueMatchingDataElements[d.name]) {
                         uniqueMatchingDataElements[d.name] = [];
                     }
@@ -1147,7 +1145,6 @@ export default {
                     let delay = 1200 * ct;
 
                     let el = uniqueMatchingDataElements[uniqueKeys[i]][0]; // get first
-                    let ref = d3.selectAll(el);
 
                     let x = el.x;
                     let y = el.y;
@@ -1158,7 +1155,7 @@ export default {
                         // update data
                         this.pulsate(
                             (function(el) {
-                                return function(d, i) {
+                                return function(d) {
                                     if (d.id === el.id) {
                                         matchingCollection.push(d.id);
                                         return true;
@@ -1183,7 +1180,7 @@ export default {
                         this.g
                             .transition()
                             .duration(this.duration)
-                            .attr('transform', d => {
+                            .attr('transform', () => {
                                 if (this.orientation === Orientation.Vertical) {
                                     return (
                                         'translate(' +

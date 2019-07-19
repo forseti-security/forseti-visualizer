@@ -19,9 +19,9 @@ source source.env
 GCR_IMAGE_NAME="gcr.io/forseti-security-1e88/forseti-visualizer" # must be escaped
 PROJECT_ID="forseti-security-1e88"
 ZONE="us-central1-a"
-# REGION="us-west1"
 VM_NAME="forseti-visualizer-vm"
 ENV_VARS="CLOUDSQL_HOSTNAME=$CLOUDSQL_HOSTNAME,CLOUDSQL_USERNAME=$CLOUDSQL_USERNAME,CLOUDSQL_PASSWORD=$CLOUDSQL_PASSWORD,CLOUDSQL_SCHEMA=$CLOUDSQL_SCHEMA"
+SERVICE_ACCOUNT="521541240037-compute@developer.gserviceaccount.com"
 
 gcloud beta compute \
 --project=$PROJECT_ID \
@@ -29,7 +29,7 @@ instances create-with-container $VM_NAME \
 --zone=$ZONE \
 --machine-type=n1-standard-1 \
 --subnet=default --network-tier=PREMIUM --metadata=google-logging-enabled=true \
---maintenance-policy=MIGRATE --service-account=521541240037-compute@developer.gserviceaccount.com \
+--maintenance-policy=MIGRATE --service-account=$SERVICE_ACCOUNT \
 --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --image=cos-stable-74-11895-125-0 \
 --image-project=cos-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=forseti-visualizer-vm \
 --container-image=$GCR_IMAGE_NAME --container-restart-policy=always \
