@@ -33,7 +33,7 @@ cd forseti-visualizer-ui/
 npm install
 
 # build the application
-npm build
+npm run build
 
 # for developing just the UI - app is served on :8081
 # npm start
@@ -56,7 +56,7 @@ export CLOUDSQL_HOSTNAME="[IP HERE]"
 export CLOUDSQL_USERNAME="[YOUR_USER_HERE]"
 export CLOUDSQL_PASSWORD="[YOUR_PASSWORD_HERE]"
 export CLOUDSQL_SCHEMA="forseti_security"
-export FORSETI_SERVER_VM_CHANNEL="[VM_IP]:[GRPC_PORT]"
+export FORSETI_SERVER_VM_CHANNEL="[FORSETI-SERVER-VM_IP]:[GRPC_PORT:50051]"
 export FORSETI_DATA_MODEL_HANDLE="[DATA_MODEL_HANDLE_HASH:21254f1de747879237a95cb552e80844]"
 EOF
 ```
