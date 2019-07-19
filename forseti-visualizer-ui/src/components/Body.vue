@@ -3,116 +3,20 @@
     <v-layout text-xs-center wrap class="margin-top-30">
       <v-flex xs12 mb-5>
         <v-layout justify-center>
-          <v-flex xs3 mb-5>
-            <div class="control-panel">
-              <v-container grid-list-md text-xs-center style="padding: 0;">
-                <v-layout row wrap>
-                  <v-flex xs6 style="text-align: left; margin-left: 0;">
-                    <v-btn color="info" v-on:click="resetZoom" style="margin-left: 0;">Reset Zoom</v-btn>
-                  </v-flex>
-
-                  <v-flex xs6>
-                    <p class="text-lg-right">
-                      <v-btn v-on:click="dialog=!dialog">
-                        <v-icon>fas fa-cog</v-icon>
-                      </v-btn>
-
-                      <v-dialog v-model="dialog" width="500">
-                        <v-card>
-                          <v-card-title class="headline grey lighten-2" primary-title>Settings</v-card-title>
-
-                          <v-card-text>
-                            <v-checkbox
-                              :label="`Show Violations`"
-                              v-model="showViolations"
-                              v-on:change="toggleViolations"
-                              disabled
-                            ></v-checkbox>
-
-                            <v-checkbox
-                              :label="`Cached Data Enabled`"
-                              v-model="useCache"
-                              v-on:change="toggleCacheEnabled()"
-                            ></v-checkbox>
-
-                            <v-checkbox
-                              :label="`Json On`"
-                              v-model="useJson"
-                              v-on:change="toggleJsonEnabled()"
-                            ></v-checkbox>
-
-                            <v-checkbox
-                              :label="`Use Wide View`"
-                              v-model="useWideView"
-                              v-on:change="toggleWideView()"
-                            ></v-checkbox>
-                          </v-card-text>
-
-                          <v-divider></v-divider>
-
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </p>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-
-              <!--https://vuetifyjs.com/en/components/autocompletes -->
-              <v-autocomplete
-                v-model="nodeName"
-                :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
-                :items="resourceArray"
-                :item-text="'resource_name'"
-                :item-value="'resource_name'"
-                :readonly="!isEditing"
-                :label="`Resources`"
-                persistent-hint
-              >
-                <v-slide-x-reverse-transition slot="append-outer" mode="out-in">
-                  <v-icon
-                    :color="isEditing ? 'success' : 'info'"
-                    :key="`icon-${isEditing}`"
-                    @click="isEditing = !isEditing"
-                    v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
-                  ></v-icon>
-                </v-slide-x-reverse-transition>
-              </v-autocomplete>
-
-              <v-btn color="info" id="btn-search" v-on:click="search">Search</v-btn>
-
-              <v-checkbox :label="`Expand/Collapse`" v-model="expand" v-on:change="toggleExpand"></v-checkbox>
-
-              <v-checkbox
-                :label="`Expand/Collapse All`"
-                v-model="expandAll"
-                v-on:change="toggleExpandAll"
-              ></v-checkbox>
-
-              <v-radio-group v-model="orientation" v-on:change="toggleOrientation">
-                <v-radio v-for="n in orientations" :key="n" :label="`${n}`" :value="n"></v-radio>
-              </v-radio-group>
-
-              <v-text-field
-                label="Explain (user/$USER, group/$GROUP, serviceAccount/$SA)"
-                v-model="explainIdentitySearchTerm"
-              ></v-text-field>
-              <v-btn color="info" v-on:click="explainIdentity">Explain Identity</v-btn>
-            </div>
-
-            <v-combobox
-              v-model="selectedFilterResources"
-              :items="items"
-              label="Filter by a list of resource types"
-              v-on:change="filterResources"
-              multiple
-              chips
-              :menu-props="{ maxHeight: '400px', overflowY: true }"
-            ></v-combobox>
-          </v-flex>
+          <Navbar 
+            v-on:resetZoom="resetZoom"
+            v-on:toggleViolations="toggleViolations"
+            v-on:toggleCacheEnabled="toggleCacheEnabled"
+            v-on:toggleJsonEnabled="toggleJsonEnabled"
+            v-on:toggleWideView="toggleWideView"
+            v-on:search="search"           
+            v-on:expandAll="expandAll"
+            v-on:toggleExpand="toggleExpand"
+            v-on:toggleExpandAll="toggleExpandAll"
+            v-on:toggleOrientation="toggleOrientation"
+            v-on:explainIdentity="explainIdentity"
+            v-on:filterResources="filterResources"
+          />
 
           <v-flex xs9 mb-5 style="position:relative;">
             <button
@@ -144,6 +48,10 @@ import DataService from '../services/DataService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import Orientation from '../models/Orientation';
 
+// components
+import Navbar from './Navbar';
+import ResourceArrayStore from '../stores/ResourceArray';
+
 let cachedFileMap = {
     resourcesFile: 'dataset1_resources.json',
     violationsFile: 'dataset1_violations.json',
@@ -155,13 +63,19 @@ let cachedFileMap = {
 };
 
 export default {
+    components: {
+        Navbar,
+    },
+
+    store: ResourceArrayStore,
+
     /**
      * Vue: mounted() - onload function
      */
     mounted() {
         // Use the parsed tree data to dynamically create height & width
         // want computed width
-        
+
         this.width = this.defaultWidth - this.margin.left - this.margin.right;
         this.height = this.defaultHeight - this.margin.top - this.margin.bottom;
 
@@ -173,7 +87,7 @@ export default {
             .append('svg')
             // the reason we do not use this.width as the width, is it does not resize appropriately for varying screen sizes
             // .attr('width', this.width) // + margin.left + margin.right)
-            .attr('width', '100%') 
+            .attr('width', '100%')
             .attr('height', this.height) // + margin.top + margin.bottom);
             .style('pointer-events', 'all');
 
@@ -194,11 +108,6 @@ export default {
         filterResourceArray: function() {
             /* FILTER!!! */
             // filter this.resourceArray (resource_type) by selectedFilterResources
-            console.log(
-                'asdf',
-                this.resourceArray,
-                this.selectedFilterResources
-            );
             var distinctResourceTypes = [
                 ...new Set(
                     this.resourceArray.map(a => {
@@ -206,9 +115,8 @@ export default {
                     })
                 ),
             ];
-            console.log('resourceTypes', distinctResourceTypes);
 
-/*
+            /*
 0: "firewall"
 1: "folder"
 2: "appengine_app"
@@ -222,7 +130,8 @@ export default {
 */
 
             let mappedResourceFilter = this.selectedFilterResources.map(
-                ForsetiResourceConverter.convertResource);
+                ForsetiResourceConverter.convertResource
+            );
 
             this.resourceArray = this.resourceArray.filter(res => {
                 if (
@@ -239,6 +148,10 @@ export default {
 
                 return false;
             });
+
+            this.$store.commit('set', this.resourceArray);
+
+
             console.log('resulting', this.resourceArray);
             /* END FILTER!!! */
         },
@@ -296,17 +209,15 @@ export default {
                                                 a.resource_type
                                             );
                                             a.resource_name =
-                                                a.resource_data_displayname !== ''
+                                                a.resource_data_displayname !==
+                                                ''
                                                     ? a.resource_data_displayname
                                                     : a.resource_data_name;
-
-                                            
 
                                             return a;
                                         })
                                         .sort(function(a, b) {
                                             // sort alphabetically, ignoring case
-                                            console.log('a', 'b', a, b);
                                             if (
                                                 a.resource_name.toLowerCase() <
                                                 b.resource_name.toLowerCase()
@@ -331,99 +242,104 @@ export default {
                             );
                         }
                     });
-                } else { // ELSE: useCache=false: (database)
-                    (new DataService()).getForsetiResources().then(resourcesData => {
-                        // get inventory index id
-                        if (resourcesData.length > 0) {
-                            let filteredResourcesData = resourcesData;
+                } else {
+                    // ELSE: useCache=false: (database)
+                    new DataService()
+                        .getForsetiResources()
+                        .then(resourcesData => {
+                            // get inventory index id
+                            if (resourcesData.length > 0) {
+                                let filteredResourcesData = resourcesData;
 
-                            /* filtered data */
-                            filteredResourcesData = resourcesData.filter(
-                                data => {
-                                    if (
-                                        data.qq === null ||
-                                        data.qq === 'ACTIVE'
-                                    )
-                                        return true;
-                                    return false;
-                                }
-                            );
-                            resourcesData.forEach(curVal => {
-                                if (curVal.resource_data_displayname === '') {
-                                    curVal.resource_data_displayname =
-                                        curVal.resource_data_name;
-                                }
-                            });
-                            /* end filtered data */
-                            let inventoryIndexId =
-                                filteredResourcesData[0].inventory_index_id;
-
-                            (new DataService()).getViolations(inventoryIndexId).then(
-                                violationsData => {
-                                    // { resource_id: { violation } }
-                                    for (
-                                        let i = 0;
-                                        i < violationsData.length;
-                                        i++
-                                    ) {
-                                        this.violationsMap[
-                                            violationsData[i].resource_id
-                                        ] = violationsData[i];
+                                /* filtered data */
+                                filteredResourcesData = resourcesData.filter(
+                                    data => {
+                                        if (
+                                            data.qq === null ||
+                                            data.qq === 'ACTIVE'
+                                        )
+                                            return true;
+                                        return false;
                                     }
+                                );
+                                resourcesData.forEach(curVal => {
+                                    if (
+                                        curVal.resource_data_displayname === ''
+                                    ) {
+                                        curVal.resource_data_displayname =
+                                            curVal.resource_data_name;
+                                    }
+                                });
+                                /* end filtered data */
+                                let inventoryIndexId =
+                                    filteredResourcesData[0].inventory_index_id;
 
-                                    this.resourceArray = filteredResourcesData
-                                        .map(function(a) {
-                                            a.parent_id =
-                                                a.resource_type ==
-                                                'organization'
-                                                    ? ''
-                                                    : a.parent_id;
-                                            a.image = GoogleCloudImageService.getImageUrl(
-                                                a.resource_type
-                                            );
-                                            a.resource_name =
-                                                a.resource_data_displayname !==
-                                                ''
-                                                    ? a.resource_data_displayname
-                                                    : a.resource_data_name;
-                                            return a;
-                                        })
-                                        .sort(function(a, b) {
-                                            // sort alphabetically, ignoring case
-                                            if (
-                                                a.resource_name.toLowerCase() <
-                                                b.resource_name.toLowerCase()
-                                            )
-                                                return -1;
-                                            if (
-                                                a.resource_name.toLowerCase() <
-                                                b.resource_name.toLowerCase()
-                                            )
-                                                return 1;
-                                            return 0;
-                                        });
+                                new DataService()
+                                    .getViolations(inventoryIndexId)
+                                    .then(violationsData => {
+                                        // { resource_id: { violation } }
+                                        for (
+                                            let i = 0;
+                                            i < violationsData.length;
+                                            i++
+                                        ) {
+                                            this.violationsMap[
+                                                violationsData[i].resource_id
+                                            ] = violationsData[i];
+                                        }
 
-                                    // CONSOLE LOG STATEMENTS
-                                    // console.log(
-                                    //     'violationsMap',
-                                    //     this.violationsMap
-                                    // );
-                                    // console.log(
-                                    //     'resourceArray:',
-                                    //     this.resourceArray
-                                    // );
+                                        this.resourceArray = filteredResourcesData
+                                            .map(function(a) {
+                                                a.parent_id =
+                                                    a.resource_type ==
+                                                    'organization'
+                                                        ? ''
+                                                        : a.parent_id;
+                                                a.image = GoogleCloudImageService.getImageUrl(
+                                                    a.resource_type
+                                                );
+                                                a.resource_name =
+                                                    a.resource_data_displayname !==
+                                                    ''
+                                                        ? a.resource_data_displayname
+                                                        : a.resource_data_name;
+                                                return a;
+                                            })
+                                            .sort(function(a, b) {
+                                                // sort alphabetically, ignoring case
+                                                if (
+                                                    a.resource_name.toLowerCase() <
+                                                    b.resource_name.toLowerCase()
+                                                )
+                                                    return -1;
+                                                if (
+                                                    a.resource_name.toLowerCase() <
+                                                    b.resource_name.toLowerCase()
+                                                )
+                                                    return 1;
+                                                return 0;
+                                            });
 
-                                    this.filterResourceArray();
+                                        // CONSOLE LOG STATEMENTS
+                                        // console.log(
+                                        //     'violationsMap',
+                                        //     this.violationsMap
+                                        // );
+                                        // console.log(
+                                        //     'resourceArray:',
+                                        //     this.resourceArray
+                                        // );
 
-                                    // initialize tree
-                                    this.initTree(
-                                        orientation,
-                                        this.resourceArray
-                                    );
-                                }
-                            );
-                        }
-                    });
+                                        this.filterResourceArray();
+
+                                        // initialize tree
+                                        this.initTree(
+                                            orientation,
+                                            this.resourceArray
+                                        );
+                                    });
+                            }
+                        });
                 }
             } else {
                 d3.json(cachedFileMap.resourcesFile2).then(resourcesData => {
@@ -732,8 +648,6 @@ export default {
                 })
                 .on('mouseover', d => {
                     console.log(this, this.duration, 'mouseover', d);
-                    
-
 
                     tooltipDiv
                         .transition()
@@ -747,14 +661,8 @@ export default {
                         // ${violationsMap[d.data.resource_id].violation_data}
                         tooltipContent = `
                             <div>
-                                <h4>${
-                                    this.violationsMap[d.data.resource_id]
-                                        .violation_type
-                                }</h4>
-                                ${
-                                    this.violationsMap[d.data.resource_id]
-                                        .rule_name
-                                }<br>
+                                <h4>${this.violationsMap[d.data.resource_id].violation_type}</h4>
+                                ${this.violationsMap[d.data.resource_id].rule_name}<br>
                             </div>`;
 
                         // send event
@@ -890,12 +798,6 @@ export default {
                 })
                 .style('stroke', d => {
                     // set to red
-                    console.log(
-                        'd.data.resource_id',
-                        d.data.resource_type,
-                        d.data,
-                        d.data.resource_id
-                    );
                     return this.violationsMap[d.data.resource_id] !== undefined
                         ? '#DB4437'
                         : 'black';
@@ -994,6 +896,8 @@ export default {
          * @description Resets the SVG zoom to the default.
          */
         resetZoom: function() {
+            console.log('testing resetZoom');
+
             this.svg
                 .transition()
                 .duration(this.duration)
@@ -1030,7 +934,7 @@ export default {
                 })
                 .style('fill-opacity', function(d) {
                     return 1;
-                })
+                });
         },
 
         /**
@@ -1080,11 +984,8 @@ export default {
          * @description Executes explain plan via a GRPC call
          *      if (cacheOn) --> then use cached data
          */
-        explainIdentity: function() {
-            if (this.explainIdentitySearchTerm === '') {
-                alert('Explain input must not be empty');
-                return;
-            }
+        explainIdentity: function(explainIdentitySearchTerm) {
+            this.explainIdentitySearchTerm = explainIdentitySearchTerm;
 
             let callbackFn = resources => {
                 // make nodes jump up or highlighted or something notable
@@ -1184,9 +1085,9 @@ export default {
                                 if (this.orientation === Orientation.Vertical) {
                                     return (
                                         'translate(' +
-                                        (-x + this.width / 2)*t.k +
+                                        (-x + this.width / 2) * t.k +
                                         ',' +
-                                        (-y + this.height / 3)*t.k +
+                                        (-y + this.height / 3) * t.k +
                                         ')scale(' +
                                         t.k +
                                         ')'
@@ -1194,9 +1095,9 @@ export default {
                                 } else {
                                     return (
                                         'translate(' +
-                                        (-y + this.height / 3)*t.k +
+                                        (-y + this.height / 3) * t.k +
                                         ',' +
-                                        (-x + this.width / 2)*t.k +
+                                        (-x + this.width / 2) * t.k +
                                         ')scale(' +
                                         t.k +
                                         ')'
@@ -1206,12 +1107,12 @@ export default {
                             .on('end', () => {
                                 let transX =
                                     this.orientation === Orientation.Vertical
-                                        ? (-x + this.width / 2)*t.k
-                                        : (-y + this.height / 3)*t.k - 100;
+                                        ? (-x + this.width / 2) * t.k
+                                        : (-y + this.height / 3) * t.k - 100;
                                 let transY =
                                     this.orientation === Orientation.Vertical
-                                        ? (-y + this.height / 3)*t.k - 100
-                                        : (-x + this.width / 2)*t.k;
+                                        ? (-y + this.height / 3) * t.k - 100
+                                        : (-x + this.width / 2) * t.k;
 
                                 this.svg.call(
                                     this.zoomListener.transform,
@@ -1230,17 +1131,17 @@ export default {
             } else if (this.useCache) {
                 d3.json(cachedFileMap.iamexplainbyuserFile).then(callbackFn);
             } else {
-                (new DataService()).getExplainIdentity(
-                    this.explainIdentitySearchTerm
-                ).then(callbackFn);
+                new DataService()
+                    .getExplainIdentity(this.explainIdentitySearchTerm)
+                    .then(callbackFn);
             }
         },
         /**
          * @function filterResources
          * @description Event executed when the resource filter multiselect box changes
          */
-        filterResources: function() {
-            console.log(this.selectedFilterResources);
+        filterResources: function(selectedFilterResources) {          
+            this.selectedFilterResources = selectedFilterResources;
 
             this._resetSvg();
 
@@ -1251,8 +1152,8 @@ export default {
          * @function resetZoom
          * @description Searches for an exact text match of the node name and pans to that node
          */
-        search: function() {
-            let searchText = this.nodeName;
+        search: function(searchText) {
+            console.log(searchText, this.treeData, 'elllll', el);
 
             // get the data element
             let el = null;
@@ -1300,13 +1201,12 @@ export default {
                 .transition()
                 .duration(this.duration)
                 .attr('transform', d => {
-                    
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
-                            (-x + this.width / 2)*t.k +
+                            (-x + this.width / 2) * t.k +
                             ',' +
-                            (-y + this.height / 3)*t.k +
+                            (-y + this.height / 3) * t.k +
                             ')scale(' +
                             t.k +
                             ')'
@@ -1314,9 +1214,9 @@ export default {
                     } else {
                         return (
                             'translate(' +
-                            (-y + this.height / 3)*t.k +
+                            (-y + this.height / 3) * t.k +
                             ',' +
-                            (-x + this.width / 2)*t.k  +
+                            (-x + this.width / 2) * t.k +
                             ')scale(' +
                             t.k +
                             ')'
@@ -1328,18 +1228,16 @@ export default {
                     // -100: account for margin on the height end
                     let transX =
                         this.orientation === Orientation.Vertical
-                            ? (-x + this.width / 2)*t.k
-                            : (-y + this.height / 3)*t.k - 100;
+                            ? (-x + this.width / 2) * t.k
+                            : (-y + this.height / 3) * t.k - 100;
                     let transY =
                         this.orientation === Orientation.Vertical
-                            ? (-y + this.height / 3)*t.k - 100
-                            : (-x + this.width / 2)*t.k;
+                            ? (-y + this.height / 3) * t.k - 100
+                            : (-x + this.width / 2) * t.k;
 
                     this.svg.call(
                         this.zoomListener.transform,
-                        d3.zoomIdentity
-                            .translate(transX, transY)
-                            .scale(t.k)
+                        d3.zoomIdentity.translate(transX, transY).scale(t.k)
                     );
 
                     console.log(transX, transY, t.k);
@@ -1391,7 +1289,9 @@ export default {
          * @function toggleCacheEnabled
          * @description Refresh the grid and alternate between live / cached data
          */
-        toggleCacheEnabled: function() {
+        toggleCacheEnabled: function(useCache) {
+            this.useCache = useCache;
+
             this._resetSvg();
 
             this.init(this.orientation);
@@ -1401,7 +1301,9 @@ export default {
          * @function toggleJsonEnabled
          * @description Refresh the grid and alternate between json / csv file format (only works when useCache true)
          */
-        toggleJsonEnabled: function() {
+        toggleJsonEnabled: function(useJson) {
+            this.useJson = useJson;
+
             this._resetSvg();
 
             this.init(this.orientation);
@@ -1411,7 +1313,9 @@ export default {
          * @function toggleWideView
          * @description Update node width
          */
-        toggleWideView: function() {
+        toggleWideView: function(useWideView) {
+            this.useWideView = useWideView;
+
             this._resetSvg();
 
             this.init(this.orientation);
@@ -1431,7 +1335,9 @@ export default {
          * @function toggleExpandAll
          * @description Expand/Collapse the entire tree hierarchy.
          */
-        toggleExpandAll: function() {
+        toggleExpandAll: function(expandAll) {
+            this.expandAll = expandAll;
+
             let nodes = this.svg.selectAll('.node');
             console.log('node()', nodes.node());
             console.log('nodes', nodes);
@@ -1456,7 +1362,9 @@ export default {
          * @function toggleOrientation
          * @description Change direction from horizontal to vertical and vice-versa
          */
-        toggleOrientation: function() {
+        toggleOrientation: function(orientation) {
+            this.orientation = orientation;
+
             this._resetSvg();
 
             this.init(this.orientation);
@@ -1466,7 +1374,9 @@ export default {
          * @function toggleViolations
          * @description show or hide violations
          */
-        toggleViolations: function() {
+        toggleViolations: function(showViolations) {
+            this.showViolations = showViolations;
+
             if (this.showViolations) {
                 let nodes = this.svg.selectAll('.node');
 
@@ -1590,9 +1500,9 @@ export default {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
-                            (t.x*t.k) +
+                            t.x * t.k +
                             ',' +
-                            (this.margin.top + (t.y*t.k)) +
+                            (this.margin.top + t.y * t.k) +
                             ')scale(' +
                             t.k / 1.5 +
                             ')'
@@ -1600,9 +1510,9 @@ export default {
                     } else {
                         return (
                             'translate(' +
-                            (this.margin.top + (t.y*t.k)) +
+                            (this.margin.top + t.y * t.k) +
                             ',' +
-                            (t.x*t.k) +
+                            t.x * t.k +
                             ')scale(' +
                             t.k / 1.5 +
                             ')'
@@ -1613,7 +1523,9 @@ export default {
                     // console.log('Transform D3 Object', t);
                     this.svg.call(
                         this.zoomListener.transform,
-                        d3.zoomIdentity.translate(t.x * t.k, t.y * t.k).scale(t.k / 1.5)
+                        d3.zoomIdentity
+                            .translate(t.x * t.k, t.y * t.k)
+                            .scale(t.k / 1.5)
                     );
                 });
         },
@@ -1625,12 +1537,11 @@ export default {
     data: () => ({
         // global: set this to use JSON files vs. dynamic
         // useCache: false, // default to using server data
-        useCache: false, // default to using cached files.json
+        useCache: true, // default to using cached files.json
         useJson: true, // false defers to using a .csv
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
         // filter variables
-        nodeName: 'dia-dog-flow',
         expand: true,
         expandAll: false,
         showViolations: true,
@@ -1670,16 +1581,8 @@ export default {
         zoomScale: 1,
 
         // autocomp
-        isEditing: true,
-        model: null,
-        resourceArray: [{ text: 'hi', value: 1, resource_name: 'test' }],
-        resources: [
-            'dia-dog-flow',
-            'mycloud.com',
-            'Machine Learning',
-            'Common Services',
-            'sandbox',
-        ],
+        resourceArray: [], //[{ text: 'hi', value: 1, resource_name: 'test' }],
+        resources: [], // ['dia-dog-flow', 'mycloud.com', 'Machine Learning', 'Common Services', 'sandbox' ]
 
         // svg data
         treeData: {},
@@ -1709,12 +1612,6 @@ export default {
 <style>
 .margin-top-30 {
     margin-top: 0px;
-}
-
-.control-panel {
-    padding: 8px;
-    /* background: #eef; */
-    /* border-bottom: 2px solid #bbd; */
 }
 
 /* d3 CSS */
