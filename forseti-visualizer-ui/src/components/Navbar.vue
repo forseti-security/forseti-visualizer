@@ -78,6 +78,8 @@
       </v-autocomplete>
 
       <v-btn color="info" id="btn-search" v-on:click="search">Search</v-btn>
+      <v-btn color="info" id="btn-search" v-on:click="resetParent">Reset to Org</v-btn>
+      <v-btn color="info" id="btn-search" v-on:click="setParent">Set Parent</v-btn>
 
       <v-checkbox :label="`Expand/Collapse`" v-model="expand" v-on:change="toggleExpand"></v-checkbox>
 
@@ -135,6 +137,8 @@ let componentFunctionMap = {
     toggleJsonEnabled: 'toggleJsonEnabled',
     toggleWideView: 'toggleWideView',
     search: 'search',
+    resetParent: 'resetParent',
+    setParent: 'setParent',
     expandAll: 'expandAll',
     toggleExpand: 'toggleExpand',
     toggleExpandAll: 'toggleExpandAll',
@@ -156,8 +160,7 @@ export default {
     /**
      * Vue: mounted() - onload function
      */
-    mounted() {
-    },
+    mounted() {},
 
     /**
      * Vue: methods
@@ -225,6 +228,23 @@ export default {
          */
         search: function() {
             this.$emit(componentFunctionMap.search, this.nodeName);
+        },
+
+        /**
+         * @function resetParent
+         * @description Sends a request to reset the parent to the original parent
+         */
+        resetParent: function() {
+            this.$emit(componentFunctionMap.resetParent);
+        },
+
+        /**
+         * @function setParent
+         * @description Emits a request to set the new parent (root) node
+         */
+        setParent: function() {
+            alert(this.nodeName);
+            this.$emit(componentFunctionMap.setParent, this.nodeName);
         },
 
         /**

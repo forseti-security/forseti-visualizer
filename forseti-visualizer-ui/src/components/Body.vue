@@ -3,13 +3,15 @@
     <v-layout text-xs-center wrap class="margin-top-30">
       <v-flex xs12 mb-5>
         <v-layout justify-center>
-          <Navbar 
+          <Navbar
             v-on:resetZoom="resetZoom"
             v-on:toggleViolations="toggleViolations"
             v-on:toggleCacheEnabled="toggleCacheEnabled"
             v-on:toggleJsonEnabled="toggleJsonEnabled"
             v-on:toggleWideView="toggleWideView"
-            v-on:search="search"           
+            v-on:search="search"
+            v-on:resetParent="resetParent"
+            v-on:setParent="setParent"
             v-on:expandAll="expandAll"
             v-on:toggleExpand="toggleExpand"
             v-on:toggleExpandAll="toggleExpandAll"
@@ -105,6 +107,25 @@ export default {
             return str;
         },
 
+        /**
+         * @function findResourceNodeByName
+         * @description returns a resource node by name
+         * @returns node:ResourceNode (ResourceNode.js)
+         */
+        findResourceNodeByName(nodeName) {
+            let resourceNode = null;
+
+            // must expand all nodes
+            this.treeData.each(this.expandNodes);
+            this.treeData.each(function(d) {
+                if (d.name === nodeName) {
+                    resourceNode = d;
+                }
+            });
+
+            return resourceNode;
+        },
+
         filterResourceArray: function() {
             /* FILTER!!! */
             // filter this.resourceArray (resource_type) by selectedFilterResources
@@ -149,11 +170,62 @@ export default {
                 return false;
             });
 
-            this.$store.commit('set', this.resourceArray);
+            // Filter based on set parent ( setParent() ) being clicked
 
+            // ensure at least one node has a parent_id of null
+            let resourceArrayHasOneNullParentId = false;
+            for (let i = 0; i < this.resourceArray.length; i++) {
+                if (this.resourceArray[i].parent_id === null)
+                    resourceArrayHasOneNullParentId = true;
+            }
+            if (!resourceArrayHasOneNullParentId) {
+                let minIndex = 0;
+                let minValue = Number.MAX_VALUE;
 
-            console.log('resulting', this.resourceArray);
-            /* END FILTER!!! */
+                // find min
+                for (let i = 0; i < this.resourceArray.length; i++) {
+                    if (minValue > this.resourceArray[i].parent_id) {
+                        minValue = this.resourceArray[i].parent_id;
+                        minIndex = i;
+                    }
+                }
+                this.resourceArray[minIndex].parent_id = null;
+            }
+
+            if (this.parentNode) {
+                let subResourceArray = [];
+                let queue = [];
+                queue.push(this.parentNode.id);
+
+                // Add FIRST Node
+                for (let i = 0; i < this.resourceArray.length; i++) {
+                    if (this.resourceArray[i].id == this.parentNode.id) {
+                        let firstNode = this.resourceArray[i];
+                        firstNode.parent_id = null; // remove parent id - compat requirement for d3 tree stratify
+                        subResourceArray.push(firstNode);
+                        break;
+                    }
+                }
+
+                while (queue.length !== 0) {
+                    let firstId = queue.splice(0, 1);
+
+                    for (let i = 0; i < this.resourceArray.length; i++) {
+                        if (this.resourceArray[i].parent_id == firstId) {
+                            subResourceArray.push(this.resourceArray[i]);
+
+                            // add the child resource node's ID to the queue to recursively find its children next
+                            queue.push(this.resourceArray[i].id);
+                        }
+                    }
+                }
+
+                this.$store.commit('set', subResourceArray);
+                return subResourceArray;
+            } else {
+                this.$store.commit('set', this.resourceArray);
+                return this.resourceArray;
+            }
         },
 
         /**
@@ -231,12 +303,12 @@ export default {
                                             return 0;
                                         });
 
-                                    this.filterResourceArray();
+                                    let filteredResourceArray = this.filterResourceArray();
 
-                                    // initialize
+                                    // initialize tree
                                     this.initTree(
                                         orientation,
-                                        this.resourceArray
+                                        filteredResourceArray
                                     );
                                 }
                             );
@@ -1140,9 +1212,40 @@ export default {
          * @function filterResources
          * @description Event executed when the resource filter multiselect box changes
          */
-        filterResources: function(selectedFilterResources) {          
+        filterResources: function(selectedFilterResources) {
             this.selectedFilterResources = selectedFilterResources;
 
+            this._resetSvg();
+
+            this.init(this.orientation);
+        },
+
+        /**
+         * @function setParent
+         * @description Sets the parent resource of the folder node
+         */
+        resetParent: function() {
+            this.parentNode = null;
+
+            this._resetSvg();
+            this.init(this.orientation);
+        },
+
+        /**
+         * @function setParent
+         * @description Sets to a new parent (root) and refreshes visualization
+         */
+        setParent: function(nodeName) {
+            // set parent, and find from current tree data
+            this.parentNode = this.findResourceNodeByName(nodeName);
+
+            console.log(this.parentNode);
+
+            if (!this.parentNode) {
+                alert(nodeName + ' is not found.  Resetting view.');
+            }
+
+            // so we have the Audit Node, we just want to reconstruct treeData SUCH THAT it begins with Audit
             this._resetSvg();
 
             this.init(this.orientation);
@@ -1605,6 +1708,9 @@ export default {
         // computed
         width: 0, //px
         height: 0, //px
+
+        // parent-child-view
+        parentNode: null,
     }),
 };
 </script>
