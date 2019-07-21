@@ -47,6 +47,7 @@ import * as d3 from 'd3';
 import D3Helpers from '../services/D3Helpers';
 import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataService from '../services/DataService';
+import ForsetiSetParentService from '../services/ForsetiSetParentService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import Orientation from '../models/Orientation';
 
@@ -126,9 +127,13 @@ export default {
             return resourceNode;
         },
 
-        filterResourceArray: function() {
-            /* FILTER!!! */
-            // filter this.resourceArray (resource_type) by selectedFilterResources
+
+        /**
+         * @function getDistinctResourceTypes
+         * @description gets distinct resource types that exist in this.resourceArray
+         * @returns list of strings containing distinct reosurce types
+         */
+        getDistinctResourceTypes: function() {
             var distinctResourceTypes = [
                 ...new Set(
                     this.resourceArray.map(a => {
@@ -137,30 +142,41 @@ export default {
                 ),
             ];
 
+            return distinctResourceTypes;
             /*
-0: "firewall"
-1: "folder"
-2: "appengine_app"
-3: "project"
-4: "bucket"
-5: "instance"
-6: "cloudsqlinstance"
-7: "organization"
-8: "dataset"
-9: "kubernetes_cluster"
-*/
+                0: "firewall"
+                1: "folder"
+                2: "appengine_app"
+                3: "project"
+                4: "bucket"
+                5: "instance"
+                6: "cloudsqlinstance"
+                7: "organization"
+                8: "dataset"
+                9: "kubernetes_cluster"
+            */
+        },
 
+        /**
+         * @function filterResourceArray
+         * @description filters based on user selection, sanitizes and dedupes resource array
+         * @returns array of resources
+         */
+        filterResourceArray: function() {
             let mappedResourceFilter = this.selectedFilterResources.map(
                 ForsetiResourceConverter.convertResource
             );
 
+            // apply resource filter.  always include organization/folder/projects so that resource paths are maintained
             this.resourceArray = this.resourceArray.filter(res => {
                 if (
+                    res.resource_type === 'organization' ||
                     res.resource_type === 'folder' ||
-                    res.resource_type === 'project' ||
-                    res.resource_type === 'organization'
-                )
+                    res.resource_type === 'project'
+                ) {
                     return true;
+                }
+
                 for (let i = 0; i < mappedResourceFilter.length; i++) {
                     if (mappedResourceFilter[i] === res.resource_type) {
                         return true;
@@ -172,53 +188,14 @@ export default {
 
             // Filter based on set parent ( setParent() ) being clicked
 
-            // ensure at least one node has a parent_id of null
-            let resourceArrayHasOneNullParentId = false;
-            for (let i = 0; i < this.resourceArray.length; i++) {
-                if (this.resourceArray[i].parent_id === null)
-                    resourceArrayHasOneNullParentId = true;
-            }
+            // At least one node has a null parent_id field infers that there is a node at the top of the tree
+            let resourceArrayHasOneNullParentId = ForsetiSetParentService.determineIfOneNullParentId(this.resourceArray);
             if (!resourceArrayHasOneNullParentId) {
-                let minIndex = 0;
-                let minValue = Number.MAX_VALUE;
-
-                // find min
-                for (let i = 0; i < this.resourceArray.length; i++) {
-                    if (minValue > this.resourceArray[i].parent_id) {
-                        minValue = this.resourceArray[i].parent_id;
-                        minIndex = i;
-                    }
-                }
-                this.resourceArray[minIndex].parent_id = null;
+                ForsetiSetParentService.setMinParentIdToNull(this.resourceArray);
             }
 
             if (this.parentNode) {
-                let subResourceArray = [];
-                let queue = [];
-                queue.push(this.parentNode.id);
-
-                // Add FIRST Node
-                for (let i = 0; i < this.resourceArray.length; i++) {
-                    if (this.resourceArray[i].id == this.parentNode.id) {
-                        let firstNode = this.resourceArray[i];
-                        firstNode.parent_id = null; // remove parent id - compat requirement for d3 tree stratify
-                        subResourceArray.push(firstNode);
-                        break;
-                    }
-                }
-
-                while (queue.length !== 0) {
-                    let firstId = queue.splice(0, 1);
-
-                    for (let i = 0; i < this.resourceArray.length; i++) {
-                        if (this.resourceArray[i].parent_id == firstId) {
-                            subResourceArray.push(this.resourceArray[i]);
-
-                            // add the child resource node's ID to the queue to recursively find its children next
-                            queue.push(this.resourceArray[i].id);
-                        }
-                    }
-                }
+                let subResourceArray = ForsetiSetParentService.getResourceArraySubset(this.resourceArray, this.parentNode.id);
 
                 this.$store.commit('set', subResourceArray);
                 return subResourceArray;
@@ -304,6 +281,8 @@ export default {
                                         });
 
                                     let filteredResourceArray = this.filterResourceArray();
+
+                                    console.log(filteredResourceArray);
 
                                     // initialize tree
                                     this.initTree(
@@ -583,7 +562,7 @@ export default {
                 .attr('fill-opacity', '0.0');
 
             // Collapse after the second level
-            this.treeData.children.forEach(this.collapse);
+            if (this.treeData.children) this.treeData.children.forEach(this.collapse);
             this.update(this.tree, this.treeData, this.treeData);
         },
 
