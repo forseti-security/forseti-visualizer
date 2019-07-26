@@ -3,13 +3,15 @@
     <v-layout text-xs-center wrap class="margin-top-30">
       <v-flex xs12 mb-5>
         <v-layout justify-center>
-          <Navbar 
+          <Navbar
             v-on:resetZoom="resetZoom"
             v-on:toggleViolations="toggleViolations"
             v-on:toggleCacheEnabled="toggleCacheEnabled"
             v-on:toggleJsonEnabled="toggleJsonEnabled"
             v-on:toggleWideView="toggleWideView"
-            v-on:search="search"           
+            v-on:search="search"
+            v-on:resetParent="resetParent"
+            v-on:setParent="setParent"
             v-on:expandAll="expandAll"
             v-on:toggleExpand="toggleExpand"
             v-on:toggleExpandAll="toggleExpandAll"
@@ -45,6 +47,7 @@ import * as d3 from 'd3';
 import D3Helpers from '../services/D3Helpers';
 import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataService from '../services/DataService';
+import ForsetiSetParentService from '../services/ForsetiSetParentService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import Orientation from '../models/Orientation';
 
@@ -105,9 +108,32 @@ export default {
             return str;
         },
 
-        filterResourceArray: function() {
-            /* FILTER!!! */
-            // filter this.resourceArray (resource_type) by selectedFilterResources
+        /**
+         * @function findResourceNodeByName
+         * @description returns a resource node by name
+         * @returns node:ResourceNode (ResourceNode.js)
+         */
+        findResourceNodeByName(nodeName) {
+            let resourceNode = null;
+
+            // must expand all nodes
+            this.treeData.each(this.expandNodes);
+            this.treeData.each(function(d) {
+                if (d.name === nodeName) {
+                    resourceNode = d;
+                }
+            });
+
+            return resourceNode;
+        },
+
+
+        /**
+         * @function getDistinctResourceTypes
+         * @description gets distinct resource types that exist in this.resourceArray
+         * @returns list of strings containing distinct reosurce types
+         */
+        getDistinctResourceTypes: function() {
             var distinctResourceTypes = [
                 ...new Set(
                     this.resourceArray.map(a => {
@@ -116,30 +142,41 @@ export default {
                 ),
             ];
 
+            return distinctResourceTypes;
             /*
-0: "firewall"
-1: "folder"
-2: "appengine_app"
-3: "project"
-4: "bucket"
-5: "instance"
-6: "cloudsqlinstance"
-7: "organization"
-8: "dataset"
-9: "kubernetes_cluster"
-*/
+                0: "firewall"
+                1: "folder"
+                2: "appengine_app"
+                3: "project"
+                4: "bucket"
+                5: "instance"
+                6: "cloudsqlinstance"
+                7: "organization"
+                8: "dataset"
+                9: "kubernetes_cluster"
+            */
+        },
 
+        /**
+         * @function filterResourceArray
+         * @description filters based on user selection, sanitizes and dedupes resource array
+         * @returns array of resources
+         */
+        filterResourceArray: function() {
             let mappedResourceFilter = this.selectedFilterResources.map(
                 ForsetiResourceConverter.convertResource
             );
 
+            // apply resource filter.  always include organization/folder/projects so that resource paths are maintained
             this.resourceArray = this.resourceArray.filter(res => {
                 if (
+                    res.resource_type === 'organization' ||
                     res.resource_type === 'folder' ||
-                    res.resource_type === 'project' ||
-                    res.resource_type === 'organization'
-                )
+                    res.resource_type === 'project'
+                ) {
                     return true;
+                }
+
                 for (let i = 0; i < mappedResourceFilter.length; i++) {
                     if (mappedResourceFilter[i] === res.resource_type) {
                         return true;
@@ -149,11 +186,23 @@ export default {
                 return false;
             });
 
-            this.$store.commit('set', this.resourceArray);
+            // Filter based on set parent ( setParent() ) being clicked
 
+            // At least one node has a null parent_id field infers that there is a node at the top of the tree
+            let resourceArrayHasOneNullParentId = ForsetiSetParentService.determineIfOneNullParentId(this.resourceArray);
+            if (!resourceArrayHasOneNullParentId) {
+                ForsetiSetParentService.setMinParentIdToNull(this.resourceArray);
+            }
 
-            console.log('resulting', this.resourceArray);
-            /* END FILTER!!! */
+            if (this.parentNode) {
+                let subResourceArray = ForsetiSetParentService.getResourceArraySubset(this.resourceArray, this.parentNode.id);
+
+                this.$store.commit('set', subResourceArray);
+                return subResourceArray;
+            } else {
+                this.$store.commit('set', this.resourceArray);
+                return this.resourceArray;
+            }
         },
 
         /**
@@ -231,12 +280,14 @@ export default {
                                             return 0;
                                         });
 
-                                    this.filterResourceArray();
+                                    let filteredResourceArray = this.filterResourceArray();
 
-                                    // initialize
+                                    console.log(filteredResourceArray);
+
+                                    // initialize tree
                                     this.initTree(
                                         orientation,
-                                        this.resourceArray
+                                        filteredResourceArray
                                     );
                                 }
                             );
@@ -511,7 +562,7 @@ export default {
                 .attr('fill-opacity', '0.0');
 
             // Collapse after the second level
-            this.treeData.children.forEach(this.collapse);
+            if (this.treeData.children) this.treeData.children.forEach(this.collapse);
             this.update(this.tree, this.treeData, this.treeData);
         },
 
@@ -1140,9 +1191,40 @@ export default {
          * @function filterResources
          * @description Event executed when the resource filter multiselect box changes
          */
-        filterResources: function(selectedFilterResources) {          
+        filterResources: function(selectedFilterResources) {
             this.selectedFilterResources = selectedFilterResources;
 
+            this._resetSvg();
+
+            this.init(this.orientation);
+        },
+
+        /**
+         * @function setParent
+         * @description Sets the parent resource of the folder node
+         */
+        resetParent: function() {
+            this.parentNode = null;
+
+            this._resetSvg();
+            this.init(this.orientation);
+        },
+
+        /**
+         * @function setParent
+         * @description Sets to a new parent (root) and refreshes visualization
+         */
+        setParent: function(nodeName) {
+            // set parent, and find from current tree data
+            this.parentNode = this.findResourceNodeByName(nodeName);
+
+            console.log(this.parentNode);
+
+            if (!this.parentNode) {
+                alert(nodeName + ' is not found.  Resetting view.');
+            }
+
+            // so we have the Audit Node, we just want to reconstruct treeData SUCH THAT it begins with Audit
             this._resetSvg();
 
             this.init(this.orientation);
@@ -1605,6 +1687,9 @@ export default {
         // computed
         width: 0, //px
         height: 0, //px
+
+        // parent-child-view
+        parentNode: null,
     }),
 };
 </script>

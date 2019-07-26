@@ -1154,8 +1154,8 @@ export default {
         },
 
         /**
-         * @function setParent
-         * @description Sets the parent resource of the folder node
+         * @function resetParent
+         * @description Resets to the original parent and refreshes visualization
          */
         resetParent: function() {
             this.parentNode = null;
@@ -1166,7 +1166,7 @@ export default {
 
         /**
          * @function setParent
-         * @description Sets the parent resource of the folder node
+         * @description Sets to a new parent (root) and refreshes visualization
          */
         setParent: function() {
             // set parent, and find from current tree data
@@ -1546,7 +1546,7 @@ export default {
     data: () => ({
         // global: set this to use JSON files vs. dynamic
         // useCache: false, // default to using server data
-        useCache: false, // default to using cached files.json
+        useCache: true, // default to using cached files.json
         useJson: true, // false defers to using a .csv
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
