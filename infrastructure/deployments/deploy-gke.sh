@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash 
 #
 # Copyright 2019 Google LLC
 #
@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PROJECT_ID="forseti-security-1e88"
+source source.env
+
 GCR_IMAGE_NAME="gcr.io\/$PROJECT_ID\/forseti-visualizer" # must be escaped
 REGION="us-central1"
 # REGION="us-west1"
@@ -36,26 +37,30 @@ fi
 
 # cp all templates
 mkdir gke-templates/
-cp -R ../cluster-template/templates/ gke-templates/
+cp -R cluster-template/templates/* gke-templates/
 cd gke-templates/
 
+# MAC: use sed -i '' -e
+# LINUX: use sed -i 
+
 # replace [GCR-IMAGE]
-sed -i '' -e "s/\[GCR-IMAGE\]/$GCR_IMAGE_NAME/g" *.yaml
+sed -i "s/\[GCR-IMAGE\]/$GCR_IMAGE_NAME/g" *.yaml
 
 # replace [MY-PROJECT]
-sed -i '' -e "s/\[MY-PROJECT\]/$PROJECT_ID/g" *.yaml
+sed -i "s/\[MY-PROJECT\]/$PROJECT_ID/g" *.yaml
 
 # replace [MY-STATIC-IP]
-sed -i '' -e "s/\[MY-STATIC-IP\]/$STATIC_IP/g" *.yaml
+sed -i "s/\[MY-STATIC-IP\]/$STATIC_IP/g" *.yaml
 
 # replace [APP-NAME]
-sed -i '' -e "s/\[APP-NAME\]/$APP_NAME/g" *.yaml
+sed -i "s/\[APP-NAME\]/$APP_NAME/g" *.yaml
 
 
 ### DEPLOYMENT PHASE
 ###     Reference: https://www.qwiklabs.com/focuses/2771?parent=catalog
 gcloud endpoints services deploy openapi.yaml
 
+echo "Creating Cluster"
 CLUSTER_NAME=$APP_NAME-gke
 gcloud container clusters create $CLUSTER_NAME --region $REGION --num-nodes="1"
 gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION

@@ -15,8 +15,8 @@
 # limitations under the License.
 
 source utils/version_utils.sh
+source source.env
 
-PROJECT_ID="forseti-security-1e88"
 DIST_UI_INCLUDE_DIRECTORY_NAME="dist-forseti-visualizer-ui"
 VERSION=$(cat VERSION)
 NEW_VERSION=$(increment_version $VERSION 2) # bump minor minor version

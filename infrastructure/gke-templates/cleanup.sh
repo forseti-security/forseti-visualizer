@@ -1,5 +1,4 @@
-#!/bin/bash -eu
-#
+#!/bin/sh
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source source.env
-
-REGION="us-central1"
-ENV_VARS="CLOUDSQL_HOSTNAME=$CLOUDSQL_HOSTNAME,CLOUDSQL_USERNAME=$CLOUDSQL_USERNAME,CLOUDSQL_PASSWORD=$CLOUDSQL_PASSWORD,CLOUDSQL_SCHEMA=$CLOUDSQL_SCHEMA"
-
-gcloud config set run/region $REGION
-
-gcloud beta run deploy \
-    --image gcr.io/$PROJECT_ID/forseti-visualizer:latest \
-    --update-env-vars $ENV_VARS \
-    --project $PROJECT_ID
+gcloud container clusters delete forseti-visualizer-app-gke --region us-central1 -q
+gcloud compute addresses delete forseti-visualizer-app-endpoints-ip --region us-central1 -q
