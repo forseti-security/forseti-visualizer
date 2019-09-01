@@ -16,13 +16,12 @@
 
 source source.env
 
-PROJECT_ID="forsetiviz"
 REGION="us-central1"
 ENV_VARS="CLOUDSQL_HOSTNAME=$CLOUDSQL_HOSTNAME,CLOUDSQL_USERNAME=$CLOUDSQL_USERNAME,CLOUDSQL_PASSWORD=$CLOUDSQL_PASSWORD,CLOUDSQL_SCHEMA=$CLOUDSQL_SCHEMA"
 
 gcloud config set run/region $REGION
 
 gcloud beta run deploy \
-    --image gcr.io/$PROJECT_ID/forseti-visualizer:1.0.6 \
+    --image gcr.io/$PROJECT_ID/forseti-visualizer:latest \
     --update-env-vars $ENV_VARS \
     --project $PROJECT_ID
