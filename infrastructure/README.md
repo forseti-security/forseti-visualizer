@@ -13,8 +13,18 @@ Each script requires a docker image to be pre-built and pushed to the local gcr.
 ## Getting Started
 
 ```bash
-# replace the variable (PROJECT_ID) at the top of the build-images.sh file
-./build-images.sh
+# Prerequisite: Ensure application is built and runs locally
+cd forseti-visualizer-ui/
+npm install
+npm run build
+cp -R dist ../forseti-api/dist-forseti-visualizer-ui
+cd ../forseti-api
+npm install
+
+# API:
+gcloud services enable compute.googleapis.com
+gcloud services enable container.googleapis.com
+gcloud services enable containerregistry.googleapis.com
 
 # create a file named "source.env"
 cat > source.env << EOF
@@ -26,8 +36,11 @@ export FORSETI_SERVER_VM_CHANNEL="1.2.3.4:50051"
 export FORSETI_DATA_MODEL_HANDLE="abcdaa3a5bc9fd9acfaf50fdd3620534"
 EOF
 
+# build docker images
+./build-images.sh
+
 # replace the variable(s) (PROJECT_ID, REGION) at the top of the deployment file and then run to deploy the image
-./deploy-cloudrun.sh
+./deployments/deploy-gke.sh
 ```
 
 ## Pipeline
