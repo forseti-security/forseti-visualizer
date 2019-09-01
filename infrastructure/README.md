@@ -41,6 +41,8 @@ EOF
 
 # replace the variable(s) (PROJECT_ID, REGION) at the top of the deployment file and then run to deploy the image
 ./deployments/deploy-gke.sh
+./deployments/deploy-gce.sh
+./deployments/deploy-cloudrun.sh
 ```
 
 ## Pipeline

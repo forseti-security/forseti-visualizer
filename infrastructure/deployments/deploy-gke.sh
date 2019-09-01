@@ -36,6 +36,7 @@ else
 fi
 
 # cp all templates
+rm -rf gke-templates/
 mkdir gke-templates/
 cp -R cluster-template/templates/* gke-templates/
 cd gke-templates/
