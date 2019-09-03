@@ -16,7 +16,7 @@
 
 source source.env
 
-GCR_IMAGE_NAME="gcr.io/$PROJECT_ID/forseti-visualizer" # must be escaped
+GCR_IMAGE_NAME="gcr.io/$PROJECT_ID/forseti-visualizer"
 ZONE="us-central1-a"
 VM_NAME="forseti-visualizer-vm"
 ENV_VARS="CLOUDSQL_HOSTNAME=$CLOUDSQL_HOSTNAME,CLOUDSQL_USERNAME=$CLOUDSQL_USERNAME,CLOUDSQL_PASSWORD=$CLOUDSQL_PASSWORD,CLOUDSQL_SCHEMA=$CLOUDSQL_SCHEMA"
