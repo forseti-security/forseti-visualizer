@@ -16,12 +16,11 @@
 
 source source.env
 
-GCR_IMAGE_NAME="gcr.io/forseti-security-1e88/forseti-visualizer" # must be escaped
-PROJECT_ID="forseti-security-1e88"
+GCR_IMAGE_NAME="gcr.io/$PROJECT_ID/forseti-visualizer"
 ZONE="us-central1-a"
 VM_NAME="forseti-visualizer-vm"
 ENV_VARS="CLOUDSQL_HOSTNAME=$CLOUDSQL_HOSTNAME,CLOUDSQL_USERNAME=$CLOUDSQL_USERNAME,CLOUDSQL_PASSWORD=$CLOUDSQL_PASSWORD,CLOUDSQL_SCHEMA=$CLOUDSQL_SCHEMA"
-SERVICE_ACCOUNT="521541240037-compute@developer.gserviceaccount.com"
+SERVICE_ACCOUNT=$(gcloud compute project-info describe --project $PROJECT_ID --format="get(defaultServiceAccount)")
 
 gcloud beta compute \
 --project=$PROJECT_ID \
