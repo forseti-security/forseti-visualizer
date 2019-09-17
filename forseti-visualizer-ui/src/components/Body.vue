@@ -1,43 +1,43 @@
 <template>
-  <v-container fluid>
-    <v-layout text-xs-center wrap class="margin-top-30">
-      <v-flex xs12 mb-5>
-        <v-layout justify-center>
-          <Navbar
-            v-on:resetZoom="resetZoom"
-            v-on:toggleViolations="toggleViolations"
-            v-on:toggleCacheEnabled="toggleCacheEnabled"
-            v-on:toggleJsonEnabled="toggleJsonEnabled"
-            v-on:toggleWideView="toggleWideView"
-            v-on:search="search"
-            v-on:resetParent="resetParent"
-            v-on:setParent="setParent"
-            v-on:expandAll="expandAll"
-            v-on:toggleExpand="toggleExpand"
-            v-on:toggleExpandAll="toggleExpandAll"
-            v-on:toggleOrientation="toggleOrientation"
-            v-on:explainIdentity="explainIdentity"
-            v-on:filterResources="filterResources"
-          />
+    <v-container fluid>
+        <v-layout text-xs-center wrap class="margin-top-30">
+            <v-flex xs12 mb-5>
+                <v-layout justify-center>
+                    <Navbar
+                        v-on:resetZoom="resetZoom"
+                        v-on:toggleViolations="toggleViolations"
+                        v-on:toggleCacheEnabled="toggleCacheEnabled"
+                        v-on:toggleJsonEnabled="toggleJsonEnabled"
+                        v-on:toggleWideView="toggleWideView"
+                        v-on:search="search"
+                        v-on:resetParent="resetParent"
+                        v-on:setParent="setParent"
+                        v-on:expandAll="expandAll"
+                        v-on:toggleExpand="toggleExpand"
+                        v-on:toggleExpandAll="toggleExpandAll"
+                        v-on:toggleOrientation="toggleOrientation"
+                        v-on:explainIdentity="explainIdentity"
+                        v-on:filterResources="filterResources"
+                    />
 
-          <v-flex xs9 mb-5 style="position:relative;">
-            <button
-              v-on:click="zoomIn"
-              class="zoom-button"
-              style="position: absolute; left: 15px; top: 11px;"
-            >+</button>
-            <button
-              v-on:click="zoomOut"
-              class="zoom-button"
-              style="position: absolute; left: 48px; top: 11px;"
-            >-</button>
+                    <v-flex xs9 mb-5 style="position:relative;">
+                        <button
+                            v-on:click="zoomIn"
+                            class="zoom-button"
+                            style="position: absolute; left: 15px; top: 11px;"
+                        >+</button>
+                        <button
+                            v-on:click="zoomOut"
+                            class="zoom-button"
+                            style="position: absolute; left: 48px; top: 11px;"
+                        >-</button>
 
-            <section id="d3-area"></section>
-          </v-flex>
+                        <section id="d3-area"></section>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
         </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+    </v-container>
 </template>
 
 <script>
@@ -49,21 +49,15 @@ import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataService from '../services/DataService';
 import ForsetiSetParentService from '../services/ForsetiSetParentService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
-import Orientation from '../models/Orientation';
+
+import Orientation from '../constants/Orientation';
+import ColorConfig from '../constants/ColorConfig';
+import ResourceType from '../constants/ResourceType';
+import VisualizerConfig from '../constants/VisualizerConfig';
 
 // components
 import Navbar from './Navbar';
 import ResourceArrayStore from '../stores/ResourceArray';
-
-let cachedFileMap = {
-    resourcesFile: 'dataset1_resources.json',
-    violationsFile: 'dataset1_violations.json',
-    iamexplainbyuserFile: 'dataset1_iamexplainbyuser.json',
-
-    resourcesFile2: 'dataset2_resources.json',
-    violationsFile2: 'dataset2_violations.json',
-    iamexplainbyuserFile2: 'dataset2_iamexplainbyuser.json',
-};
 
 export default {
     components: {
@@ -73,34 +67,41 @@ export default {
     store: ResourceArrayStore,
 
     /**
-     * Vue: mounted() - onload function
+     * @function mounted
+     * @description The ENTRY POINT
      */
     mounted() {
-        // Use the parsed tree data to dynamically create height & width
-        // want computed width
+        // Dynamic height and width computation
+        this.width =
+            VisualizerConfig.DEFAULT_WIDTH -
+            VisualizerConfig.MARGIN.left -
+            VisualizerConfig.MARGIN.right;
+        this.height =
+            VisualizerConfig.DEFAULT_HEIGHT -
+            VisualizerConfig.MARGIN.top -
+            VisualizerConfig.MARGIN.bottom;
 
-        this.width = this.defaultWidth - this.margin.left - this.margin.right;
-        this.height = this.defaultHeight - this.margin.top - this.margin.bottom;
-
-        // append the svg object to the body of the page
-        // appends a 'group' element to 'svg'
-        // moves the 'group' element to the top left margin
+        // Append the 'svg' to the '#d3-area' section
         this.svg = d3
             .select('#d3-area')
             .append('svg')
-            // the reason we do not use this.width as the width, is it does not resize appropriately for varying screen sizes
-            // .attr('width', this.width) // + margin.left + margin.right)
-            .attr('width', '100%')
-            .attr('height', this.height) // + margin.top + margin.bottom);
+            .attr('width', '100%') // 100% width provides better responsive behavior
+            .attr('height', this.height)
             .style('pointer-events', 'all');
 
         this.init(this.orientation);
     },
 
     /**
-     * Vue: methods
+     * @function methods
+     * @description Vue methods that are bound to 'this'
      */
     methods: {
+        /**
+         * @function capitalize
+         * @description Capitalizes the first letter
+         * @returns the capitalized string
+         */
         capitalize: function(str) {
             if (str.length > 0) {
                 return str.substr(0, 1).toUpperCase() + str.substr(1);
@@ -111,7 +112,7 @@ export default {
         /**
          * @function findResourceNodeByName
          * @description returns a resource node by name
-         * @returns node:ResourceNode (ResourceNode.js)
+         * @returns type:ResourceNode (types/ResourceNode.js)
          */
         findResourceNodeByName(nodeName) {
             let resourceNode = null;
@@ -127,11 +128,10 @@ export default {
             return resourceNode;
         },
 
-
         /**
          * @function getDistinctResourceTypes
          * @description gets distinct resource types that exist in this.resourceArray
-         * @returns list of strings containing distinct reosurce types
+         * @returns list of strings containing distinct resource types
          */
         getDistinctResourceTypes: function() {
             var distinctResourceTypes = [
@@ -143,18 +143,6 @@ export default {
             ];
 
             return distinctResourceTypes;
-            /*
-                0: "firewall"
-                1: "folder"
-                2: "appengine_app"
-                3: "project"
-                4: "bucket"
-                5: "instance"
-                6: "cloudsqlinstance"
-                7: "organization"
-                8: "dataset"
-                9: "kubernetes_cluster"
-            */
         },
 
         /**
@@ -170,9 +158,9 @@ export default {
             // apply resource filter.  always include organization/folder/projects so that resource paths are maintained
             this.resourceArray = this.resourceArray.filter(res => {
                 if (
-                    res.resource_type === 'organization' ||
-                    res.resource_type === 'folder' ||
-                    res.resource_type === 'project'
+                    res.resource_type === ResourceType.ORGANIZATION ||
+                    res.resource_type === ResourceType.FOLDER ||
+                    res.resource_type === ResourceType.PROJECT
                 ) {
                     return true;
                 }
@@ -189,13 +177,20 @@ export default {
             // Filter based on set parent ( setParent() ) being clicked
 
             // At least one node has a null parent_id field infers that there is a node at the top of the tree
-            let resourceArrayHasOneNullParentId = ForsetiSetParentService.determineIfOneNullParentId(this.resourceArray);
+            let resourceArrayHasOneNullParentId = ForsetiSetParentService.determineIfOneNullParentId(
+                this.resourceArray
+            );
             if (!resourceArrayHasOneNullParentId) {
-                ForsetiSetParentService.setMinParentIdToNull(this.resourceArray);
+                ForsetiSetParentService.setMinParentIdToNull(
+                    this.resourceArray
+                );
             }
 
             if (this.parentNode) {
-                let subResourceArray = ForsetiSetParentService.getResourceArraySubset(this.resourceArray, this.parentNode.id);
+                let subResourceArray = ForsetiSetParentService.getResourceArraySubset(
+                    this.resourceArray,
+                    this.parentNode.id
+                );
 
                 this.$store.commit('set', subResourceArray);
                 return subResourceArray;
@@ -212,85 +207,80 @@ export default {
          */
         init: function(orientation) {
             let csv_data;
-            let treeData, margin, tree, table, svg, g;
+            let treeData, tree, table, svg, g;
 
             if (this.useJson) {
                 if (this.useCache) {
-                    d3.json(cachedFileMap.resourcesFile).then(resourcesData => {
+                    d3.json(
+                        VisualizerConfig.CACHED_FILE_MAP.resourcesFile
+                    ).then(resourcesData => {
                         if (resourcesData.length > 0) {
-                            d3.json(cachedFileMap.violationsFile).then(
-                                violationsData => {
-                                    for (
-                                        let i = 0;
-                                        i < violationsData.length;
-                                        i++
+                            d3.json(
+                                VisualizerConfig.CACHED_FILE_MAP.violationsFile
+                            ).then(violationsData => {
+                                for (
+                                    let i = 0;
+                                    i < violationsData.length;
+                                    i++
+                                ) {
+                                    if (
+                                        violationsData[i].resource_type ===
+                                        ResourceType.SERVICE_ACCOUNT_KEY
                                     ) {
-                                        if (
-                                            violationsData[i].resource_type ===
-                                            'serviceaccount_key'
-                                        ) {
-                                            this.violationsMap[
-                                                JSON.parse(
-                                                    violationsData[i]
-                                                        .violation_data
-                                                ).key_id
-                                            ] = violationsData[i];
-                                        } else {
-                                            this.violationsMap[
-                                                violationsData[i].resource_id
-                                            ] = violationsData[i];
-                                        }
+                                        this.violationsMap[
+                                            JSON.parse(
+                                                violationsData[i].violation_data
+                                            ).key_id
+                                        ] = violationsData[i];
+                                    } else {
+                                        this.violationsMap[
+                                            violationsData[i].resource_id
+                                        ] = violationsData[i];
                                     }
-
-                                    console.log(
-                                        'violationsMap',
-                                        this.violationsMap
-                                    );
-
-                                    this.resourceArray = resourcesData
-                                        .map(function(a) {
-                                            a.parent_id =
-                                                a.resource_type ==
-                                                'organization'
-                                                    ? ''
-                                                    : a.parent_id;
-                                            a.image = GoogleCloudImageService.getImageUrl(
-                                                a.resource_type
-                                            );
-                                            a.resource_name =
-                                                a.resource_data_displayname !==
-                                                ''
-                                                    ? a.resource_data_displayname
-                                                    : a.resource_data_name;
-
-                                            return a;
-                                        })
-                                        .sort(function(a, b) {
-                                            // sort alphabetically, ignoring case
-                                            if (
-                                                a.resource_name.toLowerCase() <
-                                                b.resource_name.toLowerCase()
-                                            )
-                                                return -1;
-                                            if (
-                                                a.resource_name.toLowerCase() <
-                                                b.resource_name.toLowerCase()
-                                            )
-                                                return 1;
-                                            return 0;
-                                        });
-
-                                    let filteredResourceArray = this.filterResourceArray();
-
-                                    console.log(filteredResourceArray);
-
-                                    // initialize tree
-                                    this.initTree(
-                                        orientation,
-                                        filteredResourceArray
-                                    );
                                 }
-                            );
+
+                                this.resourceArray = resourcesData
+                                    .map(function(a) {
+                                        a.parent_id =
+                                            a.resource_type ==
+                                            ResourceType.ORGANIZATION
+                                                ? ''
+                                                : a.parent_id;
+                                        a.image = GoogleCloudImageService.getImageUrl(
+                                            a.resource_type
+                                        );
+                                        a.resource_name =
+                                            a.resource_data_displayname !== ''
+                                                ? a.resource_data_displayname
+                                                : a.resource_data_name;
+
+                                        return a;
+                                    })
+                                    .sort(function(a, b) {
+                                        // sort alphabetically, ignoring case
+                                        if (
+                                            a.resource_name.toLowerCase() <
+                                            b.resource_name.toLowerCase()
+                                        )
+                                            return -1;
+                                        if (
+                                            a.resource_name.toLowerCase() <
+                                            b.resource_name.toLowerCase()
+                                        )
+                                            return 1;
+                                        return 0;
+                                    });
+
+                                let filteredResourceArray = this.filterResourceArray();
+
+                                console.log(filteredResourceArray);
+
+                                // initialize tree
+                                this.initTree(
+                                    orientation,
+                                    filteredResourceArray
+                                );
+                            });
                         }
                     });
                 } else {
@@ -343,7 +333,7 @@ export default {
                                             .map(function(a) {
                                                 a.parent_id =
                                                     a.resource_type ==
-                                                    'organization'
+                                                    ResourceType.ORGANIZATION
                                                         ? ''
                                                         : a.parent_id;
                                                 a.image = GoogleCloudImageService.getImageUrl(
@@ -371,16 +361,6 @@ export default {
                                                 return 0;
                                             });
 
-                                        // CONSOLE LOG STATEMENTS
-                                        // console.log(
-                                        //     'violationsMap',
-                                        //     this.violationsMap
-                                        // );
-                                        // console.log(
-                                        //     'resourceArray:',
-                                        //     this.resourceArray
-                                        // );
-
                                         this.filterResourceArray();
 
                                         // initialize tree
@@ -393,13 +373,12 @@ export default {
                         });
                 }
             } else {
-                d3.json(cachedFileMap.resourcesFile2).then(resourcesData => {
-                    if (resourcesData.length > 0) {
-                        // TEMPORARY - inventoryIndexId
-                        let inventoryIndexId = 1550298077702663;
-
-                        d3.json(cachedFileMap.violationsFile2).then(
-                            violationsData => {
+                d3.json(VisualizerConfig.CACHED_FILE_MAP.resourcesFile2).then(
+                    resourcesData => {
+                        if (resourcesData.length > 0) {
+                            d3.json(
+                                VisualizerConfig.CACHED_FILE_MAP.violationsFile2
+                            ).then(violationsData => {
                                 for (
                                     let i = 0;
                                     i < violationsData.length;
@@ -415,7 +394,8 @@ export default {
                                 this.resourceArray = resourcesData
                                     .map(function(a) {
                                         a.parent_id =
-                                            a.resource_type == 'organization'
+                                            a.resource_type ==
+                                            ResourceType.ORGANIZATION
                                                 ? ''
                                                 : a.parent_id;
                                         a.image = GoogleCloudImageService.getImageUrl(
@@ -446,10 +426,10 @@ export default {
 
                                 // initialize
                                 this.initTree(orientation, this.resourceArray);
-                            }
-                        );
+                            });
+                        }
                     }
-                });
+                );
             }
         },
 
@@ -464,11 +444,9 @@ export default {
          * }
          */
         initTree: function(orientation, data) {
-            let margin = this.margin;
-
             this.tree = d3
                 .tree()
-                .size([this.width - this.margin.top, this.height]);
+                .size([this.width - VisualizerConfig.MARGIN.top, this.height]);
             this.treeData = d3
                 .stratify()
                 .id(function(d) {
@@ -480,7 +458,7 @@ export default {
 
             // assign the name to each node
             this.treeData.each(function(d) {
-                if (d.data.resource_type === 'serviceaccount_key') {
+                if (d.data.resource_type === ResourceType.SERVICE_ACCOUNT_KEY) {
                     d.name = d.data.resource_id;
                 } else {
                     d.name = d.data.resource_name;
@@ -500,12 +478,16 @@ export default {
                         'transform',
                         'translate(' +
                             (orientation === Orientation.Vertical
-                                ? d3.event.transform.x + margin.left
-                                : d3.event.transform.x + margin.top) +
+                                ? d3.event.transform.x +
+                                  VisualizerConfig.MARGIN.left
+                                : d3.event.transform.x +
+                                  VisualizerConfig.MARGIN.top) +
                             ', ' +
                             (orientation === Orientation.Vertical
-                                ? d3.event.transform.y + margin.top
-                                : d3.event.transform.y + margin.left) +
+                                ? d3.event.transform.y +
+                                  VisualizerConfig.MARGIN.top
+                                : d3.event.transform.y +
+                                  VisualizerConfig.MARGIN.left) +
                             ')scale(' +
                             d3.event.transform.k +
                             ')'
@@ -526,7 +508,11 @@ export default {
                     .append('g')
                     .attr(
                         'transform',
-                        'translate(' + margin.left + ',' + margin.top + ')'
+                        'translate(' +
+                            VisualizerConfig.MARGIN.left +
+                            ',' +
+                            VisualizerConfig.MARGIN.top +
+                            ')'
                     );
 
                 // prevent dbl click
@@ -546,7 +532,11 @@ export default {
                     .append('g')
                     .attr(
                         'transform',
-                        'translate(' + margin.top + ',' + margin.left + ')'
+                        'translate(' +
+                            VisualizerConfig.MARGIN.top +
+                            ',' +
+                            VisualizerConfig.MARGIN.left +
+                            ')'
                     );
 
                 // prevent dbl click
@@ -558,11 +548,12 @@ export default {
                 .append('rect')
                 .attr('width', '100%')
                 .attr('height', '100%')
-                .attr('fill', '#fff')
+                .attr('fill', ColorConfig.WHITE)
                 .attr('fill-opacity', '0.0');
 
             // Collapse after the second level
-            if (this.treeData.children) this.treeData.children.forEach(this.collapse);
+            if (this.treeData.children)
+                this.treeData.children.forEach(this.collapse);
             this.update(this.tree, this.treeData, this.treeData);
         },
 
@@ -613,26 +604,25 @@ export default {
          * @description Handles the majority of D3 Visualization Interactivity
          */
         update: function(tree, treeData, source) {
-            let circleRadius = this.circleRadius;
             let orientation = this.orientation;
-            let duration = this.duration;
+            let duration = VisualizerConfig.ANIMATION_DURATION;
 
             // tooltip
             let tooltipDiv = d3
                 .select('body')
                 .append('div')
                 .attr('class', 'tooltip')
+                .style('background', ColorConfig.NODE_BG_COLOR)
                 .style('opacity', 0);
 
             tree(treeData);
 
             treeData.each(function(d) {
-                d.y = d.depth * 180; // compute depth
+                d.y = d.depth * VisualizerConfig.DISTANCE_BETWEEN_NODE_LEVELS; // compute depth
             });
 
             let depthArr = [];
             let maxDepth = 10;
-            let NUM_NODES_ACROSS_EXCEEDED = 20;
             for (let j = 0; j < maxDepth; j++) {
                 depthArr.push(0);
             }
@@ -656,7 +646,7 @@ export default {
 
                 adjustedHeight += 100;
 
-                if (depthArr[i] > NUM_NODES_ACROSS_EXCEEDED) {
+                if (depthArr[i] > VisualizerConfig.MAX_NUMBER_NODES_ACROSS) {
                     console.log('adjusting.  width: ' + depthArr[i] * 100);
 
                     let newWidth = depthArr[i] * 100;
@@ -698,16 +688,25 @@ export default {
                     this.toggle(d, tree, treeData);
                 })
                 .on('mouseover', d => {
-                    console.log(this, this.duration, 'mouseover', d);
+                    console.log(
+                        this,
+                        VisualizerConfig.ANIMATION_DURATION,
+                        'mouseover',
+                        d
+                    );
 
                     tooltipDiv
                         .transition()
-                        .duration(this.duration)
+                        .duration(VisualizerConfig.ANIMATION_DURATION)
                         .style('opacity', 0.9);
 
                     let tooltipContent = '';
                     if (this.violationsMap[d.data.resource_id]) {
-                        tooltipDiv.style('background', '#ff8c84'); //lighten-2.error
+                        // if a violation exists
+                        tooltipDiv.style(
+                            'background',
+                            VisualizerConfig.TOOLTIP_VIOLATION_BG_COLOR
+                        );
 
                         // ${violationsMap[d.data.resource_id].violation_data}
                         tooltipContent = `
@@ -725,11 +724,15 @@ export default {
                             );
                         }
                     } else {
-                        tooltipDiv.style('background', '#b3d4fc'); // .lighten-2.blue
+                        // if a violation does NOT exist
+                        tooltipDiv.style(
+                            'background',
+                            ColorConfig.NODE_BG_COLOR
+                        );
 
                         // default tooltipContent
                         tooltipContent = `
-                            <div>
+                            <div style="text-align: left; margin-left: 20px;">
                                 <h4>${d.data.resource_name}</h4>
                                 
                                 ${d.data.resource_data_name}
@@ -757,27 +760,24 @@ export default {
 
             nodeEnter
                 .append('circle')
-                .attr('r', circleRadius)
+                .attr('r', VisualizerConfig.NODE_RADIUS)
                 .style('fill', function(d) {
-                    return d._children ? 'lightsteelblue' : 'none';
+                    return d._children
+                        ? ColorConfig.NODE_BG_COLOR
+                        : ColorConfig.NONE;
                 })
                 .style('fill-opacity', function(d) {
                     return d._children ? 1 : 0;
                 })
                 .style('stroke-opacity', d => {
-                    // if (!this.showViolations) return 0;
-
                     return this.violationsMap[d.data.resource_id] !== undefined
                         ? 1
                         : 0;
                 })
                 .style('stroke', d => {
-                    /* VIOLATIONS!!! */
-                    // if (!this.showViolations) return 'black';
-                    // set to red
                     return this.violationsMap[d.data.resource_id] !== undefined
-                        ? '#DB4437'
-                        : 'black';
+                        ? ColorConfig.DANGER
+                        : ColorConfig.BLACK;
                 });
 
             // adds the image to the node
@@ -787,16 +787,14 @@ export default {
                     return d.data.image;
                 })
                 .attr('x', function(d) {
-                    return -16;
+                    return VisualizerConfig.NODE_IMG_X;
                 })
                 .attr('y', function(d) {
-                    return -16;
+                    return VisualizerConfig.NODE_IMG_Y;
                 })
-                .attr('height', 35)
+                .attr('height', VisualizerConfig.NODE_IMG_HEIGHT)
                 .attr('width', function(d) {
-                    // console.log("image", d);
-                    // if (d.depth === 2) return 35;
-                    return 35;
+                    return VisualizerConfig.NODE_IMG_WIDTH;
                 });
 
             // adds the text to the node
@@ -810,7 +808,7 @@ export default {
                     return d.children ? 'end' : 'start';
                 })
                 .attr('transform', function(d) {
-                    if (d.data.resource_type === 'organization') {
+                    if (d.data.resource_type === ResourceType.ORGANIZATION) {
                         // there is only one of these
                         return 'translate(100, -100) rotate(-45)';
                     }
@@ -835,9 +833,11 @@ export default {
 
             nodeUpdate
                 .select('circle')
-                .attr('r', circleRadius)
+                .attr('r', VisualizerConfig.NODE_RADIUS)
                 .style('fill', function(d) {
-                    return d._children ? 'lightsteelblue' : '#fff';
+                    return d._children
+                        ? ColorConfig.NODE_BG_COLOR
+                        : ColorConfig.WHITE;
                 })
                 .style('fill-opacity', function(d) {
                     return d._children ? 1 : 0;
@@ -850,8 +850,8 @@ export default {
                 .style('stroke', d => {
                     // set to red
                     return this.violationsMap[d.data.resource_id] !== undefined
-                        ? '#DB4437'
-                        : 'black';
+                        ? ColorConfig.DANGER
+                        : ColorConfig.BLACK;
                 });
 
             nodeUpdate.select('text').style('fill-opacity', 1);
@@ -951,7 +951,7 @@ export default {
 
             this.svg
                 .transition()
-                .duration(this.duration)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
                 .call(this.zoomListener.transform, d3.zoomIdentity);
         },
 
@@ -968,20 +968,20 @@ export default {
                 .selectAll('circle')
 
                 .transition()
-                .duration(this.duration)
-                .attr('r', 50)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
+                .attr('r', VisualizerConfig.PULSATE_MAX_RADIUS)
                 .style('fill', function(d) {
-                    return '#b3d4fc'; // some ugly green
+                    return ColorConfig.SUCCESS;
                 })
                 .style('fill-opacity', function(d) {
                     return 1;
                 })
                 .transition()
-                .duration(this.duration)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
                 //PULSATE CODE
-                .attr('r', 35)
+                .attr('r', VisualizerConfig.PULSATE_MIN_RADIUS)
                 .style('fill', function(d) {
-                    return '#b3d4fc'; // some ugly green
+                    return ColorConfig.SUCCESS;
                 })
                 .style('fill-opacity', function(d) {
                     return 1;
@@ -997,10 +997,12 @@ export default {
                 .selectAll('.node')
                 .selectAll('circle')
                 .transition()
-                .duration(this.duration)
-                .attr('r', 22)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
+                .attr('r', VisualizerConfig.NODE_RADIUS)
                 .style('fill', function(d) {
-                    return d._children ? 'lightsteelblue' : 'none';
+                    return d._children
+                        ? ColorConfig.NODE_BG_COLOR
+                        : ColorConfig.NONE;
                 })
                 .style('fill-opacity', function(d) {
                     return d._children ? 1 : 0;
@@ -1020,10 +1022,10 @@ export default {
                 .selectAll('circle')
 
                 .transition()
-                .duration(this.duration)
-                .attr('r', 40)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
+                .attr('r', VisualizerConfig.HIGHLIGHT_RADIUS)
                 .style('fill', function(d) {
-                    return '#b3d4fc'; // some ugly green
+                    return ColorConfig.SUCCESS;
                 })
                 .style('fill-opacity', function(d) {
                     return 1;
@@ -1047,9 +1049,9 @@ export default {
                 this.treeData.each(d => {
                     for (let i = 0; i < resources.length; i++) {
                         let match = resources[i].resources[0]
-                            .replace('organization', 'organizations')
-                            .replace('folder', 'folders')
-                            .replace('project/', '');
+                            .replace(ResourceType.ORGANIZATION, 'organizations')
+                            .replace(ResourceType.FOLDER, 'folders')
+                            .replace(`${ResourceType.PROJECT}/`, '');
 
                         if (match === d.data.resource_data_name) {
                             matchingDataElements.push(d);
@@ -1113,16 +1115,6 @@ export default {
                                         return true;
                                     }
 
-                                    // all existing
-                                    // for (
-                                    //     let j = 0;
-                                    //     j < matchingCollection.length;
-                                    //     j++
-                                    // ) {
-                                    //     if (d.id === matchingCollection[j])
-                                    //         return true;
-                                    // }
-
                                     return false;
                                 };
                             })(el)
@@ -1131,7 +1123,7 @@ export default {
                         // move
                         this.g
                             .transition()
-                            .duration(this.duration)
+                            .duration(VisualizerConfig.ANIMATION_DURATION)
                             .attr('transform', () => {
                                 if (this.orientation === Orientation.Vertical) {
                                     return (
@@ -1178,9 +1170,13 @@ export default {
 
             // explain - iam user
             if (this.useCache && !this.useJson) {
-                d3.json(cachedFileMap.iamexplainbyuserFile2).then(callbackFn);
+                d3.json(
+                    VisualizerConfig.CACHED_FILE_MAP.iamexplainbyuserFile2
+                ).then(callbackFn);
             } else if (this.useCache) {
-                d3.json(cachedFileMap.iamexplainbyuserFile).then(callbackFn);
+                d3.json(
+                    VisualizerConfig.CACHED_FILE_MAP.iamexplainbyuserFile
+                ).then(callbackFn);
             } else {
                 new DataService()
                     .getExplainIdentity(this.explainIdentitySearchTerm)
@@ -1235,7 +1231,7 @@ export default {
          * @description Searches for an exact text match of the node name and pans to that node
          */
         search: function(searchText) {
-            console.log(searchText, this.treeData, 'elllll', el);
+            console.log(searchText, this.treeData, 'element', el);
 
             // get the data element
             let el = null;
@@ -1247,16 +1243,13 @@ export default {
 
             // add PULSE effect
             let ref = d3.selectAll(el);
-
-            ref.attr('height', 400)
-                .attr('r', 44)
-                .style('fill', function(d) {
-                    return d._children ? 'green' : '#241490';
-                })
+            ref.style('fill', function(d) {
+                return d._children ? ColorConfig.SUCCESS : ColorConfig.WHITE;
+            })
                 .style('fill-opacity', function(d) {
                     return d._children ? 1 : 0;
                 })
-                .style('stroke', 'white')
+                .style('stroke', ColorConfig.WHITE)
                 .style('stroke-opacity', 0)
                 .enter()
                 .append('circle')
@@ -1281,7 +1274,7 @@ export default {
             // move to the node and zoom to it
             this.g
                 .transition()
-                .duration(this.duration)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('transform', d => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
@@ -1462,19 +1455,20 @@ export default {
             if (this.showViolations) {
                 let nodes = this.svg.selectAll('.node');
 
-                let circleRadius = this.circleRadius;
                 let allCircles = nodes.selectAll('circle');
                 console.log(allCircles.nodes());
 
                 nodes
                     .selectAll('circle')
-                    .transition(this.duration)
-                    .attr('r', circleRadius * 2)
+                    .transition(VisualizerConfig.ANIMATION_DURATION)
+                    .attr('r', VisualizerConfig.NODE_RADIUS * 2)
                     .attr('cx', 1)
                     .attr('cy', 2)
 
                     .style('fill', function(d) {
-                        return d._children ? 'lightsteelblue' : 'none';
+                        return d._children
+                            ? ColorConfig.NODE_BG_COLOR
+                            : ColorConfig.NONE;
                     })
                     .style('fill-opacity', function(d) {
                         return d._children ? 1 : 0;
@@ -1486,25 +1480,26 @@ export default {
                     })
                     .style('stroke', function(d) {
                         return violationsMap[d.data.resource_id] !== undefined
-                            ? '#DB4437'
-                            : 'black';
+                            ? ColorConfig.DANGER
+                            : ColorConfig.BLACK;
                     });
 
                 console.log('nodes', nodes);
             } else {
                 let nodes = this.svg.selectAll('.node');
 
-                let circleRadius = this.circleRadius;
                 nodes
                     .selectAll('circle')
-                    .transition(this.duration)
-                    .attr('r', circleRadius)
+                    .transition(VisualizerConfig.ANIMATION_DURATION)
+                    .attr('r', VisualizerConfig.NODE_RADIUS)
                     .attr('cx', 1)
                     .attr('cy', 2)
 
-                    .attr('r', circleRadius)
+                    .attr('r', VisualizerConfig.NODE_RADIUS)
                     .style('fill', function(d) {
-                        return d._children ? 'lightsteelblue' : 'none';
+                        return d._children
+                            ? ColorConfig.NODE_BG_COLOR
+                            : ColorConfig.NONE;
                     })
                     .style('fill-opacity', function(d) {
                         return d._children ? 1 : 0;
@@ -1519,8 +1514,8 @@ export default {
                         // set to red
                         return this.violationsMap[d.data.resource_id] !==
                             undefined
-                            ? '#DB4437'
-                            : 'black';
+                            ? ColorConfig.DANGER
+                            : ColorConfig.BLACK;
                     });
             }
         },
@@ -1535,16 +1530,16 @@ export default {
             // move to the node and zoom to it
             this.g
                 .transition()
-                .duration(this.duration)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('transform', d => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
                             t.x +
                             ',' +
-                            (this.margin.top + t.y) +
+                            (VisualizerConfig.MARGIN.top + t.y) +
                             ')scale(' +
-                            t.k * 1.5 +
+                            t.k * VisualizerConfig.SCALE_RATIO +
                             ')'
                         );
                     } else {
@@ -1554,7 +1549,7 @@ export default {
                             ',' +
                             t.x +
                             ')scale(' +
-                            t.k * 1.5 +
+                            t.k * VisualizerConfig.SCALE_RATIO +
                             ')'
                         );
                     }
@@ -1563,7 +1558,9 @@ export default {
                     // move drag position accordingly
                     this.svg.call(
                         this.zoomListener.transform,
-                        d3.zoomIdentity.translate(t.x, t.y).scale(t.k * 1.5)
+                        d3.zoomIdentity
+                            .translate(t.x, t.y)
+                            .scale(t.k * VisualizerConfig.SCALE_RATIO)
                     );
                 });
         },
@@ -1577,26 +1574,26 @@ export default {
             // move to the node and zoom to it
             this.g
                 .transition()
-                .duration(this.duration)
+                .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('transform', d => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
                             t.x * t.k +
                             ',' +
-                            (this.margin.top + t.y * t.k) +
+                            (VisualizerConfig.MARGIN.top + t.y * t.k) +
                             ')scale(' +
-                            t.k / 1.5 +
+                            t.k / VisualizerConfig.SCALE_RATIO +
                             ')'
                         );
                     } else {
                         return (
                             'translate(' +
-                            (this.margin.top + t.y * t.k) +
+                            (VisualizerConfig.MARGIN.top + t.y * t.k) +
                             ',' +
                             t.x * t.k +
                             ')scale(' +
-                            t.k / 1.5 +
+                            t.k / VisualizerConfig.SCALE_RATIO +
                             ')'
                         );
                     }
@@ -1607,7 +1604,7 @@ export default {
                         this.zoomListener.transform,
                         d3.zoomIdentity
                             .translate(t.x * t.k, t.y * t.k)
-                            .scale(t.k / 1.5)
+                            .scale(t.k / VisualizerConfig.SCALE_RATIO)
                     );
                 });
         },
@@ -1633,10 +1630,10 @@ export default {
         bottomSheetEnabled: false, // for violations view on the bottom
         dialog: false, // settings dialog
         selectedFilterResources: [
-            // 'GCS Bucket',
             'GCE Instance',
             'GKE Cluster',
             'Network',
+            // 'GCS Bucket',
             // 'BQ Dataset',
             // 'App Engine',
             // 'Service Account',
@@ -1670,19 +1667,6 @@ export default {
         treeData: {},
         violationsMap: {},
         nodeIdCounter: 0, // the node id count and duration for animations
-
-        // svg node configurable lengths/distances
-        duration: 500, //ms
-        circleRadius: 22, //px
-
-        margin: {
-            top: 100, //px
-            right: 0,
-            bottom: 0,
-            left: 0,
-        },
-        defaultWidth: 1200,
-        defaultHeight: 800,
 
         // computed
         width: 0, //px
@@ -1735,16 +1719,18 @@ svg {
 
 div.tooltip {
     position: absolute;
-    text-align: center;
+    text-align: left;
+    padding-left: 15px;
     width: 300px;
     height: 100px;
     padding: 12px;
     font: 14px sans-serif;
-    background: lightsteelblue;
-    border: 0px;
+    border: 14px solid black;
     opacity: 0.5;
     border-radius: 8px;
     pointer-events: none;
+
+    stroke-width: 3px;
 }
 
 .zoom-button {

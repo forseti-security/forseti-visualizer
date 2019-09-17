@@ -116,7 +116,7 @@ import D3Helpers from '../services/D3Helpers';
 import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataService from '../services/DataService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
-import Orientation from '../models/Orientation';
+import Orientation from '../constants/Orientation';
 import ResourceArrayStore from '../stores/ResourceArray';
 import { mapState } from 'vuex';
 
@@ -243,7 +243,6 @@ export default {
          * @description Emits a request to set the new parent (root) node
          */
         setParent: function() {
-            alert(this.nodeName);
             this.$emit(componentFunctionMap.setParent, this.nodeName);
         },
 
