@@ -29,6 +29,26 @@ export FORSETI_SERVER_VM_CHANNEL="[VM_IP]:[GRPC_PORT]"
 export FORSETI_DATA_MODEL_HANDLE="[DATA_MODEL_HANDLE_HASH:21254f1de747879237a95cb552e80844]"
 EOF
 
+# create auth config.json for authenticating
+# refer to instructions on setting up project authentication
+cat > server/config.json << EOF
+{
+  "host": "0.0.0.0",
+  "port": 8080,
+  "bodyLimit": "100kb",
+  "corsHeaders": ["Link"],  
+  "GCLOUD_PROJECT": "[PROJECT_ID]",
+  "DATA_BACKEND": "datastore",  
+  "NODE_ENV": "",
+  "OAUTH2_CLIENT_ID": "[SERVICE_ACCOUNT_NAME]@apps.googleusercontent.com",
+  "OAUTH2_CLIENT_SECRET": "[CLIENT_SECRET]",
+  "OAUTH2_CALLBACK": "http://localhost:8080/auth/google/callback",
+  
+  "SECRET": "[SECRET]"
+}
+EOF
+
+
 npm install
 source source.env
 # the forseti-api server runs on localhost port 8080

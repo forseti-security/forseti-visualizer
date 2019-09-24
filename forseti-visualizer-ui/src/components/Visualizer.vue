@@ -168,7 +168,8 @@ import * as d3 from 'd3';
 import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataServiceFactory from '../services/DataServiceFactory';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
-import Orientation from '../models/Orientation';
+import Orientation from '../constants/Orientation';
+import ColorConfig from '../constants/ColorConfig';
 
 export default {
     /**
@@ -727,19 +728,15 @@ export default {
                     return d._children ? 1 : 0;
                 })
                 .style('stroke-opacity', d => {
-                    // if (!this.showViolations) return 0;
-
                     return this.violationsMap[d.data.resource_id] !== undefined
                         ? 1
                         : 0;
                 })
                 .style('stroke', d => {
-                    /* VIOLATIONS!!! */
-                    // if (!this.showViolations) return 'black';
-                    // set to red
+                    // Violation Color
                     return this.violationsMap[d.data.resource_id] !== undefined
-                        ? '#DB4437'
-                        : 'black';
+                        ? ColorConfig.DANGER
+                        : ColorConfig.BLACK;
                 });
 
             // adds the image to the node
@@ -811,8 +808,8 @@ export default {
                 .style('stroke', (d) => {
                     // set to red
                     return this.violationsMap[d.data.resource_id] !== undefined
-                        ? '#DB4437'
-                        : 'black';
+                        ? ColorConfig.DANGER
+                        : ColorConfig.BLACK;
                 });
 
             nodeUpdate.select('text').style('fill-opacity', 1);
@@ -1415,8 +1412,8 @@ export default {
                     })
                     .style('stroke', function(d) {
                         return violationsMap[d.data.resource_id] !== undefined
-                            ? '#DB4437'
-                            : 'black';
+                            ? ColorConfig.DANGER
+                            : ColorConfig.BLACK;
                     });
             } else {
                 let nodes = this.svg.selectAll('.node');
@@ -1446,8 +1443,8 @@ export default {
                         // set to red
                         return this.violationsMap[d.data.resource_id] !==
                             undefined
-                            ? '#DB4437'
-                            : 'black';
+                            ? ColorConfig.DANGER
+                            : ColorConfig.BLACK;
                     });
             }
         },
@@ -1551,7 +1548,7 @@ export default {
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
         // filter variables
-        nodeName: 'dia-dog-flow',
+        nodeName: '',
         expand: true,
         expandAll: false,
         showViolations: true,
@@ -1593,14 +1590,8 @@ export default {
         // autocomp
         isEditing: true,
         model: null,
-        resourceArray: [{ text: 'hi', value: 1, resource_name: 'test' }],
-        resources: [
-            'dia-dog-flow',
-            'mycloud.com',
-            'Machine Learning',
-            'Common Services',
-            'sandbox',
-        ],
+        resourceArray: [], //[{ text: '', value: 1, resource_name: '' }],
+        resources: [], // ['resource-name-1', 'resource-name-2']
 
         // svg data
         treeData: {},

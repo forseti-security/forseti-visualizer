@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// THIS IS an EXAMPLE ResourceNode and is not used in the app itself
 /** 
  * @class ResourceNode
  * @description instance of resource node 

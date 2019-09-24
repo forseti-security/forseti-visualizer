@@ -3,12 +3,12 @@
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Forseti</span>
-        <span class="font-weight-light">Viz</span>
+        <span class="font-weight-light">Visualizer</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
       <router-link to="/viz">
-        <v-btn flat>Viz</v-btn>
+        <v-btn flat>Visualizer</v-btn>
       </router-link>
       <!-- <router-link to="/violations">
         <v-btn flat>violations</v-btn>

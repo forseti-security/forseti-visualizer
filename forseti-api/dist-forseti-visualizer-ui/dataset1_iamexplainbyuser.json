@@ -51,11 +51,11 @@
     "member": "user/garrettwong@mycloud.com",
     "role": "roles/resourcemanager.folderEditor"
 }, {
-    "resources": ["project/gwc-core"],
+    "resources": ["project/the-core"],
     "member": "user/garrettwong@mycloud.com",
     "role": "roles/compute.admin"
 }, {
-    "resources": ["project/gwc-core"],
+    "resources": ["project/the-core"],
     "member": "user/garrettwong@mycloud.com",
     "role": "roles/editor"
 }, {
@@ -67,7 +67,7 @@
     "member": "user/garrettwong@mycloud.com",
     "role": "roles/owner"
 }, {
-    "resources": ["mls-bucket"],
+    "resources": ["tf-lb-https-gke"],
     "member": "user/garrettwong@mycloud.com",
-    "role": "roles/storage.admin"
+    "role": "roles/container.admin"
 }]

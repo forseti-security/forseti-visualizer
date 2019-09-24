@@ -1,7 +1,7 @@
 {
 	"name": "forseti-visualizer-api",
-	"version": "1.0.1",
-	"description": "Forseti Viz API to serve Forseti Based GCP content",
+	"version": "1.0.2",
+	"description": "Forseti Visualizer API to serve Forseti Based GCP content",
 	"author": "Garrett Wong",
 	"main": "server.js",
 	"scripts": {
