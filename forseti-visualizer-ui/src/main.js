@@ -33,6 +33,11 @@ const routes = [{
     component: Viz
   },
   {
+    path: '/viz/:projectId',
+    component: Viz,
+    props: true
+  },
+  {
     path: '/violations',
     component: Violations
   },

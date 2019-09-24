@@ -81,10 +81,6 @@ const VisualizerConfig = {
         resourcesFile: 'dataset1_resources.json',
         violationsFile: 'dataset1_violations.json',
         iamexplainbyuserFile: 'dataset1_iamexplainbyuser.json',
-
-        resourcesFile2: 'dataset2_resources.json',
-        violationsFile2: 'dataset2_violations.json',
-        iamexplainbyuserFile2: 'dataset2_iamexplainbyuser.json',
     }
 };
 

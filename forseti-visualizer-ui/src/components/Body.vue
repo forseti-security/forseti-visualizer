@@ -31,7 +31,7 @@
                             class="zoom-button"
                             style="position: absolute; left: 48px; top: 11px;"
                         >-</button>
-
+                        Project Id: {{projectId}}
                         <section id="d3-area"></section>
                     </v-flex>
                 </v-layout>
@@ -47,8 +47,12 @@ import * as d3 from 'd3';
 import D3Helpers from '../services/D3Helpers';
 import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataService from '../services/DataService';
+import TestDataService from '../services/TestDataService';
 import ForsetiSetParentService from '../services/ForsetiSetParentService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
+import ResourceDataServiceHandler from '../services/ResourceDataServiceHandler';
+import Filters from '../services/Filters';
+import Sorters from '../services/Sorters';
 
 import Orientation from '../constants/Orientation';
 import ColorConfig from '../constants/ColorConfig';
@@ -89,6 +93,10 @@ export default {
             .attr('height', this.height)
             .style('pointer-events', 'all');
 
+        if (this.projectId) {
+            alert('project id: ' + this.projectId);
+        }
+
         this.init(this.orientation);
     },
 
@@ -97,18 +105,6 @@ export default {
      * @description Vue methods that are bound to 'this'
      */
     methods: {
-        /**
-         * @function capitalize
-         * @description Capitalizes the first letter
-         * @returns the capitalized string
-         */
-        capitalize: function(str) {
-            if (str.length > 0) {
-                return str.substr(0, 1).toUpperCase() + str.substr(1);
-            }
-            return str;
-        },
-
         /**
          * @function findResourceNodeByName
          * @description returns a resource node by name
@@ -206,231 +202,67 @@ export default {
          * @param orientation - [Orientation.Vertical, Orientation.Horizontal]
          */
         init: function(orientation) {
-            let csv_data;
-            let treeData, tree, table, svg, g;
+            let dataService;
 
-            if (this.useJson) {
-                if (this.useCache) {
-                    d3.json(
-                        VisualizerConfig.CACHED_FILE_MAP.resourcesFile
-                    ).then(resourcesData => {
-                        if (resourcesData.length > 0) {
-                            d3.json(
-                                VisualizerConfig.CACHED_FILE_MAP.violationsFile
-                            ).then(violationsData => {
-                                for (
-                                    let i = 0;
-                                    i < violationsData.length;
-                                    i++
-                                ) {
-                                    if (
-                                        violationsData[i].resource_type ===
-                                        ResourceType.SERVICE_ACCOUNT_KEY
-                                    ) {
-                                        this.violationsMap[
-                                            JSON.parse(
-                                                violationsData[i].violation_data
-                                            ).key_id
-                                        ] = violationsData[i];
-                                    } else {
-                                        this.violationsMap[
-                                            violationsData[i].resource_id
-                                        ] = violationsData[i];
-                                    }
-                                }
+            if (this.useCache) {
+                dataService = new TestDataService();
+            } else {
+                // from the database
+                dataService = new DataService();
+            }
 
-                                this.resourceArray = resourcesData
-                                    .map(function(a) {
-                                        a.parent_id =
-                                            a.resource_type ==
-                                            ResourceType.ORGANIZATION
-                                                ? ''
-                                                : a.parent_id;
-                                        a.image = GoogleCloudImageService.getImageUrl(
-                                            a.resource_type
-                                        );
-                                        a.resource_name =
-                                            a.resource_data_displayname !== ''
-                                                ? a.resource_data_displayname
-                                                : a.resource_data_name;
+            // ELSE: useCache=false: (fetch from the database)
+            dataService.getForsetiResources().then(resourcesData => {
+                // get inventory index id
+                if (resourcesData.length > 0) {
+                    let filteredResourcesData = resourcesData;
 
-                                        return a;
-                                    })
-                                    .sort(function(a, b) {
-                                        // sort alphabetically, ignoring case
-                                        if (
-                                            a.resource_name.toLowerCase() <
-                                            b.resource_name.toLowerCase()
-                                        )
-                                            return -1;
-                                        if (
-                                            a.resource_name.toLowerCase() <
-                                            b.resource_name.toLowerCase()
-                                        )
-                                            return 1;
-                                        return 0;
-                                    });
-
-                                let filteredResourceArray = this.filterResourceArray();
-
-                                console.log(filteredResourceArray);
-
-                                // initialize tree
-                                this.initTree(
-                                    orientation,
-                                    filteredResourceArray
-                                );
-                            });
+                    /* filtered data */
+                    filteredResourcesData = resourcesData.filter(
+                        Filters.nonNullAndActive
+                    );
+                    resourcesData.forEach(curVal => {
+                        if (curVal.resource_data_displayname === '') {
+                            curVal.resource_data_displayname =
+                                curVal.resource_data_name;
                         }
                     });
-                } else {
-                    // ELSE: useCache=false: (database)
-                    new DataService()
-                        .getForsetiResources()
-                        .then(resourcesData => {
-                            // get inventory index id
-                            if (resourcesData.length > 0) {
-                                let filteredResourcesData = resourcesData;
+                    /* end filtered data */
+                    let inventoryIndexId =
+                        filteredResourcesData[0].inventory_index_id;
 
-                                /* filtered data */
-                                filteredResourcesData = resourcesData.filter(
-                                    data => {
-                                        if (
-                                            data.qq === null ||
-                                            data.qq === 'ACTIVE'
-                                        )
-                                            return true;
-                                        return false;
-                                    }
-                                );
-                                resourcesData.forEach(curVal => {
-                                    if (
-                                        curVal.resource_data_displayname === ''
-                                    ) {
-                                        curVal.resource_data_displayname =
-                                            curVal.resource_data_name;
-                                    }
-                                });
-                                /* end filtered data */
-                                let inventoryIndexId =
-                                    filteredResourcesData[0].inventory_index_id;
-
-                                new DataService()
-                                    .getViolations(inventoryIndexId)
-                                    .then(violationsData => {
-                                        // { resource_id: { violation } }
-                                        for (
-                                            let i = 0;
-                                            i < violationsData.length;
-                                            i++
-                                        ) {
-                                            this.violationsMap[
-                                                violationsData[i].resource_id
-                                            ] = violationsData[i];
-                                        }
-
-                                        this.resourceArray = filteredResourcesData
-                                            .map(function(a) {
-                                                a.parent_id =
-                                                    a.resource_type ==
-                                                    ResourceType.ORGANIZATION
-                                                        ? ''
-                                                        : a.parent_id;
-                                                a.image = GoogleCloudImageService.getImageUrl(
-                                                    a.resource_type
-                                                );
-                                                a.resource_name =
-                                                    a.resource_data_displayname !==
-                                                    ''
-                                                        ? a.resource_data_displayname
-                                                        : a.resource_data_name;
-                                                return a;
-                                            })
-                                            .sort(function(a, b) {
-                                                // sort alphabetically, ignoring case
-                                                if (
-                                                    a.resource_name.toLowerCase() <
-                                                    b.resource_name.toLowerCase()
-                                                )
-                                                    return -1;
-                                                if (
-                                                    a.resource_name.toLowerCase() <
-                                                    b.resource_name.toLowerCase()
-                                                )
-                                                    return 1;
-                                                return 0;
-                                            });
-
-                                        this.filterResourceArray();
-
-                                        // initialize tree
-                                        this.initTree(
-                                            orientation,
-                                            this.resourceArray
-                                        );
-                                    });
-                            }
-                        });
-                }
-            } else {
-                d3.json(VisualizerConfig.CACHED_FILE_MAP.resourcesFile2).then(
-                    resourcesData => {
-                        if (resourcesData.length > 0) {
-                            d3.json(
-                                VisualizerConfig.CACHED_FILE_MAP.violationsFile2
-                            ).then(violationsData => {
-                                for (
-                                    let i = 0;
-                                    i < violationsData.length;
-                                    i++
+                    dataService
+                        .getViolations(inventoryIndexId)
+                        .then(violationsData => {
+                            // { resource_id: { violation } }
+                            for (let i = 0; i < violationsData.length; i++) {
+                                if (
+                                    violationsData[i].resource_type ===
+                                    ResourceType.SERVICE_ACCOUNT_KEY
                                 ) {
+                                    this.violationsMap[
+                                        JSON.parse(
+                                            violationsData[i].violation_data
+                                        ).key_id
+                                    ] = violationsData[i];
+                                } else {
                                     this.violationsMap[
                                         violationsData[i].resource_id
                                     ] = violationsData[i];
                                 }
+                            }
 
-                                console.log(this.violationsMap);
+                            this.resourceArray = filteredResourcesData
+                                .map(ResourceDataServiceHandler.handle)
+                                .sort(Sorters.sortAscendingCaseInsensitive);
 
-                                this.resourceArray = resourcesData
-                                    .map(function(a) {
-                                        a.parent_id =
-                                            a.resource_type ==
-                                            ResourceType.ORGANIZATION
-                                                ? ''
-                                                : a.parent_id;
-                                        a.image = GoogleCloudImageService.getImageUrl(
-                                            a.resource_type
-                                        );
-                                        a.resource_name =
-                                            a.resource_data_displayname !== ''
-                                                ? a.resource_data_displayname
-                                                : a.resource_data_name;
-                                        return a;
-                                    })
-                                    .sort(function(a, b) {
-                                        // sort alphabetically, ignoring case
-                                        if (
-                                            a.resource_name.toLowerCase() <
-                                            b.resource_name.toLowerCase()
-                                        )
-                                            return -1;
-                                        if (
-                                            a.resource_name.toLowerCase() <
-                                            b.resource_name.toLowerCase()
-                                        )
-                                            return 1;
-                                        return 0;
-                                    });
+                            let filteredResourceArray = this.filterResourceArray();
 
-                                this.filterResourceArray();
-
-                                // initialize
-                                this.initTree(orientation, this.resourceArray);
-                            });
-                        }
-                    }
-                );
-            }
+                            // initialize tree
+                            this.initTree(orientation, filteredResourceArray);
+                        });
+                }
+            });
         },
 
         /**
@@ -990,7 +822,7 @@ export default {
 
         /**
          * @function resetNodeStyles
-         * @description Resets node styles to default
+         * @description Resets node styles to the default
          */
         resetNodeStyles: function() {
             this.g
@@ -1609,6 +1441,8 @@ export default {
                 });
         },
     },
+
+    props: ['projectId'],
 
     /**
      * Vue: data

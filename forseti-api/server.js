@@ -47,20 +47,9 @@ app.use('/api', api({
 // set up / main route
 app.get('/', (req, res) => {
   res.render('index', {
-    title: `Hello World`
+    title: `Forseti-Visualizer`
   });
 });
-
-// test routes
-app.get('/home', function (req, res) {
-  res.send('GET: ' + req.url);
-});
-
-app.post('/home', function (req, res) {
-  res.send('POST: ' + req.url);
-});
-
-
 
 
 /* AUTH */
