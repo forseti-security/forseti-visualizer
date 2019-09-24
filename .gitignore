@@ -8,6 +8,7 @@ clah_source.env
 clah_dockersource.env
 dockersource.env
 asdf.env.enc
+config.json
 
 # Keys
 sa-key.json
