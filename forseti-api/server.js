@@ -89,7 +89,7 @@ app.use(session(sessionConfig));
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(require('./server/services/oauth2').router);
+app.use(require('./server/services/oauth2').router); //auth
 
 /* END AUTH */
 

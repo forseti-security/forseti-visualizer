@@ -19,6 +19,7 @@ import {
 	Router
 } from 'express';
 import forseti from './forseti';
+import user from './user';
 
 import CryptoService from '../services/crypto-service';
 
@@ -33,7 +34,13 @@ export default ({
 		config,
 		db
 	}));
-	
+
+	// mount resources
+	api.use('/user', user({
+		config,
+		db
+	}));
+
 	// api.use('/auth', auth({
 	// 	config,
 	// 	db
@@ -49,16 +56,18 @@ export default ({
 	});
 
 
+
+
 	/* Testing */
 
 	// perhaps expose some API metadata at the root
 	api.get('/enc', async (req, res) => {
 		// enc / dec
 		let textToEncrypt = "Haha";
-		
+
 		let encryptedText = await CryptoService.encrypt(
 			'/Users/garrettwong/Git/forseti-visualizer/forseti-api/dockersource.env', 'asdf.env.enc');
-		
+
 		res.json({
 			encryptedText
 		});

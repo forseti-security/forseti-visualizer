@@ -64,17 +64,17 @@ passport.use(new GoogleStrategy({
 }, (accessToken, refreshToken, profile, cb) => {
     // Extract the minimal profile information we need from the profile object
     // provided by Google
-    console.log('oauth2.js: passport.use cb', accessToken, refreshToken, profile);
-
+    console.log('oauth2.js: passport.use', accessToken, refreshToken, profile);
+    
     cb(null, extractProfile(profile));
 }));
 
 passport.serializeUser((user, cb) => {
-    console.log('oauth2.js: serializeUser');
+    console.log('oauth2.js: serializeUser', user);
     cb(null, user);
 });
 passport.deserializeUser((obj, cb) => {
-    console.log('oauth2.js: deserializeUser');
+    console.log('oauth2.js: deserializeUser', obj);
     cb(null, obj);
 });
 // [END setup]
@@ -128,7 +128,7 @@ router.get(
     passport.authenticate('google', {
         scope: ['email', 'profile']
     }, (err, user, info) => {
-        console.log('uh oh');
+        console.log('an error has occurred with authentication');
     })
 );
 // [END authorize]
@@ -145,6 +145,7 @@ router.get(
     // Redirect back to the original page, if any
     (req, res) => {
         console.log('oauth2.js: /auth/google/callback');
+        console.log(req.session.oauth2return);
 
         const redirect = req.session.oauth2return || '/';
         delete req.session.oauth2return;

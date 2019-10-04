@@ -10,15 +10,15 @@
       <router-link to="/viz">
         <v-btn flat>Visualizer</v-btn>
       </router-link>
-      <!-- <router-link to="/violations">
-        <v-btn flat>violations</v-btn>
-      </router-link>
       <router-link to="/resources">
         <v-btn flat>Resources</v-btn>
-      </router-link> -->
-      <!-- <router-link to="/sandbox">
-        <v-btn flat>Sandbox</v-btn>
-      </router-link> -->
+      </router-link>
+      <router-link to="/violations">
+        <v-btn flat>Violations</v-btn>
+      </router-link>
+      <router-link to="/visualizer">
+        <v-btn flat>Visualizer Alpha</v-btn>
+      </router-link>
     </v-toolbar>
 
     <v-content>

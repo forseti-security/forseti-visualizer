@@ -3,6 +3,7 @@
         <v-layout text-xs-center wrap class="margin-top-30">
             <v-flex xs12 mb-5>
                 <v-layout justify-center>
+                    
                     <Navbar
                         v-on:resetZoom="resetZoom"
                         v-on:toggleViolations="toggleViolations"
