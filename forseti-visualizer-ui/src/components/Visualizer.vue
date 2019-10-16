@@ -352,7 +352,7 @@ export default {
 
                     /* filtered data */
                     filteredResourcesData = resourcesData.filter(data => {
-                        if (data.qq === null || data.qq === 'ACTIVE')
+                        if (data.lifecycle_state === null || data.lifecycle_state === 'ACTIVE')
                             return true;
                         return false;
                     });
