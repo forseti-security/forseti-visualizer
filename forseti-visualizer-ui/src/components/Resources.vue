@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-layout wrap class="margin-top-30">
+        <v-layout class="margin-top-30">
             <v-flex xs12 mb-5>
                 <v-layout justify-center>
                     <!-- Navbar -->
@@ -13,7 +13,7 @@
                         :inventoryIndexSnapshots="inventoryIndexSnapshots"
                     />
 
-                    <v-flex xs9 mb-5 style="max-height: 550px; overflow: auto;">
+                    <v-flex xs9 mb-5 style="max-height: 650px; overflow: scroll;">
                         <!-- Data Table -->
                         <v-data-table
                             :headers="mainHeaders"
@@ -25,12 +25,41 @@
                         >
                             <template slot="items" scope="props">
                                 <tr @click="props.expanded = !props.expanded">
-                                    <td class="text-xs">{{ props.item.name }}</td>
-                                    <td class="text-xs">{{ props.item.resource_data_name }}</td>
+                                    <td
+                                        class="text-xs"
+                                        style="max-width:120px; overflow: auto; text-overflow: ellipsis;"
+                                    >{{ props.item.name }}</td>
+                                    <td
+                                        class="text-xs"
+                                        style="max-width:120px; overflow: auto; text-overflow: ellipsis;"
+                                    >{{ props.item.resource_data_name }}</td>
                                     <td class="text-xs">{{ props.item.resource_type }}</td>
                                     <td class="text-xs">{{ props.item.resource_id }}</td>
+                                    <td class="text-xs">
+                                        <v-btn
+                                            class="mx-2"
+                                            fab
+                                            dark
+                                            small
+                                            color="primary"
+                                            v-on:click="edit(props.item.resource_id, $event)"
+                                        >
+                                            <v-icon dark title="View in Visualizer">fa-sitemap</v-icon>
+                                        </v-btn>
+                                        
+                                        <v-btn
+                                            class="mx-2"
+                                            fab
+                                            dark
+                                            small
+                                            color="primary"
+                                            v-on:click="edit(props.item.resource_id, $event)"
+                                        >
+                                            <v-icon dark title="Edit">fa-edit</v-icon>
+                                        </v-btn>
+                                    </td>
 
-                                    <td class="text-xs">{{ props.item }}</td>
+                                    <!-- <td class="text-xs">{{ props.item }}</td> -->
                                 </tr>
                             </template>
 
@@ -90,6 +119,12 @@ export default {
     },
 
     methods: {
+        edit: function(resourceId, event) {
+            alert('edit: ' + resourceId);
+            
+            event.stopPropagation();
+        },
+
         /**
          * @function beautify
          * @description JSON beautifier function
@@ -194,14 +229,18 @@ export default {
                     },
                 ];
             } else {
-                console.log('Filter data is defined.', filterData.selectedResourceTypes, this.originalResources);
+                console.log(
+                    'Filter data is defined.',
+                    filterData.selectedResourceTypes,
+                    this.originalResources
+                );
 
-                
-                this.resources = this.originalResources.filter((
-                    resourceData
-                ) => {
+                this.resources = this.originalResources.filter(resourceData => {
                     if (filterData.selectedResourceTypes.length > 0) {
-                        console.log(filterData.selectedResourceTypes, resourceData)
+                        console.log(
+                            filterData.selectedResourceTypes,
+                            resourceData
+                        );
                         // if (filterData.hasIncludeAll) {
                         //     return true;
                         // }
@@ -217,7 +256,7 @@ export default {
                     }
                 });
 
-                console.log(this.resources)
+                console.log(this.resources);
             }
         },
 
@@ -232,13 +271,15 @@ export default {
 
     data: () => ({
         mainHeaders: [
-            { text: 'Id', value: 'resource_id' },
-            { text: 'Name', value: 'resource_daata_name' },
-            { text: 'Type', value: 'resource_type' },
-            { text: 'Resource', value: 'resource_type' },
-            { text: '', value: '' },
+            { text: 'Id', value: 'resource_id', align: 'left' },
+            { text: 'Name', value: 'resource_data_name', align: 'left' },
+            { text: 'Type', value: 'resource_type', align: 'left' },
+            { text: 'Resource', value: 'resource_type', align: 'left' },
+            { text: 'Actions', value: '', align: 'left' },
+            // { text: '', value: '' },
         ],
         resources: [],
+        originalResources: [],
 
         // pass down parameters
         resourceTypes: [],

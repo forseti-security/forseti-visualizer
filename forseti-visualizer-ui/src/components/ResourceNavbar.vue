@@ -1,5 +1,5 @@
 <template>
-    <v-flex xs3 mb-5>
+    <v-flex sm6 md3 mb-5>
         <div class="control-panel">
             <v-container grid-list-md text-xs-center style="padding: 0;">
                 <v-layout row wrap>

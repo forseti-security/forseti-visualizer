@@ -47,6 +47,7 @@ class ForsetiService {
         });
      */
     getResources(cb) {
+        // GETS resources from the last successful inventory?
         let sql = `
         SELECT g.id, g.resource_type, g.category, g.resource_id, g.parent_id AS parent_id, 
             IFNULL(g.resource_data->>'$.displayName', '') as resource_data_displayname, 
@@ -55,7 +56,7 @@ class ForsetiService {
         FROM gcp_inventory g 
         WHERE g.inventory_index_id = (SELECT id 
                 FROM inventory_index 
-                WHERE inventory_status = 'SUCCESS'
+                WHERE inventory_status IN ('SUCCESS', 'PARTIAL_SUCCESS')
                 ORDER BY completed_at_datetime DESC LIMIT 1) 
             AND (g.category='resource') 
 
