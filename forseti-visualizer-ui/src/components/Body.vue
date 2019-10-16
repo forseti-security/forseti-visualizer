@@ -1451,7 +1451,7 @@ export default {
     data: () => ({
         // global: set this to use JSON files vs. dynamic
         // useCache: false, // default to using server data
-        useCache: true, // default to using cached files.json
+        useCache: false, // default to using cached files.json
         useJson: true, // false defers to using a .csv
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
