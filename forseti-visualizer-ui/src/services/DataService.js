@@ -33,7 +33,8 @@ class DataService {
      * @return promise containing an array of forseti-resources
      */
     getForsetiResources() {
-        let url = `${this.host}/api/forseti/resources`;
+        // let url = `${this.host}/api/forseti/resources`;
+        let url = `${this.host}/api/forseti`;
         return $.get(url);
     }
 
