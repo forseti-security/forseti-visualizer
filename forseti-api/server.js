@@ -66,7 +66,7 @@ const passport = require('passport');
 const sessionConfig = {
   resave: false,
   saveUninitialized: false,
-  secret: config.SECRET,
+  secret: config.randomString,
   signed: true
 };
 

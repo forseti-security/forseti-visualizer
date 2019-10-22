@@ -57,9 +57,9 @@ function extractProfile(profile) {
 // object, which will be set at `req.user` in route handlers after
 // authentication.
 passport.use(new GoogleStrategy({
-    clientID: config.OAUTH2_CLIENT_ID,
-    clientSecret: config.OAUTH2_CLIENT_SECRET,
-    callbackURL: config.OAUTH2_CALLBACK,
+    clientID: config.oauth2ClientId,
+    clientSecret: config.oauth2ClientSecret,
+    callbackURL: config.oauth2Callback,
     accessType: 'offline'
 }, (accessToken, refreshToken, profile, cb) => {
     // Extract the minimal profile information we need from the profile object
