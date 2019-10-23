@@ -166,7 +166,6 @@ export default {
          * @description Searches for an exact text match of the node name and pans to that node
          */
         search: function() {
-            alert('search');
             console.log(this.filterData);
 
             this.$emit(componentFunctionMap.search, this.filterData);

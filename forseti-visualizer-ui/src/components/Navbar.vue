@@ -100,7 +100,7 @@
       v-model="selectedFilterResources"
       :items="items"
       label="Filter by a list of resource types"
-      v-on:change="filterResources"
+      v-on:input="filterResources"
       multiple
       chips
       :menu-props="{ maxHeight: '400px', overflowY: true }"

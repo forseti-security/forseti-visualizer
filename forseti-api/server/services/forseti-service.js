@@ -46,10 +46,27 @@ class ForsetiService {
             return results;
         });
      */
-    getResources(cb) {
+    getResources(parentId, cb) {
+        // include parent and its children
+        let parentIdSqlPhrase = parentId ?
+            `AND (g.resource_id = '${parentId}' OR g.parent_id = 
+                (SELECT id 
+                    FROM gcp_inventory 
+                    WHERE inventory_index_id = g.inventory_index_id AND
+                        category = 'resource' AND 
+                        resource_id = '${parentId}'
+                )
+            )` : '';
+
+        console.log(parentIdSqlPhrase);
+
         // GETS resources from the last successful inventory?
         let sql = `
-        SELECT g.id, g.resource_type, g.category, g.resource_id, g.parent_id AS parent_id, 
+        SELECT g.id, 
+            g.resource_type, 
+            g.category, 
+            g.resource_id, 
+            g.parent_id AS parent_id, 
             IFNULL(g.resource_data->>'$.displayName', '') as resource_data_displayname, 
             IFNULL(g.resource_data->>'$.name', '') as resource_data_name, g.resource_data->>'$.lifecycleState' as lifecycle_state,
             g.inventory_index_id
@@ -63,8 +80,10 @@ class ForsetiService {
             AND g.resource_type IN ('organization', 'project', 'folder', 
                 'appengine_app', 'kubernetes_cluster', 'cloudsqlinstance', 'instance', 
                 'dataset', 'firewall', 'bucket', 'serviceaccount', 'serviceaccount_key', 'network')
+            
+            ${parentIdSqlPhrase}
             #AND (g.resource_data->>'$.lifecycleState' != 'DELETE_REQUESTED' || g.resource_data->>'$.lifecycleState' is NULL)
-
+            
             ORDER BY CASE 
                 WHEN g.resource_type = 'organization' THEN 0 
                 WHEN g.resource_type = 'folder' THEN 1 
@@ -84,14 +103,18 @@ class ForsetiService {
      *  function (error, results, fields) {
             if (error) throw error;
             
-            console.log('durr', results, fields);
-
             return results;
         });
      */
     getViolations(inventoryIndexId, cb) {
-        let getInventoryIndexId = '(SELECT id FROM inventory_index WHERE inventory_status = \'SUCCESS\' ORDER BY completed_at_datetime DESC LIMIT 1)';
-        if (inventoryIndexId === null || inventoryIndexId === 0) getInventoryIndexId = inventoryIndexId;
+        let getInventoryIndexIdSqlStmt = `(SELECT id 
+            FROM inventory_index 
+            WHERE inventory_status IN ('SUCCESS', 'PARTIAL_SUCCESS') 
+            ORDER BY completed_at_datetime DESC LIMIT 1)`;
+
+        if (inventoryIndexId !== null && inventoryIndexId > 0) {
+            getInventoryIndexIdSqlStmt = inventoryIndexId;
+        }
 
         let sql = `
         SELECT ii.id as inventory_index_id, si.id as scanner_index_id, v.* FROM violations v 
@@ -99,13 +122,15 @@ class ForsetiService {
         ON v.scanner_index_id = si.id
         JOIN inventory_index ii
         ON si.inventory_index_id = ii.id
-        WHERE ii.id = ${getInventoryIndexId};`;
+        WHERE ii.id = ${getInventoryIndexIdSqlStmt}`;
+
+        console.log('gv', inventoryIndexId, sql);
 
         try {
             let mySqlDbConn = getMySqlDbConnection();
             mySqlDbConn.query(sql, cb);
         } catch (ex) {
-            console.log(ex);
+            console.log('getViolations', ex);
         }
     }
 
@@ -136,18 +161,18 @@ class ForsetiService {
 
         var meta = new grpc.Metadata();
         meta.add('handle', secrets.forsetiDataModelHandle);
-        
+
         console.log(ex);
         console.log(res);
         console.log('channel', channel);
         console.log('channel', secrets.forsetiDataModelHandle);
-        
+
         res.getAccessByMembers({
             member_name: iamPrefix
         }, meta, cb);
     }
 
-     /**
+    /**
      * gets the iam explain of a given prefix
      * @param {*} role ''
      * @param {*} cb function for callback processing
@@ -168,14 +193,14 @@ class ForsetiService {
         var protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
         // The protoDescriptor object has the full package hierarchy
         var ex = protoDescriptor.explain;
-        
+
         let channel = secrets.forsetiServerVmChannel;
         let res = new ex.Explain(channel, grpc.credentials.createInsecure());
         console.log(res);
 
         var meta = new grpc.Metadata();
         meta.add('handle', secrets.forsetiDataModelHandle);
-        
+
         res.getAccessByPermissions({
             role_name: 'roles/owner',
             permission_name: '',

@@ -3,7 +3,7 @@
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Forseti</span>
-        <span class="font-weight-light">Visualizer</span>
+        <span class="font-weight-light">Visualizer v2.0</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -12,12 +12,6 @@
       </router-link>
       <router-link to="/resources">
         <v-btn flat>Resources</v-btn>
-      </router-link>
-      <router-link to="/violations">
-        <v-btn flat>Violations</v-btn>
-      </router-link>
-      <router-link to="/visualizer">
-        <v-btn flat>Visualizer Alpha</v-btn>
       </router-link>
     </v-toolbar>
 

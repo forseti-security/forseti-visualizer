@@ -21,20 +21,21 @@ class DataService {
      */
     constructor() {
         // THIS SHOULD BE ENABLED THIS WHEN DEPLOYING ALONE WITH forseti-visualizer
-        // this.host = 'http://localhost:8080';
+        this.host = 'http://localhost:8080';
         
         // THIS SHOULD BE ENABLED THIS WHEN DEPLOYING VIA FORSETI-API
-        this.host = '';
+        // this.host = '';
     }
 
     /**
      * @function getForsetiResources
      * @description gets forseti resources (for structure, reference ./forseti-visualizer-ui/public/dataset1_resources.json)
+     * @param parentId 
      * @return promise containing an array of forseti-resources
      */
-    getForsetiResources() {
+    getForsetiResources(parentId) {
         // let url = `${this.host}/api/forseti/resources`;
-        let url = `${this.host}/api/forseti`;
+        let url = `${this.host}/api/forseti/resources/${parentId ? parentId : ''}`;
         return $.get(url);
     }
 

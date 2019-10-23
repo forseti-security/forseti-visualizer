@@ -3,7 +3,6 @@
         <v-layout text-xs-center wrap class="margin-top-30">
             <v-flex xs12 mb-5>
                 <v-layout justify-center>
-                    
                     <Navbar
                         v-on:resetZoom="resetZoom"
                         v-on:toggleViolations="toggleViolations"
@@ -32,7 +31,11 @@
                             class="zoom-button"
                             style="position: absolute; left: 48px; top: 11px;"
                         >-</button>
-                        Project Id: {{projectId}}
+
+                        <div
+                            style="position: absolute; right: 48px; top: 11px;"
+                        >{{projectId ? 'Project: ' + projectId : ''}}</div>
+
                         <section id="d3-area"></section>
                     </v-flex>
                 </v-layout>
@@ -54,6 +57,7 @@ import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import ResourceDataServiceHandler from '../services/ResourceDataServiceHandler';
 import Filters from '../services/Filters';
 import Sorters from '../services/Sorters';
+import TooltipRenderer from '../services/TooltipRenderer';
 
 import Orientation from '../constants/Orientation';
 import ColorConfig from '../constants/ColorConfig';
@@ -94,11 +98,11 @@ export default {
             .attr('height', this.height)
             .style('pointer-events', 'all');
 
-        if (this.projectId) {
-            alert('project id: ' + this.projectId);
-        }
+        // if (this.projectId) {
+        //     alert('project id: ' + this.projectId);
+        // }
 
-        this.init(this.orientation);
+        this.init(this.orientation, this.projectId);
     },
 
     /**
@@ -202,7 +206,7 @@ export default {
          * @description Initializes the Vue Component and the Tree Visualization
          * @param orientation - [Orientation.Vertical, Orientation.Horizontal]
          */
-        init: function(orientation) {
+        init: function(orientation, parentId = undefined) {
             let dataService;
 
             if (this.useCache) {
@@ -213,7 +217,7 @@ export default {
             }
 
             // ELSE: useCache=false: (fetch from the database)
-            dataService.getForsetiResources().then(resourcesData => {
+            dataService.getForsetiResources(parentId).then(resourcesData => {
                 // get inventory index id
                 if (resourcesData.length > 0) {
                     let filteredResourcesData = resourcesData;
@@ -228,6 +232,7 @@ export default {
                                 curVal.resource_data_name;
                         }
                     });
+
                     /* end filtered data */
                     let inventoryIndexId =
                         filteredResourcesData[0].inventory_index_id;
@@ -259,9 +264,25 @@ export default {
 
                             let filteredResourceArray = this.filterResourceArray();
 
+                            console.log(
+                                'VIOLATIONSMAP',
+                                violationsData,
+                                this.violationsMap
+                            );
+
                             // initialize tree
                             this.initTree(orientation, filteredResourceArray);
                         });
+                } else {
+                    if (parentId) {
+                        alert(
+                            `No resources found for the project: ${parentId}`
+                        );
+                    } else {
+                        alert(
+                            'No resources found for the Forseti GCP Organization'
+                        );
+                    }
                 }
             });
         },
@@ -277,9 +298,14 @@ export default {
          * }
          */
         initTree: function(orientation, data) {
+            console.log('initTree', orientation, data);
+
             this.tree = d3
                 .tree()
                 .size([this.width - VisualizerConfig.MARGIN.top, this.height]);
+
+            console.log('tree', this.tree, this.treeData);
+
             this.treeData = d3
                 .stratify()
                 .id(function(d) {
@@ -289,6 +315,8 @@ export default {
                     return d.parent_id;
                 })(data);
 
+            console.log('td', this.treeData);
+
             // assign the name to each node
             this.treeData.each(function(d) {
                 if (d.data.resource_type === ResourceType.SERVICE_ACCOUNT_KEY) {
@@ -297,6 +325,8 @@ export default {
                     d.name = d.data.resource_name;
                 }
             });
+
+            console.log('td2', this.treeData);
 
             // treeData is the root of the tree,
             // and the tree has all the data we need in it now.
@@ -329,6 +359,8 @@ export default {
                     this.zoomScale = d3.event.transform.k;
                 });
 
+            console.log(orientation, this.zoomListener);
+
             // set initial zoom
             if (orientation === Orientation.Vertical) {
                 this.svg.call(
@@ -336,7 +368,10 @@ export default {
                     d3.zoomIdentity.translate(this.width / 2, this.height / 2)
                 );
 
+                console.log('asadf???', data);
+
                 // g "container", initially translated by the margin left and top
+                this.svg.selectAll('g').remove();
                 this.g = this.svg
                     .append('g')
                     .attr(
@@ -347,6 +382,8 @@ export default {
                             VisualizerConfig.MARGIN.top +
                             ')'
                     );
+                console.log(this.g);
+                window.uh = this.g;
 
                 // prevent dbl click
                 this.svg.on('dblclick.zoom', null);
@@ -361,6 +398,7 @@ export default {
                     )
                     .on('dblclick', null);
 
+                this.svg.selectAll('g').remove();
                 this.g = this.svg
                     .append('g')
                     .attr(
@@ -533,50 +571,29 @@ export default {
                         .duration(VisualizerConfig.ANIMATION_DURATION)
                         .style('opacity', 0.9);
 
-                    let tooltipContent = '';
-                    if (this.violationsMap[d.data.resource_id]) {
-                        // if a violation exists
-                        tooltipDiv.style(
-                            'background',
-                            VisualizerConfig.TOOLTIP_VIOLATION_BG_COLOR
+                    let violationExists =
+                        this.violationsMap[d.data.resource_id] !== undefined
+                            ? true
+                            : false;
+
+                    let tooltipContent = TooltipRenderer.getTooltipHtml(
+                        violationExists,
+                        d,
+                        this.violationsMap
+                    );
+
+                    tooltipDiv.style(
+                        'background',
+                        TooltipRenderer.getTooltipBackground(violationExists)
+                    );
+
+                    // send event
+                    if (this.bottomSheetEnabled) {
+                        this.$root.$emit(
+                            'send',
+                            d,
+                            this.violationsMap[d.data.resource_id]
                         );
-
-                        // ${violationsMap[d.data.resource_id].violation_data}
-                        tooltipContent = `
-                            <div>
-                                <h4>${this.violationsMap[d.data.resource_id].violation_type}</h4>
-                                ${this.violationsMap[d.data.resource_id].rule_name}<br>
-                            </div>`;
-
-                        // send event
-                        if (this.bottomSheetEnabled) {
-                            this.$root.$emit(
-                                'send',
-                                d,
-                                this.violationsMap[d.data.resource_id]
-                            );
-                        }
-                    } else {
-                        // if a violation does NOT exist
-                        tooltipDiv.style(
-                            'background',
-                            ColorConfig.NODE_BG_COLOR
-                        );
-
-                        // default tooltipContent
-                        tooltipContent = `
-                            <div style="text-align: left; margin-left: 20px;">
-                                <h4>${d.data.resource_name}</h4>
-                                
-                                ${d.data.resource_data_name}
-                                <br />
-                                ${d.data.resource_type}
-                            </div>`;
-
-                        // send event
-                        if (this.bottomSheetEnabled) {
-                            this.$root.$emit('send', d, {});
-                        }
                     }
 
                     tooltipDiv
@@ -1024,8 +1041,7 @@ export default {
             this.selectedFilterResources = selectedFilterResources;
 
             this._resetSvg();
-
-            this.init(this.orientation);
+            this.init(this.orientation, this.projectId);
         },
 
         /**
@@ -1034,9 +1050,10 @@ export default {
          */
         resetParent: function() {
             this.parentNode = null;
+            this.projectId = null;
 
             this._resetSvg();
-            this.init(this.orientation);
+            this.init(this.orientation, this.projectId);
         },
 
         /**
@@ -1180,7 +1197,7 @@ export default {
                 .selectAll('svg')
                 .remove();
 
-            // reset
+            // append a new svg?
             this.svg = d3
                 .select('#d3-area')
                 .append('svg')
@@ -1202,7 +1219,7 @@ export default {
 
             this._resetSvg();
 
-            this.init(this.orientation);
+            this.init(this.orientation, this.projectId);
         },
 
         /**
@@ -1557,15 +1574,21 @@ div.tooltip {
     text-align: left;
     padding-left: 15px;
     width: 300px;
-    height: 100px;
+    /* height: 100px; */
     padding: 12px;
     font: 14px sans-serif;
-    border: 14px solid black;
+    border: 4px solid black;
     opacity: 0.5;
     border-radius: 8px;
     pointer-events: none;
 
     stroke-width: 3px;
+    overflow: scroll;
+    word-wrap: break-word;
+}
+div.tooltip-content {
+    text-align: left;
+    margin-left: 20px;
 }
 
 .zoom-button {

@@ -4,8 +4,8 @@ The node.js backend for the forseti-visualizer project.  Forseti API serves cont
 
 ## Pre-Requisites
 
-* The hosted solution must have a route to the Cloud SQL database or be using [Cloud SQL Proxy (recommended)](#Cloud-SQL-Proxy).
-* The hosted solution must have access to the forseti-server via GRPC (port 50051)
+* A database connection using [Cloud SQL Proxy (recommended)](#Cloud-SQL-Proxy).
+* If using IAM Explainer, the hosted solution must have access to the forseti-server GCE VM via a Firewall enabling GRPC traffic (port 50051)
 
 To build and deploy the solution from your local system, please ensure you have the following:
 
@@ -44,7 +44,6 @@ cat > server/config.json << EOF
 }
 EOF
 
-
 npm install
 source source.env
 # the forseti-api server runs on localhost port 8080
@@ -53,7 +52,7 @@ npm start
 
 ## Deployment - Docker
 
-To get started with Docker, you will need to create a local dockersource.env file with the following content.  (For Docker, do not use double quotes)
+`IF you are using Docker...`, you will need to create a local dockersource.env file with the following content.  (Note: Do not include the double quotes)
 
 ```bash
 cat > dockersource.env << EOF

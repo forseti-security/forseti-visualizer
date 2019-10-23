@@ -41,7 +41,7 @@ npm run build
 
 ### forseti-api
 
-Navigate to forseti-api/.  Create a source.env file, which will should be sourced and set prior to runtime.  You will need to populate the fields below.  The HANDLE and CHANNEL are leveraged for the IAM Explain functionality.
+Navigate to forseti-api/.  Create a `source.env` file, which will should be sourced to set the appropriate ENV variables prior to runtime.  You will need to populate the fields below.  The HANDLE and CHANNEL are leveraged for the IAM Explain functionality.
 
 ```bash
 # navigate to forseti-api
@@ -52,12 +52,29 @@ cp -R ../forseti-visualizer-ui/dist ../forseti-api/dist-forseti-visualizer-ui
 
 # create source.env file
 cat > source.env << EOF
-export CLOUDSQL_HOSTNAME="[IP HERE]"
-export CLOUDSQL_USERNAME="[YOUR_USER_HERE]"
-export CLOUDSQL_PASSWORD="[YOUR_PASSWORD_HERE]"
+export CLOUDSQL_HOSTNAME="[IP HERE:127.0.0.1]"
+export CLOUDSQL_USERNAME="[YOUR_USER_HERE:root]"
+export CLOUDSQL_PASSWORD="[YOUR_PASSWORD_HERE:]"
 export CLOUDSQL_SCHEMA="forseti_security"
 export FORSETI_SERVER_VM_CHANNEL="[FORSETI-SERVER-VM_IP]:[GRPC_PORT:50051]"
 export FORSETI_DATA_MODEL_HANDLE="[DATA_MODEL_HANDLE_HASH:21254f1de747879237a95cb552e80844]"
+EOF
+```
+
+You'll also need to seed the project with a `config.json` file under server/config.json.  
+
+```bash
+cat > server/config.json << EOF
+{
+  "host": "0.0.0.0",
+  "port": 8080,
+  "bodyLimit": "100kb",
+  "corsHeaders": ["Link"],
+
+  "oauth2ClientId": "[SERVICE_ACCOUNT_NAME]@apps.googleusercontent.com",
+  "oauth2ClientSecret": "[CLIENT_SECRET]",
+  "oauth2Callback": "http://localhost:8080/auth/google/callback",
+}
 EOF
 ```
 

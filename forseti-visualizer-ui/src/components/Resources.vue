@@ -42,11 +42,11 @@
                                             dark
                                             small
                                             color="primary"
-                                            v-on:click="edit(props.item.resource_id, $event)"
+                                            v-on:click="edit(props.item, $event)"
                                         >
                                             <v-icon dark title="View in Visualizer">fa-sitemap</v-icon>
                                         </v-btn>
-                                        
+
                                         <v-btn
                                             class="mx-2"
                                             fab
@@ -98,30 +98,26 @@ export default {
     /* TODO: The cachedFileMap should support the alternative json file and possibly the .CSV option */
 
     mounted() {
-        let cachedFileMap = {
-            resourcesFile: 'dataset1_resources.json',
-            violationsFile: 'dataset1_violations.json',
-            iamexplainbyuserFile: 'dataset1_iamexplainbyuser.json',
-        };
-
-        // get violations and display
-        d3.json(cachedFileMap.resourcesFile).then(resources => {
-            this.resources = resources.map(function(d) {
-                d.name = d.resource_data_displayname || d.resource_data_name;
-                return d;
-            });
-
-            this.originalResources = this.resources; // assign only when a server-side refresh is made
-        });
-
         // load initialization data
         this.loadData();
     },
 
     methods: {
-        edit: function(resourceId, event) {
-            alert('edit: ' + resourceId);
-            
+        edit: function(resource, event) {
+            console.log(resource);
+
+            if (
+                // resource.resource_type === 'organization' ||
+                // resource.resource_type === 'folder' ||
+                resource.resource_type === 'project'
+            ) {
+                this.$router.push(`viz/${resource.resource_id}`);
+            } else {
+                alert(
+                    'Navigating to Visualizer is not supported for non-project resources at this time.'
+                );
+            }
+
             event.stopPropagation();
         },
 
@@ -145,6 +141,15 @@ export default {
 
             dataService.getForsetiResources().then(resourcesData => {
                 console.log('DataService!', resourcesData);
+
+                // set databound variables
+                this.resources = resourcesData.map(function(d) {
+                    d.name =
+                        d.resource_data_displayname || d.resource_data_name;
+                    return d;
+                });
+                // this should be set the first time or after a full refresh
+                this.originalResources = this.resources;
 
                 // TODO: change this to server side request
                 // TEMP: client-side filtering to get UNIQUE resource_type
@@ -192,6 +197,8 @@ export default {
 
             if (!filterData) {
                 console.log('Filter data is not defined.');
+
+                // TODO: remove dummy data
                 this.resources = [
                     {
                         id: 1086937,
@@ -199,9 +206,9 @@ export default {
                         category: 'resource',
                         resource_id: '358329783624',
                         parent_id: null,
-                        resource_data_displayname: 'henrychang.biz',
+                        resource_data_displayname: 'mycloud.biz',
                         resource_data_name: 'organizations/358329783624',
-                        qq: 'ACTIVE',
+                        lifecycle_state: 'ACTIVE',
                         inventory_index_id: 1552609278876965,
                     },
                     {
@@ -212,7 +219,7 @@ export default {
                         parent_id: 1086937,
                         resource_data_displayname: 'SUPERMAN',
                         resource_data_name: 'folders/379678980128',
-                        qq: 'ACTIVE',
+                        lifecycle_state: 'ACTIVE',
                         inventory_index_id: 1552609278876965,
                     },
 
@@ -224,7 +231,7 @@ export default {
                         parent_id: 1086937,
                         resource_data_displayname: 'PROJECT',
                         resource_data_name: 'folders/379678980128',
-                        qq: 'ACTIVE',
+                        lifecycle_state: 'ACTIVE',
                         inventory_index_id: 1552609278876965,
                     },
                 ];
@@ -232,24 +239,46 @@ export default {
                 console.log(
                     'Filter data is defined.',
                     filterData.selectedResourceTypes,
+                    filterData.projectId,
                     this.originalResources
                 );
 
                 this.resources = this.originalResources.filter(resourceData => {
                     if (filterData.selectedResourceTypes.length > 0) {
-                        console.log(
-                            filterData.selectedResourceTypes,
-                            resourceData
-                        );
-                        // if (filterData.hasIncludeAll) {
-                        //     return true;
-                        // }
+                        // console.log(
+                        //     filterData.selectedResourceTypes,
+                        //     resourceData
+                        // );
+
+                        // Has "Include ALL"
+                        if (
+                            filterData.selectedResourceTypes[0] ===
+                            'Include ALL'
+                        ) {
+                            if (filterData.projectId) {
+                                return (
+                                    filterData.projectId ===
+                                    resourceData.resource_id
+                                );
+                            } else {
+                                return true;
+                            }
+                        }
+
+                        // Resource Type check
                         if (
                             filterData.selectedResourceTypes.indexOf(
                                 resourceData.resource_type
                             ) > -1
                         ) {
-                            return true;
+                            if (filterData.projectId) {
+                                return (
+                                    filterData.projectId ===
+                                    resourceData.resource_id
+                                );
+                            } else {
+                                return true;
+                            }
                         }
                     } else {
                         return false;
@@ -286,7 +315,7 @@ export default {
         projects: [],
         inventoryIndexSnapshots: [],
 
-        useCache: true,
+        useCache: false,
     }),
 };
 </script>

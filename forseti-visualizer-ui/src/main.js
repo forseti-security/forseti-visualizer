@@ -17,10 +17,8 @@ import './plugins/vuetify';
 import VueRouter from 'vue-router';
 
 import App from './App.vue';
-import Violations from './components/Violations';
 import Viz from './components/Body';
 import Resources from './components/Resources';
-import Visualizer from './components/Visualizer';
 
 Vue.use(VueRouter);
 
@@ -38,16 +36,8 @@ const routes = [{
     props: true
   },
   {
-    path: '/violations',
-    component: Violations
-  },
-  {
     path: '/resources',
     component: Resources
-  },
-  {
-    path: '/visualizer',
-    component: Visualizer
   },
 ]
 
