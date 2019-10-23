@@ -233,6 +233,8 @@ export default {
                         }
                     });
 
+                    console.log(filteredResourcesData);
+
                     /* end filtered data */
                     let inventoryIndexId =
                         filteredResourcesData[0].inventory_index_id;
