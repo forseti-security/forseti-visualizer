@@ -1,5 +1,7 @@
 # Forseti Visualizer
 
+![](.assets/forseti-visualizer-example.gif)
+
 Forseti Visualizer provides a visualization solution, based on [Forseti Security's](https://github.com/forseti-security/forseti-security) Inventorying and Violation modules.  Forseti Visualizer attempts to enable Google Cloud Platform users to better understand their GCP Organization Structure, while providing insights into policy adherence through identification of violations.
 
 ## Overview
