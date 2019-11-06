@@ -11,50 +11,90 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+'use strict'; // express 4.0
 
-'use strict';
+var _api = _interopRequireDefault(require("./server/api"));
 
-// express 4.0
+var _config = _interopRequireDefault(require("./server/config.json"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var express = require('express');
 
-var api = require('./server/api');
-
-// Constants
-var PORT = 8080;
-var HOST = '0.0.0.0';
-
-// App
+// setup app
 var app = express();
 app.set('view engine', 'pug');
-app.use(express.static('public')); // images,css,etc.
+app.use(express["static"]('public')); // images,css,etc.
 
+app.all('*', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+}); // Override static assets to use public
+
+console.log(__dirname);
+
+var _require = require('path'),
+    resolve = _require.resolve; // const publicPath = resolve(__dirname, '../forseti-visualizer-ui/dist')
+
+
+var publicPath = resolve(__dirname, 'dist-forseti-visualizer-ui');
+var staticConf = {
+  maxAge: '1y',
+  etag: false
+};
+app.use(express["static"](publicPath, staticConf)); // set up /api routes
+
+app.use('/api', (0, _api["default"])({
+  config: _config["default"]
+})); // set up / main route
 
 app.get('/', function (req, res) {
-  var name = 'Test';
   res.render('index', {
-    title: 'Hi ' + name
+    title: "Forseti-Visualizer"
   });
 });
+/* AUTH */
 
-app.get('/home', function (req, res) {
-  res.send('GET: ' + req.url);
-});
+var uuid = require('uuid/v4');
 
-app.post('/home', function (req, res) {
-  res.send('POST: ' + req.url);
-});
+var session = require('express-session');
 
-app.get('/q', function (req, res) {
-  var name = getRandomName();
-  res.send('Hello ' + name);
-});
+var FileStore = require('session-file-store')(session);
 
-app.get('/q/:id', function (req, res) {
-  var id = req.params.id;
-  res.send('Hello Q' + id);
-});
+var bodyParser = require('body-parser');
 
-app.listen(PORT, HOST);
-console.log('Running on http://' + HOST + ':' + PORT);
-//# sourceMappingURL=server.js.map
+var passport = require('passport'); // [START session]
+// Configure the session and session storage.
+
+
+var sessionConfig = {
+  resave: false,
+  saveUninitialized: false,
+  secret: _config["default"].randomString,
+  signed: true
+};
+app.use(session(sessionConfig)); // [END session]
+// app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser.json())
+// app.use(session({
+//   genid: (req) => {
+//     console.log('Inside session middleware genid function', req.session)
+//     console.log(`Request object sessionID from client: ${req.sessionID}`)
+//     return uuid() // use UUIDs for session IDs
+//   },
+//   store: new FileStore(),
+//   secret: 'super secret',
+//   resave: false,
+//   saveUninitialized: true
+// }))
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(require('./server/services/oauth2').router); //auth
+
+/* END AUTH */
+// initialize app
+
+app.listen(_config["default"].port, _config["default"].host);
+console.log("Running on http://".concat(_config["default"].host, ":").concat(_config["default"].port));

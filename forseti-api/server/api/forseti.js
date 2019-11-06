@@ -31,7 +31,10 @@ export default ({
      */
     forsetiApi.get('/', function (req, res) {
         ForsetiService.getResourcesJson(function (error, results) {
-            if (error) throw error;
+            if (error) {
+                console.log(error);
+                // throw error;
+            }
             let json = results;
             res.json(json);
         });
@@ -46,7 +49,10 @@ export default ({
         let parentId = req.params.parentId ? req.params.parentId : null;
 
         ForsetiService.getResources(parentId, function (error, results) {
-            if (error) throw error;
+            if (error) {
+                console.log(error);
+                // throw error;
+            }
             let json = results;
             res.json(json);
         });
@@ -103,11 +109,11 @@ export default ({
 
         ForsetiService.getViolations(inventoryIndexId, function (error, results) {
             if (error) {
-                console.log(error)
-                throw error;
+                console.log(error);
+                // throw error;
             }
-            console.log('results for gv', results)
-            
+            console.log('getViolations() results:', results)
+
             let json = results;
             res.json(json);
         });

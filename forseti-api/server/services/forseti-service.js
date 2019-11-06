@@ -82,8 +82,11 @@ class ForsetiService {
                 'dataset', 'firewall', 'bucket', 'serviceaccount', 'serviceaccount_key', 'network')
             
             ${parentIdSqlPhrase}
-            #AND (g.resource_data->>'$.lifecycleState' != 'DELETE_REQUESTED' || g.resource_data->>'$.lifecycleState' is NULL)
             
+            -- this will filter out DELETE_REQUESTED projects and the child resources under the DELETE_REQUESTED state resources
+            AND (g.resource_data->>'$.lifecycleState' != 'DELETE_REQUESTED' || g.resource_data->>'$.lifecycleState' is NULL)
+            AND (g.parent_id NOT IN (SELECT id FROM gcp_inventory gsub WHERE gsub.id = g.parent_id AND gsub.resource_data->>'$.lifecycleState' = 'DELETE_REQUESTED'))
+
             ORDER BY CASE 
                 WHEN g.resource_type = 'organization' THEN 0 
                 WHEN g.resource_type = 'folder' THEN 1 
