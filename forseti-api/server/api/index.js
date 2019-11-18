@@ -21,8 +21,6 @@ import {
 import forseti from './forseti';
 import user from './user';
 
-import CryptoService from '../services/crypto-service';
-
 export default ({
 	config,
 	db
@@ -47,33 +45,6 @@ export default ({
 
 		res.json({
 			version
-		});
-	});
-
-
-
-
-	/* Testing */
-
-	// perhaps expose some API metadata at the root
-	api.get('/enc', async (req, res) => {
-		// enc / dec
-		let textToEncrypt = "Test";
-
-		let encryptedText = await CryptoService.encrypt(
-			'/Users/garrettwong/Git/forseti-visualizer/forseti-api/dockersource.env', 'asdf.env.enc');
-
-		res.json({
-			encryptedText
-		});
-	});
-
-	// perhaps expose some API metadata at the root
-	api.get('/dec', async (req, res) => {
-		let decryptedText = await CryptoService.decrypt('asdf.env.enc', 'orginal.env');
-
-		res.json({
-			decryptedText
 		});
 	});
 

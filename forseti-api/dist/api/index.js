@@ -13,8 +13,6 @@ var _forseti = _interopRequireDefault(require("./forseti"));
 
 var _user = _interopRequireDefault(require("./user"));
 
-var _cryptoService = _interopRequireDefault(require("../services/crypto-service"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 // Copyright 2019 Google LLC
@@ -43,66 +41,12 @@ var _default = function _default(_ref) {
   api.use('/user', (0, _user["default"])({
     config: config,
     db: db
-  })); // api.use('/auth', auth({
-  // 	config,
-  // 	db
-  // }));
-  // perhaps expose some API metadata at the root
+  })); // perhaps expose some API metadata at the root
 
   api.get('/', function (req, res) {
     console.log(req.session);
     res.json({
       version: _package.version
-    });
-  });
-  /* Testing */
-  // perhaps expose some API metadata at the root
-
-  api.get('/enc', function _callee(req, res) {
-    var textToEncrypt, encryptedText;
-    return regeneratorRuntime.async(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            // enc / dec
-            textToEncrypt = "Haha";
-            _context.next = 3;
-            return regeneratorRuntime.awrap(_cryptoService["default"].encrypt('/Users/garrettwong/Git/forseti-visualizer/forseti-api/dockersource.env', 'asdf.env.enc'));
-
-          case 3:
-            encryptedText = _context.sent;
-            res.json({
-              encryptedText: encryptedText
-            });
-
-          case 5:
-          case "end":
-            return _context.stop();
-        }
-      }
-    });
-  }); // perhaps expose some API metadata at the root
-
-  api.get('/dec', function _callee2(req, res) {
-    var decryptedText;
-    return regeneratorRuntime.async(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            _context2.next = 2;
-            return regeneratorRuntime.awrap(_cryptoService["default"].decrypt('asdf.env.enc', 'orginal.env'));
-
-          case 2:
-            decryptedText = _context2.sent;
-            res.json({
-              decryptedText: decryptedText
-            });
-
-          case 4:
-          case "end":
-            return _context2.stop();
-        }
-      }
     });
   });
   return api;

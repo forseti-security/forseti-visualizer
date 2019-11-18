@@ -1,6 +1,6 @@
 {
   "name": "forseti-visualizer-ui",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build; rm -rf ../forseti-api/dist-forseti-visualizer-ui; cp -R dist/ ../forseti-api/dist-forseti-visualizer-ui;",
