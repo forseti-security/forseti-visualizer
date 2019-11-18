@@ -1,5 +1,6 @@
 # Ignore build files
 forseti-api/dist-forseti-visualizer-ui
+forseti-api/dist
 
 # Examples: Env/Encrypted
 source.env
