@@ -14,7 +14,7 @@
             </h3>
 
             <div>
-              {{ (node !== null && node.data !== null) ? node.data.resource_type : "" }}
+              {{ (node !== undefined && node.data !== undefined) ? node.data.resource_type : "" }}
               <br>
 
               <br>
@@ -57,7 +57,9 @@ export default {
     data: () => ({
         tiles: [],
     }),
-    mounted() {},
+    mounted() {
+
+    },
 };
 </script>
 

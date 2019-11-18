@@ -41,11 +41,6 @@ export default ({
 		db
 	}));
 
-	// api.use('/auth', auth({
-	// 	config,
-	// 	db
-	// }));
-
 	// perhaps expose some API metadata at the root
 	api.get('/', (req, res) => {
 		console.log(req.session);
@@ -63,7 +58,7 @@ export default ({
 	// perhaps expose some API metadata at the root
 	api.get('/enc', async (req, res) => {
 		// enc / dec
-		let textToEncrypt = "Haha";
+		let textToEncrypt = "Test";
 
 		let encryptedText = await CryptoService.encrypt(
 			'/Users/garrettwong/Git/forseti-visualizer/forseti-api/dockersource.env', 'asdf.env.enc');

@@ -13,27 +13,11 @@
 // limitations under the License.
 
 /* forseti-service */
-import MySQLDbConnection from './mysql-db-connection';
+import DatabaseServiceBase from './database-service-base.js';
 
-let secrets = {
-    hostname: process.env.CLOUDSQL_HOSTNAME,
-    user: process.env.CLOUDSQL_USERNAME,
-    pass: process.env.CLOUDSQL_PASSWORD,
-    schema: process.env.CLOUDSQL_SCHEMA,
-
-    forsetiServerVmChannel: process.env.FORSETI_SERVER_VM_CHANNEL,
-    forsetiDataModelHandle: process.env.FORSETI_DATA_MODEL_HANDLE
-};
-
-function getMySqlDbConnection() {
-    console.log(secrets);
-
-    let mySqlDbConn = new MySQLDbConnection(secrets.hostname, secrets.user, secrets.pass, secrets.schema);
-    return mySqlDbConn;
-}
-class ForsetiService {
+class ForsetiService extends DatabaseServiceBase {
     constructor() {
-
+        super()
     }
 
     /*
@@ -67,6 +51,7 @@ class ForsetiService {
             g.category, 
             g.resource_id, 
             g.parent_id AS parent_id, 
+            g.full_name AS full_name,
             IFNULL(g.resource_data->>'$.displayName', '') as resource_data_displayname, 
             IFNULL(g.resource_data->>'$.name', '') as resource_data_name, g.resource_data->>'$.lifecycleState' as lifecycle_state,
             g.inventory_index_id
@@ -93,7 +78,12 @@ class ForsetiService {
                 WHEN g.resource_type = 'project' THEN 2 ELSE 3 END ASC;`;
 
         try {
-            let mySqlDbConn = getMySqlDbConnection();
+            let mySqlDbConn = this.getMySqlDbConnection(
+                process.env.CLOUDSQL_HOSTNAME, 
+                process.env.CLOUDSQL_USERNAME,
+                process.env.CLOUDSQL_PASSWORD,
+                process.env.CLOUDSQL_SCHEMA
+            );
             mySqlDbConn.query(sql, cb);
         } catch (ex) {
             console.log(ex);
@@ -130,7 +120,12 @@ class ForsetiService {
         console.log('gv', inventoryIndexId, sql);
 
         try {
-            let mySqlDbConn = getMySqlDbConnection();
+            let mySqlDbConn = this.getMySqlDbConnection(
+                process.env.CLOUDSQL_HOSTNAME, 
+                process.env.CLOUDSQL_USERNAME,
+                process.env.CLOUDSQL_PASSWORD,
+                process.env.CLOUDSQL_SCHEMA
+            );
             mySqlDbConn.query(sql, cb);
         } catch (ex) {
             console.log('getViolations', ex);
@@ -159,16 +154,16 @@ class ForsetiService {
         // The protoDescriptor object has the full package hierarchy
         var ex = protoDescriptor.explain;
 
-        let channel = secrets.forsetiServerVmChannel;
+        let channel = process.env.FORSETI_SERVER_VM_CHANNEL;
         let res = new ex.Explain(channel, grpc.credentials.createInsecure());
 
         var meta = new grpc.Metadata();
-        meta.add('handle', secrets.forsetiDataModelHandle);
+        meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
         console.log(ex);
         console.log(res);
         console.log('channel', channel);
-        console.log('channel', secrets.forsetiDataModelHandle);
+        console.log('channel', process.env.FORSETI_DATA_MODEL_HANDLE);
 
         res.getAccessByMembers({
             member_name: iamPrefix
@@ -197,12 +192,12 @@ class ForsetiService {
         // The protoDescriptor object has the full package hierarchy
         var ex = protoDescriptor.explain;
 
-        let channel = secrets.forsetiServerVmChannel;
+        let channel = process.env.FORSETI_SERVER_VM_CHANNEL;
         let res = new ex.Explain(channel, grpc.credentials.createInsecure());
         console.log(res);
 
         var meta = new grpc.Metadata();
-        meta.add('handle', secrets.forsetiDataModelHandle);
+        meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
         res.getAccessByPermissions({
             role_name: 'roles/owner',
@@ -229,7 +224,12 @@ class ForsetiService {
         let sql = "SELECT g.id, g.resource_type, g.category, g.resource_id, g.parent_id AS parent_id, IFNULL(g.resource_data->>'$.displayName', '') as resource_data_displayname, IFNULL(g.resource_data->>'$.name', '') as resource_data_name, g.resource_data->>'$.lifecycleState' as lifecycle_state FROM gcp_inventory g WHERE g.inventory_index_id = (SELECT id FROM inventory_index ORDER BY completed_at_datetime DESC LIMIT 1) AND (g.category='resource') AND g.resource_type IN ('organization', 'project', 'folder', 'appengine_app', 'kubernetes_cluster', 'cloudsqlinstance') ORDER BY CASE WHEN g.resource_type = 'organization' THEN 0 WHEN g.resource_type = 'folder' THEN 1 WHEN g.resource_type = 'project' THEN 2 ELSE 3 END ASC;";
 
         try {
-            let mySqlDbConn = getMySqlDbConnection();
+            let mySqlDbConn = this.getMySqlDbConnection(
+                process.env.CLOUDSQL_HOSTNAME, 
+                process.env.CLOUDSQL_USERNAME,
+                process.env.CLOUDSQL_PASSWORD,
+                process.env.CLOUDSQL_SCHEMA
+            );
             mySqlDbConn.query(sql, cb);
         } catch (ex) {
             console.log(ex);

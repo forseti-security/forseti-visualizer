@@ -88,7 +88,7 @@ export default {
         sheetOpen: Boolean,
     },
     data: () => ({
-        iamPolicies: {},
+        // iamPolicies: {},
         rowsPerPageItems: [4, 8, 12],
         pagination: {
             rowsPerPage: 4,

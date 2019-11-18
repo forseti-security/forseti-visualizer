@@ -153,7 +153,7 @@ export default {
     computed: mapState(['resourceArray']),
     watch: {
         resourceArray(newValue, oldValue) {
-            console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
+            // console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
         },
     },
 
@@ -301,7 +301,7 @@ export default {
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
         // filter variables
-        nodeName: 'dia-dog-flow',
+        nodeName: '',
         expand: true,
         expandAll: false,
         showViolations: true,

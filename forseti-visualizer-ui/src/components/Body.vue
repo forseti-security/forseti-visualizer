@@ -130,6 +130,26 @@ export default {
         },
 
         /**
+         * @function setViolationsMap
+         * @description convert violationsData to violations map
+         * @returns undefined
+         */
+        setViolationsMap: function(violationsData) {
+            for (let i = 0; i < violationsData.length; i++) {
+                const KEY = violationsData[i].full_name;
+                if (!this.violationsMap[KEY]) {
+                    this.violationsMap[KEY] = [];
+                }
+                this.violationsMap[KEY].push(violationsData[i]);
+            }
+            console.log(
+                'violationsMap',
+                violationsData,
+                this.violationsMap
+            );
+        },
+
+        /**
          * @function getDistinctResourceTypes
          * @description gets distinct resource types that exist in this.resourceArray
          * @returns list of strings containing distinct resource types
@@ -152,9 +172,13 @@ export default {
          * @returns array of resources
          */
         filterResourceArray: function() {
+            console.log('filterResourceArray1', this.resourceArray, this.selectedFilterResourcess);
+
             let mappedResourceFilter = this.selectedFilterResources.map(
                 ForsetiResourceConverter.convertResource
             );
+
+            console.log('filterResourceArray2', this.mappedResourceFilter);
 
             // apply resource filter.  always include organization/folder/projects so that resource paths are maintained
             this.resourceArray = this.resourceArray.filter(res => {
@@ -174,18 +198,20 @@ export default {
 
                 return false;
             });
-
             // Filter based on set parent ( setParent() ) being clicked
 
             // At least one node has a null parent_id field infers that there is a node at the top of the tree
             let resourceArrayHasOneNullParentId = ForsetiSetParentService.determineIfOneNullParentId(
                 this.resourceArray
             );
+
             if (!resourceArrayHasOneNullParentId) {
                 ForsetiSetParentService.setMinParentIdToNull(
                     this.resourceArray
                 );
             }
+
+            console.log('filterResourceArray3', this.parentNode, this.resourceArray);
 
             if (this.parentNode) {
                 let subResourceArray = ForsetiSetParentService.getResourceArraySubset(
@@ -242,35 +268,14 @@ export default {
                     dataService
                         .getViolations(inventoryIndexId)
                         .then(violationsData => {
-                            // { resource_id: { violation } }
-                            for (let i = 0; i < violationsData.length; i++) {
-                                if (
-                                    violationsData[i].resource_type ===
-                                    ResourceType.SERVICE_ACCOUNT_KEY
-                                ) {
-                                    this.violationsMap[
-                                        JSON.parse(
-                                            violationsData[i].violation_data
-                                        ).key_id
-                                    ] = violationsData[i];
-                                } else {
-                                    this.violationsMap[
-                                        violationsData[i].resource_id
-                                    ] = violationsData[i];
-                                }
-                            }
+                            // { full_name: { violation } }
+                            this.setViolationsMap(violationsData);
 
                             this.resourceArray = filteredResourcesData
                                 .map(ResourceDataServiceHandler.handle)
                                 .sort(Sorters.sortAscendingCaseInsensitive);
 
                             let filteredResourceArray = this.filterResourceArray();
-
-                            console.log(
-                                'VIOLATIONSMAP',
-                                violationsData,
-                                this.violationsMap
-                            );
 
                             // initialize tree
                             this.initTree(orientation, filteredResourceArray);
@@ -574,7 +579,7 @@ export default {
                         .style('opacity', 0.9);
 
                     let violationExists =
-                        this.violationsMap[d.data.resource_id] !== undefined
+                        this.violationsMap[d.data.full_name] !== undefined
                             ? true
                             : false;
 
@@ -594,7 +599,7 @@ export default {
                         this.$root.$emit(
                             'send',
                             d,
-                            this.violationsMap[d.data.resource_id]
+                            this.violationsMap[d.data.full_name]
                         );
                     }
 
@@ -622,12 +627,12 @@ export default {
                     return d._children ? 1 : 0;
                 })
                 .style('stroke-opacity', d => {
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? 1
                         : 0;
                 })
                 .style('stroke', d => {
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? ColorConfig.DANGER
                         : ColorConfig.BLACK;
                 });
@@ -695,13 +700,13 @@ export default {
                     return d._children ? 1 : 0;
                 })
                 .style('stroke-opacity', d => {
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? 1
                         : 0;
                 })
                 .style('stroke', d => {
                     // set to red
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? ColorConfig.DANGER
                         : ColorConfig.BLACK;
                 });
@@ -1195,6 +1200,8 @@ export default {
          * @description Refresh the grid: clears and recreates
          */
         _resetSvg: function() {
+            console.log(this.svg);
+
             d3.select('#d3-area')
                 .selectAll('svg')
                 .remove();
@@ -1206,6 +1213,8 @@ export default {
                 .attr('width', this.width)
                 .attr('height', this.height)
                 .style('pointer-events', 'all');
+
+            console.log(this.svg);
 
             // reset vars
             this.expand = true;
@@ -1326,12 +1335,12 @@ export default {
                         return d._children ? 1 : 0;
                     })
                     .style('stroke-opacity', function(d) {
-                        return violationsMap[d.data.resource_id] !== undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? 1
                             : 0;
                     })
                     .style('stroke', function(d) {
-                        return violationsMap[d.data.resource_id] !== undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;
                     });
@@ -1357,14 +1366,14 @@ export default {
                         return d._children ? 1 : 0;
                     })
                     .style('stroke-opacity', function(d) {
-                        return this.violationsMap[d.data.resource_id] !==
+                        return this.violationsMap[d.data.full_name] !==
                             undefined
                             ? 1
                             : 0;
                     })
                     .style('stroke', function(d) {
                         // set to red
-                        return this.violationsMap[d.data.resource_id] !==
+                        return this.violationsMap[d.data.full_name] !==
                             undefined
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;

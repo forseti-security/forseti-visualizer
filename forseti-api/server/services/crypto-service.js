@@ -113,7 +113,6 @@ class CryptoService {
 
         return Buffer.from(result.plaintext, 'base64').toString('utf8');
     }
-
 }
 
 export default new CryptoService();

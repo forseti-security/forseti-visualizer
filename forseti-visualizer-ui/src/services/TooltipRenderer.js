@@ -35,18 +35,26 @@ let ResourceTypeTooltipRenderer = {
         return listHtml;
     },
 
-    render: function (violationType, resourceId, violationsMap) {
+    renderViolations: function (violations) {
+        let content = '<div>';
+        for (let i = 0; i < violations.length; i++) {
+            content += this.render(violations[i].violation_type, violations[i]);
+        }
+        content += '</div>';
+        return content;
+    },
+
+    render: function (violationType, violation) {
         switch (violationType) {
             case 'FIREWALL_BLACKLIST_VIOLATION':
                 // create list of recommended action
                 let recommendedActionsList = this.createList(
-                    JSON.parse(violationsMap[resourceId].violation_data).recommended_actions);
-                console.log(recommendedActionsList);
+                    JSON.parse(violation.violation_data).recommended_actions);
 
                 return `
                 <div>
-                    <h4>${violationsMap[resourceId].violation_type}</h4>
-                    ${violationsMap[resourceId].rule_name} has been violated.
+                    <h4>${violation.violation_type}</h4>
+                    ${violation.rule_name} has been violated.
                     <br />
                     Recommendations:<br />
                     
@@ -55,10 +63,10 @@ let ResourceTypeTooltipRenderer = {
             default:
                 return `
                 <div>
-                    <h4>${violationsMap[resourceId].violation_type}</h4>
-                    ${violationsMap[resourceId].rule_name}
+                    <h4>${violation.violation_type}</h4>
+                    ${violation.rule_name}
                     <br />
-                    ${JSON.stringify(JSON.parse(violationsMap[resourceId].violation_data))}
+                    ${JSON.stringify(JSON.parse(violation.violation_data))}
                 </div>`;
         }
     }
@@ -67,10 +75,12 @@ let ResourceTypeTooltipRenderer = {
 let TooltipRenderer = {
     getTooltipHtml: function (violationExists, d, violationsMap) {
         let tooltipContent = '';
-        if (violationExists) {
-            console.log(violationsMap[d.data.resource_id])
 
-            tooltipContent = ResourceTypeTooltipRenderer.render(violationsMap[d.data.resource_id].violation_type, d.data.resource_id, violationsMap);
+        if (violationExists) {
+            console.log(violationsMap[d.data.full_name])
+
+            tooltipContent = ResourceTypeTooltipRenderer.renderViolations(
+                violationsMap[d.data.full_name]);
         } else { // violation does NOT exist
             tooltipContent = `
                 <div class="tooltip-content">
