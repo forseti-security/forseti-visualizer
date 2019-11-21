@@ -33,9 +33,6 @@ const VisualizerConfig = {
     DEFAULT_WIDTH: 1200,
     NODE_RADIUS: 22, // in 'px'
 
-    // TOOLTIP
-    TOOLTIP_VIOLATION_BG_COLOR: 'pink',
-
     // NODE BG IMAGE
     NODE_IMG_X: -16, 
     NODE_IMG_Y: -16, 

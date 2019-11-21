@@ -100,7 +100,7 @@
       v-model="selectedFilterResources"
       :items="items"
       label="Filter by a list of resource types"
-      v-on:change="filterResources"
+      v-on:input="filterResources"
       multiple
       chips
       :menu-props="{ maxHeight: '400px', overflowY: true }"
@@ -153,7 +153,7 @@ export default {
     computed: mapState(['resourceArray']),
     watch: {
         resourceArray(newValue, oldValue) {
-            console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
+            // console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
         },
     },
 
@@ -296,12 +296,12 @@ export default {
     data: () => ({
         // global: set this to use JSON files vs. dynamic
         // useCache: false, // default to using server data
-        useCache: true, // default to using cached files.json
+        useCache: false, // default to using cached files.json
         useJson: true, // false defers to using a .csv
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
         // filter variables
-        nodeName: 'dia-dog-flow',
+        nodeName: '',
         expand: true,
         expandAll: false,
         showViolations: true,

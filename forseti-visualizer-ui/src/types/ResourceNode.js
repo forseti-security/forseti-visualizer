@@ -24,7 +24,7 @@ class ResourceNode {
         this.image = "/img/Compute Engine.239b71be.png";
         this.inventory_index_id = 1552609278876965;
         this.parent_id = 1087601;
-        this.qq = null;
+        this.lifecycle_state = null;
         this.resource_data_displayname = "gke-tf-lb-https-gke-default-pool-25a75700-wzfq";
         this.resource_data_name = "gke-tf-lb-https-gke-default-pool-25a75700-wzfq";
         this.resource_id = "1191788173398596818";

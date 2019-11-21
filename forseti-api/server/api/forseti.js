@@ -25,13 +25,16 @@ export default ({
     let forsetiApi = Router();
 
     forsetiApi.all('*', cors());
-    
+
     /**
      * @desc returns .json file content
      */
     forsetiApi.get('/', function (req, res) {
         ForsetiService.getResourcesJson(function (error, results) {
-            if (error) throw error;
+            if (error) {
+                console.log(error);
+                // throw error;
+            }
             let json = results;
             res.json(json);
         });
@@ -40,9 +43,16 @@ export default ({
     /**
      * @desc returns resources
      */
-    forsetiApi.get('/resources', function (req, res) {
-        ForsetiService.getResources(function (error, results) {
-            if (error) throw error;
+    forsetiApi.get('/resources/:parentId?', function (req, res) {
+        console.log(req.params.parentId);
+
+        let parentId = req.params.parentId ? req.params.parentId : null;
+
+        ForsetiService.getResources(parentId, function (error, results) {
+            if (error) {
+                console.log(error);
+                // throw error;
+            }
             let json = results;
             res.json(json);
         });
@@ -83,7 +93,7 @@ export default ({
                 console.log('Error: ', error);
             else {
                 console.log(results);
-                
+
                 // TODO:
 
                 res.json(results.accesses);
@@ -98,7 +108,12 @@ export default ({
         let inventoryIndexId = req.params.inventoryIndexId;
 
         ForsetiService.getViolations(inventoryIndexId, function (error, results) {
-            if (error) throw error;
+            if (error) {
+                console.log(error);
+                // throw error;
+            }
+            console.log('getViolations() results:', results)
+
             let json = results;
             res.json(json);
         });

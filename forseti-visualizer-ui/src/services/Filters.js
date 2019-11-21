@@ -14,7 +14,7 @@
 
 let Filters = {
     nonNullAndActive: function (data) {
-        if (data.qq === null || data.qq === 'ACTIVE') return true;
+        if (data.lifecycle_state === null || data.lifecycle_state === 'ACTIVE') return true;
         return false;
     },
     /**

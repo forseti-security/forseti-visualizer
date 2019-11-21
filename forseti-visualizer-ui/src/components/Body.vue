@@ -31,7 +31,11 @@
                             class="zoom-button"
                             style="position: absolute; left: 48px; top: 11px;"
                         >-</button>
-                        Project Id: {{projectId}}
+
+                        <div
+                            style="position: absolute; right: 48px; top: 11px;"
+                        >{{projectId ? 'Project: ' + projectId : ''}}</div>
+
                         <section id="d3-area"></section>
                     </v-flex>
                 </v-layout>
@@ -53,6 +57,7 @@ import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import ResourceDataServiceHandler from '../services/ResourceDataServiceHandler';
 import Filters from '../services/Filters';
 import Sorters from '../services/Sorters';
+import TooltipRenderer from '../services/TooltipRenderer';
 
 import Orientation from '../constants/Orientation';
 import ColorConfig from '../constants/ColorConfig';
@@ -93,11 +98,11 @@ export default {
             .attr('height', this.height)
             .style('pointer-events', 'all');
 
-        if (this.projectId) {
-            alert('project id: ' + this.projectId);
-        }
+        // if (this.projectId) {
+        //     alert('project id: ' + this.projectId);
+        // }
 
-        this.init(this.orientation);
+        this.init(this.orientation, this.projectId);
     },
 
     /**
@@ -125,6 +130,26 @@ export default {
         },
 
         /**
+         * @function setViolationsMap
+         * @description convert violationsData to violations map
+         * @returns undefined
+         */
+        setViolationsMap: function(violationsData) {
+            for (let i = 0; i < violationsData.length; i++) {
+                const KEY = violationsData[i].full_name;
+                if (!this.violationsMap[KEY]) {
+                    this.violationsMap[KEY] = [];
+                }
+                this.violationsMap[KEY].push(violationsData[i]);
+            }
+            console.log(
+                'violationsMap',
+                violationsData,
+                this.violationsMap
+            );
+        },
+
+        /**
          * @function getDistinctResourceTypes
          * @description gets distinct resource types that exist in this.resourceArray
          * @returns list of strings containing distinct resource types
@@ -147,9 +172,13 @@ export default {
          * @returns array of resources
          */
         filterResourceArray: function() {
+            console.log('filterResourceArray1', this.resourceArray, this.selectedFilterResourcess);
+
             let mappedResourceFilter = this.selectedFilterResources.map(
                 ForsetiResourceConverter.convertResource
             );
+
+            console.log('filterResourceArray2', this.mappedResourceFilter);
 
             // apply resource filter.  always include organization/folder/projects so that resource paths are maintained
             this.resourceArray = this.resourceArray.filter(res => {
@@ -169,18 +198,20 @@ export default {
 
                 return false;
             });
-
             // Filter based on set parent ( setParent() ) being clicked
 
             // At least one node has a null parent_id field infers that there is a node at the top of the tree
             let resourceArrayHasOneNullParentId = ForsetiSetParentService.determineIfOneNullParentId(
                 this.resourceArray
             );
+
             if (!resourceArrayHasOneNullParentId) {
                 ForsetiSetParentService.setMinParentIdToNull(
                     this.resourceArray
                 );
             }
+
+            console.log('filterResourceArray3', this.parentNode, this.resourceArray);
 
             if (this.parentNode) {
                 let subResourceArray = ForsetiSetParentService.getResourceArraySubset(
@@ -201,7 +232,7 @@ export default {
          * @description Initializes the Vue Component and the Tree Visualization
          * @param orientation - [Orientation.Vertical, Orientation.Horizontal]
          */
-        init: function(orientation) {
+        init: function(orientation, parentId = undefined) {
             let dataService;
 
             if (this.useCache) {
@@ -212,7 +243,7 @@ export default {
             }
 
             // ELSE: useCache=false: (fetch from the database)
-            dataService.getForsetiResources().then(resourcesData => {
+            dataService.getForsetiResources(parentId).then(resourcesData => {
                 // get inventory index id
                 if (resourcesData.length > 0) {
                     let filteredResourcesData = resourcesData;
@@ -227,6 +258,9 @@ export default {
                                 curVal.resource_data_name;
                         }
                     });
+
+                    console.log(filteredResourcesData);
+
                     /* end filtered data */
                     let inventoryIndexId =
                         filteredResourcesData[0].inventory_index_id;
@@ -234,23 +268,8 @@ export default {
                     dataService
                         .getViolations(inventoryIndexId)
                         .then(violationsData => {
-                            // { resource_id: { violation } }
-                            for (let i = 0; i < violationsData.length; i++) {
-                                if (
-                                    violationsData[i].resource_type ===
-                                    ResourceType.SERVICE_ACCOUNT_KEY
-                                ) {
-                                    this.violationsMap[
-                                        JSON.parse(
-                                            violationsData[i].violation_data
-                                        ).key_id
-                                    ] = violationsData[i];
-                                } else {
-                                    this.violationsMap[
-                                        violationsData[i].resource_id
-                                    ] = violationsData[i];
-                                }
-                            }
+                            // { full_name: { violation } }
+                            this.setViolationsMap(violationsData);
 
                             this.resourceArray = filteredResourcesData
                                 .map(ResourceDataServiceHandler.handle)
@@ -261,6 +280,16 @@ export default {
                             // initialize tree
                             this.initTree(orientation, filteredResourceArray);
                         });
+                } else {
+                    if (parentId) {
+                        alert(
+                            `No resources found for the project: ${parentId}`
+                        );
+                    } else {
+                        alert(
+                            'No resources found for the Forseti GCP Organization'
+                        );
+                    }
                 }
             });
         },
@@ -276,9 +305,14 @@ export default {
          * }
          */
         initTree: function(orientation, data) {
+            console.log('initTree', orientation, data);
+
             this.tree = d3
                 .tree()
                 .size([this.width - VisualizerConfig.MARGIN.top, this.height]);
+
+            console.log('tree', this.tree, this.treeData);
+
             this.treeData = d3
                 .stratify()
                 .id(function(d) {
@@ -288,6 +322,8 @@ export default {
                     return d.parent_id;
                 })(data);
 
+            console.log('td', this.treeData);
+
             // assign the name to each node
             this.treeData.each(function(d) {
                 if (d.data.resource_type === ResourceType.SERVICE_ACCOUNT_KEY) {
@@ -296,6 +332,8 @@ export default {
                     d.name = d.data.resource_name;
                 }
             });
+
+            console.log('td2', this.treeData);
 
             // treeData is the root of the tree,
             // and the tree has all the data we need in it now.
@@ -328,6 +366,8 @@ export default {
                     this.zoomScale = d3.event.transform.k;
                 });
 
+            console.log(orientation, this.zoomListener);
+
             // set initial zoom
             if (orientation === Orientation.Vertical) {
                 this.svg.call(
@@ -335,7 +375,10 @@ export default {
                     d3.zoomIdentity.translate(this.width / 2, this.height / 2)
                 );
 
+                console.log('asadf???', data);
+
                 // g "container", initially translated by the margin left and top
+                this.svg.selectAll('g').remove();
                 this.g = this.svg
                     .append('g')
                     .attr(
@@ -346,6 +389,8 @@ export default {
                             VisualizerConfig.MARGIN.top +
                             ')'
                     );
+                console.log(this.g);
+                window.uh = this.g;
 
                 // prevent dbl click
                 this.svg.on('dblclick.zoom', null);
@@ -360,6 +405,7 @@ export default {
                     )
                     .on('dblclick', null);
 
+                this.svg.selectAll('g').remove();
                 this.g = this.svg
                     .append('g')
                     .attr(
@@ -532,50 +578,29 @@ export default {
                         .duration(VisualizerConfig.ANIMATION_DURATION)
                         .style('opacity', 0.9);
 
-                    let tooltipContent = '';
-                    if (this.violationsMap[d.data.resource_id]) {
-                        // if a violation exists
-                        tooltipDiv.style(
-                            'background',
-                            VisualizerConfig.TOOLTIP_VIOLATION_BG_COLOR
+                    let violationExists =
+                        this.violationsMap[d.data.full_name] !== undefined
+                            ? true
+                            : false;
+
+                    let tooltipContent = TooltipRenderer.getTooltipHtml(
+                        violationExists,
+                        d,
+                        this.violationsMap
+                    );
+
+                    tooltipDiv.style(
+                        'background',
+                        TooltipRenderer.getTooltipBackground(violationExists)
+                    );
+
+                    // send event
+                    if (this.bottomSheetEnabled) {
+                        this.$root.$emit(
+                            'send',
+                            d,
+                            this.violationsMap[d.data.full_name]
                         );
-
-                        // ${violationsMap[d.data.resource_id].violation_data}
-                        tooltipContent = `
-                            <div>
-                                <h4>${this.violationsMap[d.data.resource_id].violation_type}</h4>
-                                ${this.violationsMap[d.data.resource_id].rule_name}<br>
-                            </div>`;
-
-                        // send event
-                        if (this.bottomSheetEnabled) {
-                            this.$root.$emit(
-                                'send',
-                                d,
-                                this.violationsMap[d.data.resource_id]
-                            );
-                        }
-                    } else {
-                        // if a violation does NOT exist
-                        tooltipDiv.style(
-                            'background',
-                            ColorConfig.NODE_BG_COLOR
-                        );
-
-                        // default tooltipContent
-                        tooltipContent = `
-                            <div style="text-align: left; margin-left: 20px;">
-                                <h4>${d.data.resource_name}</h4>
-                                
-                                ${d.data.resource_data_name}
-                                <br />
-                                ${d.data.resource_type}
-                            </div>`;
-
-                        // send event
-                        if (this.bottomSheetEnabled) {
-                            this.$root.$emit('send', d, {});
-                        }
                     }
 
                     tooltipDiv
@@ -602,12 +627,12 @@ export default {
                     return d._children ? 1 : 0;
                 })
                 .style('stroke-opacity', d => {
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? 1
                         : 0;
                 })
                 .style('stroke', d => {
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? ColorConfig.DANGER
                         : ColorConfig.BLACK;
                 });
@@ -675,13 +700,13 @@ export default {
                     return d._children ? 1 : 0;
                 })
                 .style('stroke-opacity', d => {
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? 1
                         : 0;
                 })
                 .style('stroke', d => {
                     // set to red
-                    return this.violationsMap[d.data.resource_id] !== undefined
+                    return this.violationsMap[d.data.full_name] !== undefined
                         ? ColorConfig.DANGER
                         : ColorConfig.BLACK;
                 });
@@ -1023,8 +1048,7 @@ export default {
             this.selectedFilterResources = selectedFilterResources;
 
             this._resetSvg();
-
-            this.init(this.orientation);
+            this.init(this.orientation, this.projectId);
         },
 
         /**
@@ -1033,9 +1057,10 @@ export default {
          */
         resetParent: function() {
             this.parentNode = null;
+            this.projectId = null;
 
             this._resetSvg();
-            this.init(this.orientation);
+            this.init(this.orientation, this.projectId);
         },
 
         /**
@@ -1175,17 +1200,21 @@ export default {
          * @description Refresh the grid: clears and recreates
          */
         _resetSvg: function() {
+            console.log(this.svg);
+
             d3.select('#d3-area')
                 .selectAll('svg')
                 .remove();
 
-            // reset
+            // append a new svg?
             this.svg = d3
                 .select('#d3-area')
                 .append('svg')
                 .attr('width', this.width)
                 .attr('height', this.height)
                 .style('pointer-events', 'all');
+
+            console.log(this.svg);
 
             // reset vars
             this.expand = true;
@@ -1201,7 +1230,7 @@ export default {
 
             this._resetSvg();
 
-            this.init(this.orientation);
+            this.init(this.orientation, this.projectId);
         },
 
         /**
@@ -1306,12 +1335,12 @@ export default {
                         return d._children ? 1 : 0;
                     })
                     .style('stroke-opacity', function(d) {
-                        return violationsMap[d.data.resource_id] !== undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? 1
                             : 0;
                     })
                     .style('stroke', function(d) {
-                        return violationsMap[d.data.resource_id] !== undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;
                     });
@@ -1337,14 +1366,14 @@ export default {
                         return d._children ? 1 : 0;
                     })
                     .style('stroke-opacity', function(d) {
-                        return this.violationsMap[d.data.resource_id] !==
+                        return this.violationsMap[d.data.full_name] !==
                             undefined
                             ? 1
                             : 0;
                     })
                     .style('stroke', function(d) {
                         // set to red
-                        return this.violationsMap[d.data.resource_id] !==
+                        return this.violationsMap[d.data.full_name] !==
                             undefined
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;
@@ -1450,7 +1479,7 @@ export default {
     data: () => ({
         // global: set this to use JSON files vs. dynamic
         // useCache: false, // default to using server data
-        useCache: true, // default to using cached files.json
+        useCache: false, // default to using cached files.json
         useJson: true, // false defers to using a .csv
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
@@ -1556,15 +1585,21 @@ div.tooltip {
     text-align: left;
     padding-left: 15px;
     width: 300px;
-    height: 100px;
+    /* height: 100px; */
     padding: 12px;
     font: 14px sans-serif;
-    border: 14px solid black;
+    border: 4px solid black;
     opacity: 0.5;
     border-radius: 8px;
     pointer-events: none;
 
     stroke-width: 3px;
+    overflow: scroll;
+    word-wrap: break-word;
+}
+div.tooltip-content {
+    text-align: left;
+    margin-left: 20px;
 }
 
 .zoom-button {

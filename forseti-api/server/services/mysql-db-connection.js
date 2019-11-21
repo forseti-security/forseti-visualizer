@@ -14,21 +14,36 @@
 
 class MySQLDatabaseConnection {
     constructor(host, user, password, database) {
+        this.initializeConnection(host, user, password, database);
+    }
+
+    initializeConnection(host, user, password, database) {
         const mysql = require('mysql');
 
-        this.connection = mysql.createConnection({
+        let connection = mysql.createConnection({
             host: host,
             user: user,
             password: password,
             database: database
         });
 
-        this.connection.connect(function(err) {
+        connection.connect(function (err) {
             if (err) {
                 console.error('error connecting: ' + err.stack);
                 return;
             }
         });
+
+        connection.on('error', (err) => {
+            console.log('db error', err);
+            if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+                this.initializeConnection(host, user, password, database); // lost due to either server restart, or a
+            } else { // connnection idle timeout (the wait_timeout
+                throw err; // server variable configures this)
+            }
+        });
+
+        this.connection = connection;
     }
 
     getActiveConnection() {

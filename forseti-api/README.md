@@ -4,8 +4,8 @@ The node.js backend for the forseti-visualizer project.  Forseti API serves cont
 
 ## Pre-Requisites
 
-* The hosted solution must have a route to the Cloud SQL database.
-* The hosted solution must have access to the forseti-server via GRPC (port 50051)
+* A database connection using [Cloud SQL Proxy (recommended)](#Cloud-SQL-Proxy).
+* If using IAM Explainer, the hosted solution must have access to the forseti-server GCE VM via a Firewall enabling GRPC traffic (port 50051)
 
 To build and deploy the solution from your local system, please ensure you have the following:
 
@@ -36,18 +36,13 @@ cat > server/config.json << EOF
   "host": "0.0.0.0",
   "port": 8080,
   "bodyLimit": "100kb",
-  "corsHeaders": ["Link"],  
-  "GCLOUD_PROJECT": "[PROJECT_ID]",
-  "DATA_BACKEND": "datastore",  
-  "NODE_ENV": "",
-  "OAUTH2_CLIENT_ID": "[SERVICE_ACCOUNT_NAME]@apps.googleusercontent.com",
-  "OAUTH2_CLIENT_SECRET": "[CLIENT_SECRET]",
-  "OAUTH2_CALLBACK": "http://localhost:8080/auth/google/callback",
-  
-  "SECRET": "[SECRET]"
+  "corsHeaders": ["Link"],
+
+  "oauth2ClientId": "[SERVICE_ACCOUNT_NAME]@apps.googleusercontent.com",
+  "oauth2ClientSecret": "[CLIENT_SECRET]",
+  "oauth2Callback": "http://localhost:8080/auth/google/callback",
 }
 EOF
-
 
 npm install
 source source.env
@@ -57,7 +52,7 @@ npm start
 
 ## Deployment - Docker
 
-To get started with Docker, you will need to create a local dockersource.env file with the following content.  (For Docker, do not use double quotes)
+`IF you are using Docker...`, you will need to create a local dockersource.env file with the following content.  (Note: Do not include the double quotes)
 
 ```bash
 cat > dockersource.env << EOF
@@ -76,6 +71,18 @@ export PROJECT_ID="$(gcloud config get-value project -q)"
 docker run --env-file $SOURCE_FILE --rm -d -p 8080:8080 gcr.io/$PROJECT_ID/$IMAGE_NAME
 ```
 
-## Opinions
+## References
 
 * [.jshintrc](https://stackoverflow.com/questions/36318895/vs-code-with-es6) - JS formatting hints
+
+### Cloud SQL Proxy
+
+* [Reference](https://cloud.google.com/sql/docs/mysql/connect-admin-proxy#install)
+
+```bash
+curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64
+chmod +x cloud_sql_proxy
+
+INSTANCE_CONNECTION_NAME="forseti-security-1e88:us-central1:forseti-server-db-586f404"
+./cloud_sql_proxy -instances=$INSTANCE_CONNECTION_NAME=tcp:3306
+```
