@@ -77,8 +77,7 @@ let TooltipRenderer = {
         let tooltipContent = '';
 
         if (violationExists) {
-            console.log(violationsMap[d.data.full_name])
-
+            // console.log(violationsMap[d.data.full_name])
             tooltipContent = ResourceTypeTooltipRenderer.renderViolations(
                 violationsMap[d.data.full_name]);
         } else { // violation does NOT exist

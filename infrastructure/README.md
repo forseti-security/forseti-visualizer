@@ -17,7 +17,6 @@ Each script requires a docker image to be pre-built and pushed to the local gcr.
 cd forseti-visualizer-ui/
 npm install
 npm run build
-cp -R dist ../forseti-api/dist-forseti-visualizer-ui
 cd ../forseti-api
 npm install
 
@@ -26,14 +25,17 @@ gcloud services enable compute.googleapis.com
 gcloud services enable container.googleapis.com
 gcloud services enable containerregistry.googleapis.com
 
-# create a file named "source.env"
+# create source.env file.  Replace the variable values with the correct values.  You'll likely need to change `CLOUDSQL_PASSWORD`, `PROJECT_ID` (`FORSETI_SERVER_VM_CHANNEL` and `FORSETI_DATA_MODEL_HANDLE` are required ONLY for IAM Explain functionality).
 cat > source.env << EOF
-export CLOUDSQL_HOSTNAME="1.2.34.56"
-export CLOUDSQL_USERNAME="user"
-export CLOUDSQL_PASSWORD="password"
+export API_HOST="0.0.0.0"
+export API_PORT="8080"
+export CLOUDSQL_HOSTNAME="127.0.0.1"
+export CLOUDSQL_USERNAME="root"
+export CLOUDSQL_PASSWORD=""
 export CLOUDSQL_SCHEMA="forseti_security"
-export FORSETI_SERVER_VM_CHANNEL="1.2.3.4:50051"
-export FORSETI_DATA_MODEL_HANDLE="abcdaa3a5bc9fd9acfaf50fdd3620534"
+export FORSETI_SERVER_VM_CHANNEL="0.0.0.0:50051"
+export FORSETI_DATA_MODEL_HANDLE="21254f1de747879237a95cb552e80844"
+export PROJECT_ID="forseti-visualizer"
 EOF
 
 # build docker images
@@ -54,5 +56,5 @@ EOF
 
 ## References
 
-* [Static IP on GKE](https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip)
-* [Firewalls](https://cloud.google.com/solutions/prep-kubernetes-engine-for-prod#firewalling)
+- [Static IP on GKE](https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip)
+- [Firewalls](https://cloud.google.com/solutions/prep-kubernetes-engine-for-prod#firewalling)

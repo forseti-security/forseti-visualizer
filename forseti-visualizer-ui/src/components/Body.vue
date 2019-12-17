@@ -1583,10 +1583,8 @@ svg {
 div.tooltip {
     position: absolute;
     text-align: left;
-    padding-left: 15px;
     width: 300px;
-    /* height: 100px; */
-    padding: 12px;
+    padding: 8px 6px;
     font: 14px sans-serif;
     border: 4px solid black;
     opacity: 0.5;
@@ -1594,7 +1592,7 @@ div.tooltip {
     pointer-events: none;
 
     stroke-width: 3px;
-    overflow: scroll;
+    /* overflow: scroll; */
     word-wrap: break-word;
 }
 div.tooltip-content {

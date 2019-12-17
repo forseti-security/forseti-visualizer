@@ -1,6 +1,6 @@
 # Forseti Visualizer
 
-![](.assets/forseti-visualizer-example.gif)
+![Forseti Visualizer GIF](.assets/forseti-visualizer-example.gif)
 
 Forseti Visualizer provides a visualization solution, based on [Forseti Security's](https://github.com/forseti-security/forseti-security) Inventorying and Violation modules.  Forseti Visualizer attempts to enable Google Cloud Platform users to better understand their GCP Organization Structure, while providing insights into policy adherence through identification of violations.
 
@@ -34,7 +34,7 @@ cd forseti-visualizer-ui/
 # install the packages
 npm install
 
-# build the application
+# build the application (FYI: This also copies to dist to the ../forseti-api/ folder)
 npm run build
 
 # for developing just the UI - app is served on :8081
@@ -49,34 +49,17 @@ Navigate to forseti-api/.  Create a `source.env` file, which will should be sour
 # navigate to forseti-api
 cd forseti-api/
 
-# copy the most recent dist
-cp -R ../forseti-visualizer-ui/dist ../forseti-api/dist-forseti-visualizer-ui
-
-# create source.env file
+# create source.env file.  Replace the variable values with the correct values.  You'll likely need to change `CLOUDSQL_PASSWORD`, `PROJECT_ID` (`FORSETI_SERVER_VM_CHANNEL` and `FORSETI_DATA_MODEL_HANDLE` are required ONLY for IAM Explain functionality).  
 cat > source.env << EOF
-export CLOUDSQL_HOSTNAME="[IP HERE:127.0.0.1]"
-export CLOUDSQL_USERNAME="[YOUR_USER_HERE:root]"
-export CLOUDSQL_PASSWORD="[YOUR_PASSWORD_HERE:]"
+export API_HOST="0.0.0.0"
+export API_PORT="8080"
+export CLOUDSQL_HOSTNAME="127.0.0.1"
+export CLOUDSQL_USERNAME="root"
+export CLOUDSQL_PASSWORD=""
 export CLOUDSQL_SCHEMA="forseti_security"
-export FORSETI_SERVER_VM_CHANNEL="[FORSETI-SERVER-VM_IP]:[GRPC_PORT:50051]"
-export FORSETI_DATA_MODEL_HANDLE="[DATA_MODEL_HANDLE_HASH:21254f1de747879237a95cb552e80844]"
-EOF
-```
-
-You'll also need to seed the project with a `config.json` file under server/config.json.  
-
-```bash
-cat > server/config.json << EOF
-{
-  "host": "0.0.0.0",
-  "port": 8080,
-  "bodyLimit": "100kb",
-  "corsHeaders": ["Link"],
-
-  "oauth2ClientId": "[SERVICE_ACCOUNT_NAME]@apps.googleusercontent.com",
-  "oauth2ClientSecret": "[CLIENT_SECRET]",
-  "oauth2Callback": "http://localhost:8080/auth/google/callback",
-}
+export FORSETI_SERVER_VM_CHANNEL="0.0.0.0:50051"
+export FORSETI_DATA_MODEL_HANDLE="21254f1de747879237a95cb552e80844"
+export PROJECT_ID="forseti-visualizer"
 EOF
 ```
 
@@ -86,10 +69,13 @@ While still in the "forseti-api/" directory:
 # install npm packages
 npm install
 
-# set environment variables
+# if any vulnerabilities from JS package versions, then run
+npm audit fix
+
+# source environment variables
 source source.env
 
-# run the app: served on localhost:8080
+# run the app: the APP can be accessed on PORT 8080
 npm start
 ```
 
@@ -108,4 +94,5 @@ For each of the scripts, replace the variables at the top of each file with thos
 
 ## References
 
+* [Google Cloud Blog](https://cloud.google.com/blog/products/identity-security/understand-gcp-organization-resource-hierarchies-with-forseti-visualizer)
 * [Medium](https://medium.com/google-cloud/visualize-gcp-architecture-using-forseti-2-0-and-d3-js-ffc8fdf59450)

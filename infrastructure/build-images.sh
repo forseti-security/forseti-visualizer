@@ -43,6 +43,7 @@ docker push gcr.io/$PROJECT_ID/forseti-visualizer:latest
 echo $VERSION
 echo $NEW_VERSION > VERSION
 
-IMAGE_NAME=$(gcloud container images list | grep "forseti-visualizer")
+
+IMAGE_NAME=$(gcloud container images list --project $PROJECT_ID | grep "forseti-visualizer")
 echo $IMAGE_NAME
-gcloud container images list-tags $IMAGE_NAME
+gcloud container images list-tags $IMAGE_NAME --project $PROJECT_ID
