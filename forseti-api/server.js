@@ -18,7 +18,6 @@
 const express = require('express');
 
 import api from './server/api';
-import config from './server/config.json';
 
 // setup app
 const app = express();
@@ -33,16 +32,18 @@ app.all('*', function (req, res, next) {
 
 // Override static assets to use public
 console.log(__dirname);
-const { resolve } = require('path');
-// const publicPath = resolve(__dirname, '../forseti-visualizer-ui/dist')
+const {
+  resolve
+} = require('path');
 const publicPath = resolve(__dirname, 'dist-forseti-visualizer-ui');
-const staticConf = { maxAge: '1y', etag: false };
+const staticConf = {
+  maxAge: '1y',
+  etag: false
+};
 app.use(express.static(publicPath, staticConf));
 
 // set up /api routes
-app.use('/api', api({
-  config
-}));
+app.use('/api', api({}));
 
 // set up / main route
 app.get('/', (req, res) => {
@@ -51,50 +52,6 @@ app.get('/', (req, res) => {
   });
 });
 
-
-/* AUTH */
-
-const uuid = require('uuid/v4')
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
-const bodyParser = require('body-parser');
-const passport = require('passport');
-
-
-// [START session]
-// Configure the session and session storage.
-const sessionConfig = {
-  resave: false,
-  saveUninitialized: false,
-  secret: config.randomString,
-  signed: true
-};
-
-app.use(session(sessionConfig));
-// [END session]
-
-// app.use(bodyParser.urlencoded({ extended: false }))
-// app.use(bodyParser.json())
-// app.use(session({
-//   genid: (req) => {
-//     console.log('Inside session middleware genid function', req.session)
-//     console.log(`Request object sessionID from client: ${req.sessionID}`)
-//     return uuid() // use UUIDs for session IDs
-//   },
-//   store: new FileStore(),
-//   secret: 'super secret',
-//   resave: false,
-//   saveUninitialized: true
-// }))
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(require('./server/services/oauth2').router); //auth
-
-/* END AUTH */
-
-
-
 // initialize app
-app.listen(config.port, config.host);
-console.log(`Running on http://${config.host}:${config.port}`);
+app.listen(process.env['API_PORT'], process.env['API_HOST']);
+console.log(`Running on http://${process.env['API_HOST']}:${process.env['API_PORT']}`);

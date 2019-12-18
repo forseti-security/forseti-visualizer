@@ -16,20 +16,22 @@
 
 source source.env
 
+gcloud services enable compute container --project $PROJECT_ID
+
 GCR_IMAGE_NAME="gcr.io\/$PROJECT_ID\/forseti-visualizer" # must be escaped
 REGION="us-central1"
 # REGION="us-west1"
 APP_NAME="$PROJECT_ID-app"
 
 ENDPOINTS_IP="$APP_NAME-endpoints-ip"
-STATIC_IP=$(gcloud compute addresses list --format="get(address)" --filter="name=$ENDPOINTS_IP")
+STATIC_IP=$(gcloud compute addresses list --format="get(address)" --filter="name=$ENDPOINTS_IP" --project $PROJECT_ID)
 
 if [ -z $STATIC_IP ];
 then
     # is unset
     echo "Creating a new address"
     gcloud compute addresses create $ENDPOINTS_IP --region $REGION
-    STATIC_IP=$(gcloud compute addresses list --format="get(address)" --filter="name=$ENDPOINTS_IP")
+    STATIC_IP=$(gcloud compute addresses list --format="get(address)" --filter="name=$ENDPOINTS_IP" --project $PROJECT_ID)
 else
     # is set
     echo $STATIC_IP
@@ -44,18 +46,35 @@ cd gke-templates/
 # MAC: use sed -i '' -e
 # LINUX: use sed -i 
 
-# replace [GCR-IMAGE]
-sed -i "s/\[GCR-IMAGE\]/$GCR_IMAGE_NAME/g" *.yaml
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Mac OSX
 
-# replace [MY-PROJECT]
-sed -i "s/\[MY-PROJECT\]/$PROJECT_ID/g" *.yaml
+    # replace [GCR-IMAGE]
+    sed -i '' "s/\[GCR-IMAGE\]/$GCR_IMAGE_NAME/g" *.yaml
 
-# replace [MY-STATIC-IP]
-sed -i "s/\[MY-STATIC-IP\]/$STATIC_IP/g" *.yaml
+    # replace [MY-PROJECT]
+    sed -i '' "s/\[MY-PROJECT\]/$PROJECT_ID/g" *.yaml
 
-# replace [APP-NAME]
-sed -i "s/\[APP-NAME\]/$APP_NAME/g" *.yaml
+    # replace [MY-STATIC-IP]
+    sed -i '' "s/\[MY-STATIC-IP\]/$STATIC_IP/g" *.yaml
 
+    # replace [APP-NAME]
+    sed -i '' "s/\[APP-NAME\]/$APP_NAME/g" *.yaml
+else
+    # CloudShell (Linux)
+
+    # replace [GCR-IMAGE]
+    sed -i "s/\[GCR-IMAGE\]/$GCR_IMAGE_NAME/g" *.yaml
+
+    # replace [MY-PROJECT]
+    sed -i "s/\[MY-PROJECT\]/$PROJECT_ID/g" *.yaml
+
+    # replace [MY-STATIC-IP]
+    sed -i "s/\[MY-STATIC-IP\]/$STATIC_IP/g" *.yaml
+
+    # replace [APP-NAME]
+    sed -i "s/\[APP-NAME\]/$APP_NAME/g" *.yaml
+fi
 
 ### DEPLOYMENT PHASE
 ###     Reference: https://www.qwiklabs.com/focuses/2771?parent=catalog
@@ -63,8 +82,8 @@ gcloud endpoints services deploy openapi.yaml
 
 echo "Creating Cluster"
 CLUSTER_NAME=$APP_NAME-gke
-gcloud container clusters create $CLUSTER_NAME --region $REGION --num-nodes="1"
-gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION
+gcloud container clusters create $CLUSTER_NAME --region $REGION --num-nodes="1" --project $PROJECT_ID
+gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION --project $PROJECT_ID
 
 kubectl create clusterrolebinding cluster-admin-binding \
     --clusterrole cluster-admin --user $(gcloud config get-value account)
@@ -91,8 +110,26 @@ kubectl apply -f service.yaml
 kubectl apply -f ingress.yaml
 
 # setup HTTPS
-helm install --name cert-manager --version v0.3.2 \
+
+# PREVIOUS
+helm del --purge cert-manager;
+kubectl delete crd \
+    certificates.certmanager.k8s.io issuers.certmanager.k8s.io clusterissuers.certmanager.k8s.io;
+helm install --name cert-manager --version v0.5.2 \
     --namespace kube-system stable/cert-manager
+
+# NEW
+# helm list | grep cert-manager
+# kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
+# kubectl create namespace cert-manager
+# helm repo add jetstack https://charts.jetstack.io
+# helm repo update
+# helm install \
+#   --name cert-manager \
+#   --namespace cert-manager \
+#   --version v0.11.0 \
+#   jetstack/cert-manager
+
 EMAIL=garrettwong@gwongcloud.com
 cat letsencrypt-issuer.yaml | sed -e "s/email: ''/email: $EMAIL/g" | kubectl apply -f-
 kubectl apply -f ingress-tls.yaml
@@ -116,3 +153,6 @@ cat > cleanup.sh << EOF
 gcloud container clusters delete ${CLUSTER_NAME} --region ${REGION} -q
 gcloud compute addresses delete ${ENDPOINTS_IP} --region ${REGION} -q
 EOF
+
+chmod +x cleanup.sh
+

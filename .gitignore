@@ -7,12 +7,14 @@ source.env
 source-gwongcloud.env
 dockersource.env
 asdf.env.enc
-config.json
 start_cloud_sql_proxy.sh
 
 # Keys
 sa-key.json
 credentials.json
+
+# GKE
+gke-templates/
 
 # Logs
 logs
