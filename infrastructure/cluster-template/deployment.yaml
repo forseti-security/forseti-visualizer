@@ -44,3 +44,16 @@ spec:
         imagePullPolicy: Always
         ports:
           - containerPort: 8080
+        env:
+          - name: API_HOST
+            value: "0.0.0.0"
+          - name: API_PORT
+            value: "8080"
+          - name: CLOUDSQL_HOSTNAME
+            value: "127.0.0.1"
+          - name: CLOUDSQL_USERNAME
+            value: "root"
+          - name: CLOUDSQL_PASSWORD
+            value: ""
+          - name: CLOUDSQL_SCHEMA
+            value: "forseti-security"

@@ -35,7 +35,7 @@ export CLOUDSQL_PASSWORD=""
 export CLOUDSQL_SCHEMA="forseti_security"
 export FORSETI_SERVER_VM_CHANNEL="0.0.0.0:50051"
 export FORSETI_DATA_MODEL_HANDLE="21254f1de747879237a95cb552e80844"
-export PROJECT_ID="forseti-visualizer"
+export PROJECT_ID="forsetivisualizer"
 EOF
 
 # build docker images

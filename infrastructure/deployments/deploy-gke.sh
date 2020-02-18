@@ -1,6 +1,6 @@
 #!/bin/bash 
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -80,9 +80,27 @@ fi
 ###     Reference: https://www.qwiklabs.com/focuses/2771?parent=catalog
 gcloud endpoints services deploy openapi.yaml
 
+# create cluster service account
+gcloud iam service-accounts create kubernetes-engine \
+    --project $PROJECT_ID
+
+SERVICE_ACCOUNT_EMAIL=kubernetes-engine@$PROJECT_ID.iam.gserviceaccount.com
+
+# add policy binding
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$SERVICE_ACCOUNT_EMAIL \
+    --role=roles/storage.objectViewer
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$SERVICE_ACCOUNT_EMAIL \
+    --role=roles/endpoints.portalAdmin
+
 echo "Creating Cluster"
 CLUSTER_NAME=$APP_NAME-gke
-gcloud container clusters create $CLUSTER_NAME --region $REGION --num-nodes="1" --project $PROJECT_ID
+gcloud container clusters create $CLUSTER_NAME \
+    --region $REGION \
+    --num-nodes="1" \
+    --project $PROJECT_ID \
+    --service-account $SERVICE_ACCOUNT_EMAIL
 gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION --project $PROJECT_ID
 
 kubectl create clusterrolebinding cluster-admin-binding \
@@ -134,9 +152,9 @@ EMAIL=garrettwong@gwongcloud.com
 cat letsencrypt-issuer.yaml | sed -e "s/email: ''/email: $EMAIL/g" | kubectl apply -f-
 kubectl apply -f ingress-tls.yaml
 
-cat > cleanup.sh << EOF
+cat > teardown-gke.sh << EOF
 #!/bin/sh
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -154,5 +172,5 @@ gcloud container clusters delete ${CLUSTER_NAME} --region ${REGION} -q
 gcloud compute addresses delete ${ENDPOINTS_IP} --region ${REGION} -q
 EOF
 
-chmod +x cleanup.sh
+chmod +x teardown-gke.sh
 

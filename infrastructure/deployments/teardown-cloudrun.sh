@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+#
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export TEMP_DIR="public"
-export BUCKET_NAME="gs://forseti-visualizer-icons"
+# this script is intended to be run in the infrastructure/ folder
 
-mkdir $TEMP_DIR 
+source source.env
 
-find . -name "*.png" -exec cp {} $TEMP_DIR \; -print
+REGION="us-central1"
+ENV_VARS="API_HOST=0.0.0.0,API_PORT=8080,CLOUDSQL_HOSTNAME=$CLOUDSQL_HOSTNAME,CLOUDSQL_USERNAME=$CLOUDSQL_USERNAME,CLOUDSQL_PASSWORD=$CLOUDSQL_PASSWORD,CLOUDSQL_SCHEMA=$CLOUDSQL_SCHEMA"
 
-gsutil cp -R $TEMP_DIR $BUCKET_NAME
+gcloud config set run/region $REGION
 
-gsutil iam ch allUsers:objectViewer $BUCKET_NAME
+gcloud beta run services delete forseti-visualizer-cr \
+    --platform managed --quiet
+
+gcloud iam service-accounts delete cloud-run@$PROJECT_ID.iam.gserviceaccount.com
+

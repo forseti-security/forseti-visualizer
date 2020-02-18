@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# this script is intended to be run in the infrastructure/ folder
-
 source source.env
 
-REGION="us-central1"
+GCR_IMAGE_NAME="gcr.io/$PROJECT_ID/forseti-visualizer"
+ZONE="us-central1-a"
+VM_NAME="forseti-visualizer-gce"
 ENV_VARS="API_HOST=0.0.0.0,API_PORT=8080,CLOUDSQL_HOSTNAME=$CLOUDSQL_HOSTNAME,CLOUDSQL_USERNAME=$CLOUDSQL_USERNAME,CLOUDSQL_PASSWORD=$CLOUDSQL_PASSWORD,CLOUDSQL_SCHEMA=$CLOUDSQL_SCHEMA"
 
-gcloud config set run/region $REGION
+gcloud beta compute \
+    --project=$PROJECT_ID \
+    instances delete $VM_NAME \
+    --zone=$ZONE \
+    --quiet
 
-gcloud iam service-accounts create cloud-run
+gcloud projects remove-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:compute-engine@$PROJECT_ID.iam.gserviceaccount.com \
+    --role=roles/storage.objectViewer
 
-gcloud beta run deploy forseti-visualizer-cr \
-    --image gcr.io/$PROJECT_ID/forseti-visualizer:latest \
-    --update-env-vars $ENV_VARS \
-    --project $PROJECT_ID \
-    --platform managed \
-    --service-account=cloud-run@$PROJECT_ID.iam.gserviceaccount.com \
-    --allow-unauthenticated
+gcloud iam service-accounts delete \
+    compute-engine@$PROJECT_ID.iam.gserviceaccount.com \
+    --quiet
+
+gcloud compute firewall-rules delete public-ingress-http --quiet

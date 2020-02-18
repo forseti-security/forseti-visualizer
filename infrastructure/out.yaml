@@ -1,0 +1,179 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu request for container
+      esp; cpu request for container forsetivisualizer-app'
+  creationTimestamp: "2020-02-13T00:41:16Z"
+  generateName: forsetivisualizer-app-657c9695cc-
+  labels:
+    app: forsetivisualizer-app
+    pod-template-hash: 657c9695cc
+  name: forsetivisualizer-app-657c9695cc-9jpwr
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: forsetivisualizer-app-657c9695cc
+    uid: 8b2ede6f-4df9-11ea-be58-42010a800178
+  resourceVersion: "5276"
+  selfLink: /api/v1/namespaces/default/pods/forsetivisualizer-app-657c9695cc-9jpwr
+  uid: 8b33b531-4df9-11ea-be58-42010a800178
+spec:
+  containers:
+  - args:
+    - --http_port=8081
+    - --backend=127.0.0.1:8080
+    - --service=$(JWT_AUDIENCE)
+    - --rollout_strategy=managed
+    env:
+    - name: JWT_AUDIENCE
+      valueFrom:
+        configMapKeyRef:
+          key: JWT_AUDIENCE
+          name: env-var
+    image: gcr.io/endpoints-release/endpoints-runtime:1
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 8081
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    name: esp
+    ports:
+    - containerPort: 8081
+      name: http
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 8081
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources:
+      requests:
+        cpu: 100m
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-f8d5f
+      readOnly: true
+  - image: gcr.io/forsetivisualizer/forseti-visualizer
+    imagePullPolicy: Always
+    name: forsetivisualizer-app
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    env:
+    - name: API_HOST
+      value: 0.0.0.0
+    - name: API_PORT
+      value: 8080
+    - name: CLOUDSQL_HOSTNAME
+      value: 127.0.0.1
+    - name: CLOUDSQL_USERNAME
+      value: root
+    - name: CLOUDSQL_SCHEMA
+      value: forseti-security
+    resources:
+      requests:
+        cpu: 100m
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-f8d5f
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: gke-forsetivisualizer-ap-default-pool-d47127ff-xw5v
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: default-token-f8d5f
+    secret:
+      defaultMode: 420
+      secretName: default-token-f8d5f
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2020-02-13T00:41:16Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2020-02-13T00:41:16Z"
+    message: 'containers with unready status: [esp]'
+    reason: ContainersNotReady
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2020-02-13T00:41:16Z"
+    message: 'containers with unready status: [esp]'
+    reason: ContainersNotReady
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2020-02-13T00:41:16Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://8cd7d22b41a623f80de84cec8b94e2f1dd307f39a849e0c3542b6f12bc2d5f0d
+    image: gcr.io/endpoints-release/endpoints-runtime:1
+    imageID: docker-pullable://gcr.io/endpoints-release/endpoints-runtime@sha256:084e11736095892e77824756620dc1a66400772efafb3deddd7b93e447388a43
+    lastState:
+      terminated:
+        containerID: docker://8cd7d22b41a623f80de84cec8b94e2f1dd307f39a849e0c3542b6f12bc2d5f0d
+        exitCode: 1
+        finishedAt: "2020-02-13T00:53:01Z"
+        reason: Error
+        startedAt: "2020-02-13T00:53:00Z"
+    name: esp
+    ready: false
+    restartCount: 7
+    state:
+      waiting:
+        message: Back-off 5m0s restarting failed container=esp pod=forsetivisualizer-app-657c9695cc-9jpwr_default(8b33b531-4df9-11ea-be58-42010a800178)
+        reason: CrashLoopBackOff
+  - containerID: docker://e1f5f144367a6bf1df35bde1c457caca606c6aad412673789efb8cc0dd2b049e
+    image: gcr.io/forsetivisualizer/forseti-visualizer:latest
+    imageID: docker-pullable://gcr.io/forsetivisualizer/forseti-visualizer@sha256:c555558677435c7d0782a0c98f5199ea5b82bc5af42a0230d690ad1ac51ce2c5
+    lastState: {}
+    name: forsetivisualizer-app
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: "2020-02-13T00:42:03Z"
+  hostIP: 10.128.0.24
+  phase: Running
+  podIP: 10.28.1.5
+  qosClass: Burstable
+  startTime: "2020-02-13T00:41:16Z"
