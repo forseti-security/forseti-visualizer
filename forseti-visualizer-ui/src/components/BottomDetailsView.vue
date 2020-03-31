@@ -1,7 +1,7 @@
 <template>
   <div class="text-xs-center">
     <v-bottom-sheet v-model="sheetOpen" v-bind:hide-overlay="true">
-      <v-btn slot="activator" color="purple" dark>Click me {{sheetOpen}}</v-btn>
+      <!-- <v-btn slot="activator" color="purple" dark>Click me {{sheetOpen}}</v-btn> -->
 
       <v-card>
         <v-card-title primary-title>

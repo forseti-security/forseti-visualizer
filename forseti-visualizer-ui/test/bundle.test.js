@@ -92,7 +92,7 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _JSONBeautifier_test__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _D3Helpers_test__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_services_JSONBeautifier__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ describe("JSONBeautifier.test", () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -318,7 +318,7 @@ class JSONBeautifier {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_services_D3Helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* eslint-disable no-undef */
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -364,7 +364,7 @@ describe("D3Helpers.test", () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

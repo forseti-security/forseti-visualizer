@@ -31,7 +31,7 @@ export CLOUDSQL_PASSWORD=""
 export CLOUDSQL_SCHEMA="forseti_security"
 export FORSETI_SERVER_VM_CHANNEL="0.0.0.0:50051"
 export FORSETI_DATA_MODEL_HANDLE="21254f1de747879237a95cb552e80844"
-export PROJECT_ID="forseti-visualizer"
+export PROJECT_ID="forsetivisualizer"
 EOF
 
 npm install
@@ -61,7 +61,7 @@ EOF
 IMAGE_NAME="forseti-visualizer"
 SOURCE_FILE="dockersource.env"
 export PROJECT_ID="$(gcloud config get-value project -q)"
-docker run --env-file $SOURCE_FILE --rm -d -p 8080:8080 gcr.io/$PROJECT_ID/$IMAGE_NAME
+docker run --env-file $SOURCE_FILE --rm -d -p 8080:8080 -name forsetivisualizer gcr.io/$PROJECT_ID/$IMAGE_NAME
 ```
 
 ## References
