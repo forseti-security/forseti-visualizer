@@ -39,13 +39,47 @@ export default ({
 		db
 	}));
 
+
+	
+
+
+
 	// perhaps expose some API metadata at the root
 	api.get('/', (req, res) => {
 		console.log(req.session);
 
-		res.json({
-			version
-		});
+		// res.json({
+		// 	version
+		// });
+
+		let connection = new Telnet();
+
+		if (process.env['CLOUDSQL_HOSTNAME'] === '') {
+			res.render('error')
+		}
+
+		console.log('Attempting connection to: ' + process.env['CLOUDSQL_HOSTNAME']);
+
+		let params = {
+			host: process.env['CLOUDSQL_HOSTNAME'],
+			port: 3306,
+			negotiationMandatory: false,
+			timeout: 5000
+		};
+
+		connection.connect(params)
+			.then(function (prompt) {
+				console.log('Connected to Cloud SQL');
+				renderIndex(res, true);
+			}, function (error) {
+				console.log('Not connected to Cloud SQL', error);
+				renderIndex(res, false);
+			})
+			.catch(function (error) {
+				// handle the throw (timeout)
+				console.log('Not connected to Cloud SQL', error);
+				renderIndex(res, false);
+			});
 	});
 
 	return api;

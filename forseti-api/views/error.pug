@@ -11,22 +11,9 @@ html
     div(class="container-fluid")
         div(class="row")
             div(class="col s12 m12", style={'text-align': 'center' })
-              h3 Forseti Visualizer API v#{version}
-              p Visualization API running on top of Forseti Security's Cloud SQL Database and GRPC API
+              h3 Forseti Visualizer API Error v#{version}
+              p(style={ color: 'red' }) An error has occurred.  Please confirm that you have run `source source.env` and that the environment variables are properly set.
               img(src="/images/forseti-visibility-icon.svg", style={'text-align': 'center', height: '176px', width: '176px', 'border-radius': '50%'})
         
-        hr
-
-        div(class="row")
-            div(class="col s12 m12", style={'text-align': 'center' })
-              h3 Cloud SQL Connectivity Status
-              if canConnectToCloudSql
-                p Connectivity Status: 
-                p(style={ color: 'green' }) Connected
-              else
-                p Connectivity Status: 
-                p(style={ color: 'red' }) Disconnected
-              img(src="/images/cloud-sql-icon.png", style={'text-align': 'center', height: '176px', width: '176px', 'border-radius': '50%'})
-
     script(src="https://code.jquery.com/jquery-3.3.1.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js")
