@@ -1,6 +1,6 @@
 {
 	"name": "forseti-visualizer-api",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"description": "Forseti Visualizer API to serve Forseti Based GCP content",
 	"author": "Garrett Wong",
 	"main": "server.js",
@@ -27,26 +27,27 @@
 		}
 	},
 	"dependencies": {
-		"@google-cloud/bigtable": "^0.15.0",
-		"@google-cloud/kms": "^0.4.0",
+		"@google-cloud/bigtable": "^2.3.2",
+		"@google-cloud/kms": "^1.6.3",
 		"@grpc/proto-loader": "^0.4.0",
-		"axios": "^0.19.0",
+		"axios": "^0.19.2",
 		"body-parser": "^1.18.3",
-		"braces": ">=2.3.1",
+		"braces": "^3.0.2",
 		"compression": "^1.7.3",
 		"cors": "^2.8.4",
-		"eslint-utils": "^1.4.1",
+		"eslint-utils": "^1.4.3",
 		"express": "^4.16.1",
-		"express-session": "^1.15.6",
-		"grpc": "^1.18.0",
+		"express-session": "^1.17.0",
+		"grpc": "^1.24.2",
 		"lodash": ">=4.17.13",
 		"lodash.merge": ">=4.6.2",
-		"morgan": "^1.9.1",
-		"mysql": "^2.16.0",
-		"pug": "^2.0.3",
+		"morgan": "^1.10.0",
+		"mysql": "^2.18.1",
+		"pug": "^2.0.4",
 		"resource-router-middleware": "^0.7.0",
-		"session-file-store": "^1.2.0",
-		"uuid": "^3.3.2"
+		"session-file-store": "^1.4.0",
+		"telnet-client": "^1.4.0",
+		"uuid": "^3.4.0"
 	},
 	"license": "Apache-2.0",
 	"repository": {
@@ -54,18 +55,19 @@
 		"url": "https://github.com/npm/npm.git"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.7.0",
-		"@babel/core": "^7.7.0",
-		"@babel/node": "^7.7.0",
-		"@babel/preset-env": "^7.7.1",
-		"@babel/register": "^7.7.0",
+		"@babel/cli": "^7.8.4",
+		"@babel/core": "^7.9.0",
+		"@babel/node": "^7.8.7",
+		"@babel/preset-env": "^7.9.5",
+		"@babel/register": "^7.9.0",
 		"chai": "^4.2.0",
 		"chai-http": "^4.3.0",
 		"eslint": "^5.3.0",
 		"js-yaml": ">=3.13.1",
-		"mocha": "^6.2.2",
-		"nodemon": "^1.18.3",
+		"minimist": "^1.2.5",
+		"mocha": "^6.2.3",
+		"nodemon": "^1.19.4",
 		"sinon": "^7.5.0",
-		"sinon-chai": "^3.3.0"
+		"sinon-chai": "^3.5.0"
 	}
 }
