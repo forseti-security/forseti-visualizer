@@ -16,21 +16,27 @@
 
 // express 4.0
 const express = require('express');
+const Telnet = require('telnet-client');
 
+import {
+  version
+} from './package.json';
+import RenderHelpers from './server/render-helpers';
 import api from './server/api';
 
-// setup app
+// setup application
 const app = express();
-app.set('view engine', 'pug');
-app.use(express.static('public')); // images,css,etc.
+app.set('view engine', 'pug'); // use pug for HTML templating
+app.use(express.static('public')); // configure static assets folder, images,css,etc.
 
+// configure default headers
 app.all('*', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   next();
 });
 
-// Override static assets to use public
+// extend static assets to use the forseti-visualizer-ui UI code distribution
 console.log(__dirname);
 const {
   resolve
@@ -42,16 +48,49 @@ const staticConf = {
 };
 app.use(express.static(publicPath, staticConf));
 
-// set up /api routes
-app.use('/api', api({}));
 
-// set up / main route
+
+/* API Route Configuration */
+
+
+// set up the main route '/'
 app.get('/', (req, res) => {
-  res.render('index', {
-    title: `Forseti-Visualizer`
-  });
+  let connection = new Telnet();
+
+  console.log(RenderHelpers);
+  if (!process.env['CLOUDSQL_HOSTNAME']) {
+    RenderHelpers.renderError(res, version);
+    return;
+  }
+
+  console.log('Attempting connection to: ' + process.env['CLOUDSQL_HOSTNAME']);
+
+  let params = {
+    host: process.env['CLOUDSQL_HOSTNAME'],
+    port: 3306,
+    negotiationMandatory: false,
+    timeout: 5000
+  };
+
+  connection.connect(params)
+    .then(function (prompt) {
+      console.log('Connected to Cloud SQL');
+      RenderHelpers.renderIndex(res, version, true);
+    }, function (error) {
+      console.log('Not connected to Cloud SQL', error);
+      RenderHelpers.renderIndex(res, version, false);
+    })
+    .catch(function (error) {
+      // handle the throw (timeout)
+      console.log('Not connected to Cloud SQL', error);
+      RenderHelpers.renderIndex(res, version, false);
+    });
 });
 
-// initialize app
+// set up the default /api route
+app.use('/api', api({}));
+
+
+// EXPOSE APP using the API_HOST and API_PORT environment variables
 app.listen(process.env['API_PORT'], process.env['API_HOST']);
 console.log(`Running on http://${process.env['API_HOST']}:${process.env['API_PORT']}`);

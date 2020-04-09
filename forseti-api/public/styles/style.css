@@ -1,0 +1,14 @@
+* {
+    font-family: Roboto,Helvetica,Arial,sans-serif;
+}
+
+h3 {
+    font-size: 36px;
+    font-weight: 300;
+    color: #1976d2;
+}
+
+p {
+    font-size: 130%;
+    font-weight: 300;
+}
