@@ -48,7 +48,7 @@ let ResourceTypeTooltipRenderer = {
         switch (violationType) {
             case 'FIREWALL_BLACKLIST_VIOLATION':
                 // create list of recommended action
-                let recommendedActionsList = this.createList(
+                var recommendedActionsList = this.createList(
                     JSON.parse(violation.violation_data).recommended_actions);
 
                 return `

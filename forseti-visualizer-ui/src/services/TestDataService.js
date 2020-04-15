@@ -40,7 +40,7 @@ class TestDataService {
      * @description based on the inventory_index_id, get all violations (during a scan)
      * @return promise containing an array of forseti-violations
      */
-    getViolations(inventoryIndexId) {
+    getViolations() {
         return d3.json(this.violationsFile);
     }
 }
