@@ -92,5 +92,8 @@ app.use('/api', api({}));
 
 
 // EXPOSE APP using the API_HOST and API_PORT environment variables
-app.listen(process.env['API_PORT'], process.env['API_HOST']);
-console.log(`Running on http://${process.env['API_HOST']}:${process.env['API_PORT']}`);
+let apiHost = process.env['API_HOST'] || '0.0.0.0';
+let apiPort = process.env['API_PORT'] || 8080;
+
+app.listen(apiHost, apiPort);
+console.log(`Running on http://${apiHost}:${apiPort}`);
