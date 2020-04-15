@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import * as d3 from 'd3';
 
 import DataService from '../services/DataService';
@@ -566,7 +565,7 @@ export default {
                         .style('left', d3.event.pageX + 32 + 'px')
                         .style('top', d3.event.pageY - 32 + 'px');
                 })
-                .on('mouseout', function(d) {
+                .on('mouseout', function() {
                     tooltipDiv
                         .transition()
                         .duration(duration)
@@ -791,10 +790,10 @@ export default {
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 //PULSATE CODE
                 .attr('r', VisualizerConfig.PULSATE_MIN_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function() {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 });
         },
@@ -833,10 +832,10 @@ export default {
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('r', VisualizerConfig.HIGHLIGHT_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function() {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 });
         },

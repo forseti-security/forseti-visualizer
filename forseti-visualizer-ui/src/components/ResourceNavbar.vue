@@ -114,14 +114,6 @@
 </template>
 
 <script>
-import $ from 'jquery';
-import * as d3 from 'd3';
-
-import D3Helpers from '../services/D3Helpers';
-import GoogleCloudImageService from '../services/GoogleCloudImageService';
-import DataService from '../services/DataService';
-import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
-import Orientation from '../constants/Orientation';
 import ResourceArrayStore from '../stores/ResourceArray';
 import { mapState } from 'vuex';
 
@@ -137,9 +129,9 @@ export default {
 
     computed: mapState(['resourceArray']),
     watch: {
-        resourceArray(newValue, oldValue) {
+        // resourceArray(newValue, oldValue) {
             //console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
-        },
+        // },
     },
 
     /**
