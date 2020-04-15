@@ -104,8 +104,6 @@ export default {
 
     methods: {
         edit: function(resource, event) {
-            console.log(resource);
-
             if (
                 // resource.resource_type === 'organization' ||
                 // resource.resource_type === 'folder' ||
@@ -140,8 +138,6 @@ export default {
             }
 
             dataService.getForsetiResources().then(resourcesData => {
-                console.log('DataService!', resourcesData);
-
                 // set databound variables
                 this.resources = resourcesData.map(function(d) {
                     d.name =
@@ -162,8 +158,6 @@ export default {
                 ];
                 this.resourceTypes.unshift('Include ALL');
 
-                console.log(this.resourceTypes);
-
                 // TODO: change this to server side request
                 // TEMP: client-side filtering to get UNIQUE project_id
                 this.projects = [];
@@ -176,7 +170,6 @@ export default {
                         name: resourceData.resource_id,
                     };
                 });
-                console.log(this.projects);
 
                 // TODO: change this to server side request
                 // TEMP: client-side filtering to
@@ -193,64 +186,12 @@ export default {
         },
 
         search: function(filterData) {
-            console.log('Resources: search', filterData);
-
             if (!filterData) {
-                console.log('Filter data is not defined.');
-
-                // TODO: remove dummy data
-                this.resources = [
-                    {
-                        id: 1086937,
-                        resource_type: 'organization',
-                        category: 'resource',
-                        resource_id: '358329783624',
-                        parent_id: null,
-                        resource_data_displayname: 'mycloud.biz',
-                        resource_data_name: 'organizations/358329783624',
-                        lifecycle_state: 'ACTIVE',
-                        inventory_index_id: 1552609278876965,
-                    },
-                    {
-                        id: 1087269,
-                        resource_type: 'folder',
-                        category: 'resource',
-                        resource_id: '379678980128',
-                        parent_id: 1086937,
-                        resource_data_displayname: 'SUPERMAN',
-                        resource_data_name: 'folders/379678980128',
-                        lifecycle_state: 'ACTIVE',
-                        inventory_index_id: 1552609278876965,
-                    },
-
-                    {
-                        id: 1087269,
-                        resource_type: 'project',
-                        category: 'resource',
-                        resource_id: '379678980128',
-                        parent_id: 1086937,
-                        resource_data_displayname: 'PROJECT',
-                        resource_data_name: 'folders/379678980128',
-                        lifecycle_state: 'ACTIVE',
-                        inventory_index_id: 1552609278876965,
-                    },
-                ];
+                this.resources = [];
             } else {
-                console.log(
-                    'Filter data is defined.',
-                    filterData.selectedResourceTypes,
-                    filterData.projectId,
-                    this.originalResources
-                );
-
                 this.resources = this.originalResources.filter(resourceData => {
                     if (filterData.selectedResourceTypes.length > 0) {
-                        // console.log(
-                        //     filterData.selectedResourceTypes,
-                        //     resourceData
-                        // );
-
-                        // Has "Include ALL"
+                        // Has the phrase, "Include ALL"
                         if (
                             filterData.selectedResourceTypes[0] ===
                             'Include ALL'
@@ -284,17 +225,15 @@ export default {
                         return false;
                     }
                 });
-
-                console.log(this.resources);
             }
         },
 
         clear: function() {
-            console.log('Resources: clear');
+            // console.log('clear()');
         },
 
         filterResources: function() {
-            console.log('Resources: filterResources');
+            // console.log('filterResources()');
         },
     },
 
@@ -315,7 +254,7 @@ export default {
         projects: [],
         inventoryIndexSnapshots: [],
 
-        useCache: false,
+        useCache: true,
     }),
 };
 </script>

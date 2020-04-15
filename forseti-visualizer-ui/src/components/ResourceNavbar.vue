@@ -138,7 +138,7 @@ export default {
     computed: mapState(['resourceArray']),
     watch: {
         resourceArray(newValue, oldValue) {
-            console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
+            //console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
         },
     },
 
@@ -154,8 +154,6 @@ export default {
      */
     methods: {
         onVSelectChange: function() {
-            console.log('onVSelectChange', this);
-
             this.$nextTick(() => {
                 alert(this.filterData.selectedInventoryIndexId);
             });
@@ -166,8 +164,6 @@ export default {
          * @description Searches for an exact text match of the node name and pans to that node
          */
         search: function() {
-            console.log(this.filterData);
-
             this.$emit(componentFunctionMap.search, this.filterData);
         },
 
@@ -193,25 +189,6 @@ export default {
         resourceArray: [{}],
 
         dialog: false, // settings dialog
-        // resourceTypes: [
-        //     'Include ALL',
-        //     'GCS Bucket',
-        //     'GCE Instance',
-        //     'GKE Cluster',
-        //     'App Engine',
-        //     'Cloud SQL',
-        //     'Firewall',
-        //     'Network',
-        //     'BQ Dataset',
-        //     'Service Account',
-        //     'Service Account Key',
-        // ],
-        // gcpProjects: [
-        //     {
-        //         id: 'clgx-tsg-pso1-sbx-6188',
-        //         name: 'clgx-tsg-pso1-sbx',
-        //     },
-        // ],
     }),
 };
 </script>

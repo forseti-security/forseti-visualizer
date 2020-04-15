@@ -9,36 +9,36 @@
 
           <v-flex xs6>
             <p class="text-lg-right">
-              <v-btn v-on:click="dialog=!dialog">
+              <v-btn v-on:click="parentData.dialog=!parentData.dialog">
                 <v-icon>fas fa-cog</v-icon>
               </v-btn>
 
-              <v-dialog v-model="dialog" width="500">
+              <v-dialog v-model="parentData.dialog" width="500">
                 <v-card>
                   <v-card-title class="headline grey lighten-2" primary-title>Settings</v-card-title>
 
                   <v-card-text>
                     <v-checkbox
                       :label="`Show Violations`"
-                      v-model="showViolations"
+                      v-model="parentData.showViolations"
                       v-on:change="toggleViolations"
                     ></v-checkbox>
 
                     <v-checkbox
                       :label="`Cached Data Enabled`"
-                      v-model="useCache"
+                      v-model="parentData.useCache"
                       v-on:change="toggleCacheEnabled()"
                     ></v-checkbox>
 
                     <v-checkbox
                       :label="`Json On`"
-                      v-model="useJson"
+                      v-model="parentData.useJson"
                       v-on:change="toggleJsonEnabled()"
                     ></v-checkbox>
 
                     <v-checkbox
                       :label="`Use Wide View`"
-                      v-model="useWideView"
+                      v-model="parentData.useWideView"
                       v-on:change="toggleWideView()"
                     ></v-checkbox>
                   </v-card-text>
@@ -47,7 +47,7 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
+                    <v-btn color="primary" flat @click="parentData.dialog = false">Close</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -81,24 +81,24 @@
       <v-btn color="info" id="btn-search" v-on:click="resetParent">Reset to Org</v-btn>
       <v-btn color="info" id="btn-search" v-on:click="setParent">Set Parent</v-btn>
 
-      <v-checkbox :label="`Expand/Collapse`" v-model="expand" v-on:change="toggleExpand"></v-checkbox>
+      <v-checkbox :label="`Expand/Collapse`" v-model="parentData.expand" v-on:change="toggleExpand"></v-checkbox>
 
-      <v-checkbox :label="`Expand/Collapse All`" v-model="expandAll" v-on:change="toggleExpandAll"></v-checkbox>
+      <v-checkbox :label="`Expand/Collapse All`" v-model="parentData.expandAll" v-on:change="toggleExpandAll"></v-checkbox>
 
-      <v-radio-group v-model="orientation" v-on:change="toggleOrientation">
-        <v-radio v-for="n in orientations" :key="n" :label="`${n}`" :value="n"></v-radio>
+      <v-radio-group v-model="parentData.orientation" v-on:change="toggleOrientation">
+        <v-radio v-for="n in parentData.orientations" :key="n" :label="`${n}`" :value="n"></v-radio>
       </v-radio-group>
 
       <v-text-field
         label="Explain (user/$USER, group/$GROUP, serviceAccount/$SA)"
-        v-model="explainIdentitySearchTerm"
+        v-model="parentData.explainIdentitySearchTerm"
       ></v-text-field>
       <v-btn color="info" v-on:click="explainIdentity">Explain Identity</v-btn>
     </div>
 
     <v-combobox
-      v-model="selectedFilterResources"
-      :items="items"
+      v-model="parentData.selectedFilterResources"
+      :items="parentData.items"
       label="Filter by a list of resource types"
       v-on:input="filterResources"
       multiple
@@ -130,6 +130,7 @@ let cachedFileMap = {
     iamexplainbyuserFile2: 'dataset2_iamexplainbyuser.json',
 };
 
+// map of all emitted function names
 let componentFunctionMap = {
     resetZoom: 'resetZoom',
     toggleViolations: 'toggleViolations',
@@ -151,6 +152,7 @@ export default {
     store: ResourceArrayStore,
 
     computed: mapState(['resourceArray']),
+    
     watch: {
         resourceArray(newValue, oldValue) {
             // console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
@@ -182,7 +184,7 @@ export default {
         toggleViolations: function() {
             this.$emit(
                 componentFunctionMap.toggleViolations,
-                this.showViolations
+                this.parentData.showViolations
             );
         },
 
@@ -191,7 +193,9 @@ export default {
          * @description Send notification to toggle the useCache setting
          */
         toggleCacheEnabled: function() {
-            this.$emit(componentFunctionMap.toggleCacheEnabled, this.useCache);
+          console.log('asdfffff', this.useCache);
+          console.log('zzzzzz', this.parentData, this.parentData.useCache)
+            this.$emit(componentFunctionMap.toggleCacheEnabled, this.parentData.useCache);
         },
 
         /**
@@ -207,7 +211,7 @@ export default {
 
             this.$emit(
                 componentFunctionMap.explainIdentity,
-                this.explainIdentitySearchTerm
+                this.parentData.explainIdentitySearchTerm
             );
         },
 
@@ -218,7 +222,7 @@ export default {
         filterResources: function() {
             this.$emit(
                 componentFunctionMap.filterResources,
-                this.selectedFilterResources
+                this.parentData.selectedFilterResources
             );
         },
 
@@ -251,7 +255,7 @@ export default {
          * @description Refresh the grid and alternate between json / csv file format (only works when useCache true)
          */
         toggleJsonEnabled: function() {
-            this.$emit(componentFunctionMap.toggleJsonEnabled, this.useJson);
+            this.$emit(componentFunctionMap.toggleJsonEnabled, this.parentData.useJson);
         },
 
         /**
@@ -259,7 +263,7 @@ export default {
          * @description Update node width
          */
         toggleWideView: function() {
-            this.$emit(componentFunctionMap.toggleWideView, this.useWideView);
+            this.$emit(componentFunctionMap.toggleWideView, this.parentData.useWideView);
         },
 
         /**
@@ -267,7 +271,7 @@ export default {
          * @description Expand/Collapse the [currently expanded] tree hierarchy.
          */
         toggleExpand: function() {
-            this.$emit(componentFunctionMap.toggleExpand, this.expand);
+            this.$emit(componentFunctionMap.toggleExpand, this.parentData.expand);
         },
 
         /**
@@ -275,7 +279,7 @@ export default {
          * @description Expand/Collapse the entire tree hierarchy.
          */
         toggleExpandAll: function() {
-            this.$emit(componentFunctionMap.toggleExpandAll, this.expandAll);
+            this.$emit(componentFunctionMap.toggleExpandAll, this.parentData.expandAll);
         },
 
         /**
@@ -285,57 +289,25 @@ export default {
         toggleOrientation: function() {
             this.$emit(
                 componentFunctionMap.toggleOrientation,
-                this.orientation
+                this.parentData.orientation
             );
         },
     },
 
+    props: {
+        parentData: Object,
+    },
+
     /**
      * Vue: data
+     *  These variables are replicated from Body.vue.  
      */
     data: () => ({
-        // global: set this to use JSON files vs. dynamic
-        // useCache: false, // default to using server data
-        useCache: false, // default to using cached files.json
-        useJson: true, // false defers to using a .csv
-        useWideView: false, // false defers to keeping node view default screen (hxw)
-
         // filter variables
         nodeName: '',
-        expand: true,
-        expandAll: false,
-        showViolations: true,
-        orientation: Orientation.Vertical,
-        explainIdentitySearchTerm: '',
-        orientations: Object.keys(Orientation),
-        bottomSheetEnabled: false, // for violations view on the bottom
-        dialog: false, // settings dialog
-        selectedFilterResources: [
-            // 'GCS Bucket',
-            'GCE Instance',
-            'GKE Cluster',
-            'Network',
-            // 'BQ Dataset',
-            // 'App Engine',
-            // 'Service Account',
-            // 'Service Account Key'
-        ],
-        items: [
-            'GCS Bucket',
-            'GCE Instance',
-            'GKE Cluster',
-            'App Engine',
-            'Cloud SQL',
-            'Firewall',
-            'Network',
-            'BQ Dataset',
-            'Service Account',
-            'Service Account Key',
-        ],
 
         // autocomp
         isEditing: true,
-        resources: [], // ['mycloud.com', 'folder1', 'folder2', 'project1', 'project2', 'project1_bucket']
     }),
 };
 </script>

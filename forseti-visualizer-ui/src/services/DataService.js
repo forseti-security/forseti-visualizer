@@ -21,10 +21,10 @@ class DataService {
      */
     constructor() {
         // THIS SHOULD BE ENABLED THIS WHEN DEPLOYING ALONE WITH forseti-visualizer
-        this.host = 'http://localhost:8080';
+        // this.host = 'http://localhost:8080';
         
         // THIS SHOULD BE ENABLED THIS WHEN DEPLOYING VIA FORSETI-API
-        // this.host = '';
+        this.host = '';
     }
 
     /**
