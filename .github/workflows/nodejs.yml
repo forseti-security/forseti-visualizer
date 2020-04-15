@@ -28,10 +28,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Run Build
-      working-directory: ${{ env.ui-directory }}
+      working-directory: ./forseti-visualizer-ui
       run: npm run build --if-present
     - name: Run Test
-      working-directory: ${{ env.ui-directory }}
+      working-directory: ./forseti-visualizer-ui
       run: npm test
     - name: Run Build
       working-directory: ${{ env.api-directory }}
