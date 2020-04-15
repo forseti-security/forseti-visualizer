@@ -128,9 +128,6 @@
 </template>
 
 <script>
-import * as d3 from 'd3';
-
-import D3Helpers from '../services/D3Helpers';
 import ResourceArrayStore from '../stores/ResourceArray';
 import { mapState } from 'vuex';
 

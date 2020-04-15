@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import * as d3 from 'd3';
-import $ from 'jquery';
 import VisualizerConfig from '../constants/VisualizerConfig';
 
 class TestDataService {

@@ -79,11 +79,8 @@
 </template>
 
 <script>
-import $ from 'jquery';
-import * as d3 from 'd3';
 import JSONBeautifier from '../services/JSONBeautifier';
 import ResourceNavbar from './ResourceNavbar';
-import ResourceArrayStore from '../stores/ResourceArray';
 
 // DataServices
 import DataService from '../services/DataService';
