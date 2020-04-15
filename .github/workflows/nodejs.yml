@@ -27,17 +27,21 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
+    - name: Run CI
       working-directory: ${{env.ui-directory}}
-    - run: npm run build --if-present
+      run: npm ci
+    - name: Run Build
       working-directory: ${{env.ui-directory}}
-    - run: npm test
+      run: npm run build --if-present
+    - name: Run Test
       working-directory: ${{env.ui-directory}}
-    - run: npm ci
+      run: npm test
+    - name: Run CI
       working-directory: ${{env.api-directory}}
-    - run: npm run build --if-present
+      run: npm ci
+    - name: Run Build
       working-directory: ${{env.api-directory}}
-    - run: npm test
+      run: npm run build --if-present
+    - name: Run Test
       working-directory: ${{env.api-directory}}
-      env:
-        CI: true
+      run: npm test
