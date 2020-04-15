@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import $ from 'jquery';
 import * as d3 from 'd3';
 
 class JSONDataService {
@@ -42,7 +41,7 @@ class JSONDataService {
      * @description based on the inventory_index_id, get all violations (during a scan)
      * @return promise containing an array of forseti-violations
      */
-    getViolations(inventoryIndexId) {
+    getViolations() {
         return d3.json(this.cachedFileMap.violationsFile);
     }
 
@@ -51,7 +50,7 @@ class JSONDataService {
      * @description based on an iamPrefix, get all resources where the iamPrefixedResource has roles
      * @return promise containing an array of forseti-policies
      */
-    getExplainIdentity(iamPrefix) {
+    getExplainIdentity() {
         return d3.json(this.cachedFileMap.iamexplainbyuserFile);
     }
 }

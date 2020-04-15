@@ -59,14 +59,14 @@
         <v-flex xs12>
           <v-container fluid>
             <v-layout row no-wrap style="overflow: scroll;">
-              <v-flex v-for="(roles, resourceName) in iamPolicies" xs3>
+              <v-flex v-for="(roles, resourceName) in iamPolicies" :key="resourceName" xs3>
                 <v-card style="height:160px;max-height:160px;overflow:scroll;">
                   <v-card-title>
                     <h4>{{ resourceName }} ({{roles.length}})</h4>
                   </v-card-title>
                   <v-divider></v-divider>
                   <v-list dense>
-                    <v-list-tile v-for="role in roles">
+                    <v-list-tile v-for="role in roles" :key="role">
                       <v-list-tile-content>{{role}}:</v-list-tile-content>
                     </v-list-tile>
                   </v-list>
