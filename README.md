@@ -99,7 +99,7 @@ npm start
 
 ## Alternative Deployments
 
-There are other solution deployment pipelines described here for Docker, GCE, GKE and Cloud Run.  Each of these are dependent on a Docker Image of Forseti Visualizer.  
+There are other solution deployment pipelines described here for Docker, GCE, GKE and Cloud Run.  Each of these are dependent on a Docker Image of Forseti Visualizer.  A **prerequisite** of these is to first configure your local environment for local development - ensure that you have gone through the Getting Started Section.
 
 ### Docker
 
