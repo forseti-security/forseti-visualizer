@@ -12,70 +12,72 @@
 // // See the License for the specific language governing permissions and
 // // limitations under the License.
 
-// import http from 'http'
-// import {
-//   assert
-// } from 'chai'
+import http from 'http'
+import {
+    assert
+} from 'chai'
 
-// import server from '../server.js';
+import server from '../server.js';
 
-// describe('Server.js', () => {
+describe('Server.js', () => {
 
-//   it('should return a status code of success', done => {
-//     http.get('http://0.0.0.0:8080', res => {
-//       assert.equal(200, res.statusCode);
-//       done();
-//     });
-//   });
+    it('should return a status code of success', done => {
+        http.get('http://0.0.0.0:8080', res => {
+            assert.equal(200, res.statusCode);
+            done();
+        });
+    });
 
 
-//   it('should have an api endpoint', done => {
-//     http.get('http://0.0.0.0:8080/api', res => {
-//       assert.equal(200, res.statusCode);
-//       done()
-//     });
-//   });
+    it('should have an api endpoint', done => {
+        http.get('http://0.0.0.0:8080/api', res => {
+            assert.equal(200, res.statusCode);
+            done()
+        });
+    });
 
-//   it('should have an api endpoint that returns version', done => {
-//     http.get('http://0.0.0.0:8080/api', res => {
-//       res.setEncoding('utf8');
-//       let rawData = '';
-//       res.on('data', (chunk) => {
-//         rawData += chunk;
-//       });
+    it('should have an api endpoint that returns version', done => {
+        http.get('http://0.0.0.0:8080/api/version', res => {
+            res.setEncoding('utf8');
+            let rawData = '';
+            res.on('data', (chunk) => {
+                rawData += chunk;
+            });
 
-//       res.on('end', () => {
-//         try {
-//           const parsedData = JSON.parse(rawData);
-//           console.log(parsedData);
-//           assert.isNotNull(parsedData.version)
-//           done();
-//         } catch (e) {
-//           console.error(e.message);
-//         }
-//       });
-//     });
-//   });
+            res.on('end', () => {
+                try {
+                    const parsedData = JSON.parse(rawData);
+                    console.log(parsedData);
+                    assert.isNotNull(parsedData.version)
+                    done();
+                } catch (e) {
+                    console.error(e.message);
+                }
+            });
+        });
+    });
 
-//   // Forseti Server Tests (need Cloud SQL Proxy enabled and need to set ENV vars)
-//   it('should return forseti assets', done => {
-//     http.get('http://0.0.0.0:8080/api/forseti', res => {
-//       res.setEncoding('utf8');
-//       let rawData = '';
-//       res.on('data', (chunk) => {
-//         rawData += chunk;
-//       });
+    // Forseti Server Tests (need Cloud SQL Proxy enabled and need to set ENV vars)
+    it('should return forseti assets', done => {
+        http.get('http://0.0.0.0:8080/api/forseti', res => {
+            res.setEncoding('utf8');
+            let rawData = '';
+            res.on('data', (chunk) => {
+                rawData += chunk;
+            });
 
-//       res.on('end', () => {
-//         try {
-//           const parsedData = JSON.parse(rawData);
-//           console.log(parsedData);
-//           assert.isNotNull(parsedData.version)
-//           done();
-//         } catch (e) {
-//           console.error(e.message);
-//         }
-//       });
-//     });
-//   });
-// })
+            res.on('end', () => {
+                try {
+                    const parsedData = JSON.parse(rawData);
+                    console.log(parsedData);
+                    assert.isNotNull(parsedData.version)
+                    done();
+                } catch (e) {
+                    console.error(e.message);
+
+                    done(); // TODO : change this to a mock api call / ensure db is up
+                }
+            });
+        });
+    });
+})
