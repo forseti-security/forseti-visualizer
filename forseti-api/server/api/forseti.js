@@ -65,17 +65,24 @@ export default ({
         let iamPrefix = req.params.iamPrefix;
 
         ForsetiService.getExplainIdentity(iamPrefix, function (error, results) {
+            console.log(error, results);
             if (error) {
                 console.log('Error: ', error);
             } else {
-                for (let i = 0; i < results.accesses.length; i++) {
-                    for (let j = 0; j < results.accesses[i].resources.length; j++) {
-                        console.log(results.accesses[i]);
-                        console.log(results.accesses[i].resources[j]);
+                for (let i = 0; i < results.length; i++) {
+                    for (let j = 0; j < results[i].resources.length; j++) {
+                        
                     }
                 }
 
-                res.json(results.accesses);
+                // for (let i = 0; i < results.accesses.length; i++) {
+                //     for (let j = 0; j < results.accesses[i].resources.length; j++) {
+                //         console.log(results.accesses[i]);
+                //         console.log(results.accesses[i].resources[j]);
+                //     }
+                // }
+
+                res.json(results);
             }
         });
     });

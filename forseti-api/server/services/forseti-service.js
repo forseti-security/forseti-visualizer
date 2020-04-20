@@ -181,12 +181,16 @@ class ForsetiService extends DatabaseServiceBase {
             permission_names: ['iam.serviceAccounts.actAs'],
             expand_resources: true
         }, meta);
+
+        var results = [];
         call2.on('data', function (a, b) {
             console.log('a:', a);
+            results.push(a);
             console.log('b:', b);
         })
-        call2.on('end', function () {
-            console.log('end');
+        call2.on('end', function() {
+            console.log('streamEnd!')
+            cb(undefined, results);
         });
     }
 
