@@ -113,9 +113,9 @@ cp ../forseti-api/source.env source.env
 ./build-images.sh
 
 # verify that the docker image has been built
-docker images | grep 
+docker images | grep "forseti-visualizer"
 
-# verify that the docker image can be run
+# create a docker readable source file for environment var injection
 cat > dockersource.env << EOF
 API_HOST=0.0.0.0
 API_PORT=8080
@@ -132,7 +132,8 @@ PROJECT_ID="forseti-visualizer" # << REPLACE THIS WITH YOUR PROJECT_ID
 IMAGE_NAME="forseti-visualizer"
 FULL_IAMGE_NAME="gcr.io/$PROJECT_ID/$IMAGE_NAME"
 
-docker run --env-file dockersource.env --name forsetivisualizer --rm -d -p 8080:8080 $FULL_IAMGE_NAME
+# We are using host networking as cloud sql proxy may be running locally or a separate container.  Depending on your configuration settings, you will need to ensure you have a viable route to the Database IP/Port.
+docker run --env-file dockersource.env --network host --name forsetivisualizer --rm -d -p 8080:8080 $FULL_IAMGE_NAME
 docker ps
 
 # navigate to http://localhost:8080/
@@ -156,7 +157,7 @@ docker ps
 
 ### Cloud Run
 
-```bash 
+```bash
 ./deployments/deploy-cloudrun.sh
 ```
 

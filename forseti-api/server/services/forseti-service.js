@@ -155,31 +155,29 @@ class ForsetiService extends DatabaseServiceBase {
         var ex = protoDescriptor.explain;
 
         let channel = process.env.FORSETI_SERVER_VM_CHANNEL;
-        let res = new ex.Explain(channel, grpc.credentials.createInsecure());
+        let explainClient = new ex.Explain(channel, grpc.credentials.createInsecure());
 
         var meta = new grpc.Metadata();
         meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
-        // console.log(ex);
-        // console.log(res);
         console.log('channel', channel);
         console.log('channel', process.env.FORSETI_DATA_MODEL_HANDLE);
         console.log(iamPrefix);
 
         // ref: https://grpc.io/docs/tutorials/basic/node/
         //iamPrefix='user/garrettwong@gwongcloud.com';
-        let call2 = res.getAccessByMembers({
+        let response = explainClient.getAccessByMembers({
             member_name: iamPrefix,
-            permission_names: ['iam.serviceAccounts.actAs'],
+            // permission_names: ['iam.serviceAccounts.actAs'], // for filtering
             expand_resources: true
         }, meta);
 
         var results = [];
-        call2.on('data', function (result) {
+        response.on('data', function (result) {
             console.log('result:', result);
             results.push(result);
         })
-        call2.on('end', function() {
+        response.on('end', function() {
             console.log('streamEnd!')
             cb(undefined, results);
         });
@@ -215,14 +213,9 @@ class ForsetiService extends DatabaseServiceBase {
         var meta = new grpc.Metadata();
         meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
-        // res.getAccessByPermissions({
-        //     role_name: 'roles/storage.objectViewer',
-        //     permission_name: '',
-        // }, meta, function(a) { console.log(a); });
-
         res.getPermissionsByRoles({
                 role_names: ['roles/owner']
-                // role_prefixes: role_prefixes
+                // role_prefixes: role_prefixes // for filtering
             }, meta, function (data, sec) {
                 console.log('success', data, sec);
                 console.log(sec.permissionsbyroles[0].permissions.length)
