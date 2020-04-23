@@ -9,7 +9,7 @@
 		"build": "babel server -s -D -d dist",
 		"serve": "nodemon -w server --exec \"babel-node server\"",
 		"start": "npm run serve",
-		"test": "source source.env && babel server.js -d dist && mocha --recursive --exit --require @babel/register",
+		"test": ". source.env && babel server.js -d dist && mocha --recursive --exit --require @babel/register",
 		"babel-version": "babel --version"
 	},
 	"eslintConfig": {
