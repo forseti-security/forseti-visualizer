@@ -65,16 +65,11 @@ export default ({
         let iamPrefix = req.params.iamPrefix;
 
         ForsetiService.getExplainIdentity(iamPrefix, function (error, results) {
-            console.log(error, results);
             if (error) {
                 console.log('Error: ', error);
             } else {
-                // for (let i = 0; i < results.length; i++) {
-                //     for (let j = 0; j < results[i].resources.length; j++) {
-                        
-                //     }
-                // }
-
+                console.log('Results', results);
+                
                 res.json(results);
             }
         });
