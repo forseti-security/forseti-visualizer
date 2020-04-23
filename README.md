@@ -132,8 +132,8 @@ PROJECT_ID="forseti-visualizer" # << REPLACE THIS WITH YOUR PROJECT_ID
 IMAGE_NAME="forseti-visualizer"
 FULL_IMAGE_NAME="gcr.io/$PROJECT_ID/$IMAGE_NAME"
 
-# We are using host networking as cloud sql proxy may be running locally or a separate container.  Depending on your configuration settings, you will need to ensure you have a viable route to the Database IP/Port.
-docker run --env-file dockersource.env --network host --name forsetivisualizer --rm -d -p 8080:8080 $FULL_IMAGE_NAME
+# You will need to determine how to connect to the Cloud SQL Database.  This can be done via (--network host), which may not work on Mac, via installing Cloud SQL Proxy on the Docker Image, and a number of other methods.  It is not implemented as a default at this time.
+docker run --env-file dockersource.env --name forsetivisualizer --rm -d -p 8080:8080 $FULL_IMAGE_NAME
 docker ps
 
 # navigate to http://localhost:8080/
