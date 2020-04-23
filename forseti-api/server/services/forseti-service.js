@@ -165,14 +165,6 @@ class ForsetiService extends DatabaseServiceBase {
         console.log('channel', channel);
         console.log('channel', process.env.FORSETI_DATA_MODEL_HANDLE);
         console.log(iamPrefix);
-        
-        // res.getAccessByMembers({
-        //     member_name: iamPrefix
-        // }, meta, function(first, second) {
-        //     console.log('success', first, second);
-        // }, function(err) {
-        //     console.log('error', err);
-        // });
 
         // ref: https://grpc.io/docs/tutorials/basic/node/
         //iamPrefix='user/garrettwong@gwongcloud.com';
@@ -183,10 +175,9 @@ class ForsetiService extends DatabaseServiceBase {
         }, meta);
 
         var results = [];
-        call2.on('data', function (a, b) {
-            console.log('a:', a);
-            results.push(a);
-            console.log('b:', b);
+        call2.on('data', function (result) {
+            console.log('result:', result);
+            results.push(result);
         })
         call2.on('end', function() {
             console.log('streamEnd!')

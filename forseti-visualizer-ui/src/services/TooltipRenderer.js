@@ -16,7 +16,6 @@ import ColorConfig from '../constants/ColorConfig';
 
 let ResourceTypeTooltipRenderer = {
     createList: function (dictionary) {
-        // expected object: { action: [thingsToDo1, thingsToDo2], action2: [] }
         let listHtml = '<ul>';
         for (let key in dictionary) {
             let value = dictionary[key];

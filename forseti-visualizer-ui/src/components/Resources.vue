@@ -58,8 +58,6 @@
                                             <v-icon dark title="Edit">fa-edit</v-icon>
                                         </v-btn>
                                     </td>
-
-                                    <!-- <td class="text-xs">{{ props.item }}</td> -->
                                 </tr>
                             </template>
 
@@ -84,15 +82,11 @@ import ResourceNavbar from './ResourceNavbar';
 
 // DataServices
 import DataService from '../services/DataService';
-import TestDataService from '../services/TestDataService';
 
 export default {
     components: {
         ResourceNavbar,
     },
-
-    /* TODO: The Resources file should support DataServer functionality pulling data from the Server */
-    /* TODO: The cachedFileMap should support the alternative json file and possibly the .CSV option */
 
     mounted() {
         // load initialization data
@@ -124,15 +118,12 @@ export default {
             return JSONBeautifier.beautify(o);
         },
 
+        /**
+         * @function loadData
+         * @description loads data
+         */
         loadData: function() {
-            let dataService;
-
-            if (this.useCache) {
-                dataService = new TestDataService();
-            } else {
-                // from the database
-                dataService = new DataService();
-            }
+            let dataService = new DataService();
 
             dataService.getForsetiResources().then(resourcesData => {
                 // set databound variables
@@ -141,11 +132,10 @@ export default {
                         d.resource_data_displayname || d.resource_data_name;
                     return d;
                 });
+
                 // this should be set the first time or after a full refresh
                 this.originalResources = this.resources;
 
-                // TODO: change this to server side request
-                // TEMP: client-side filtering to get UNIQUE resource_type
                 this.resourceTypes = [
                     ...new Set(
                         resourcesData.map(function(data) {
@@ -154,9 +144,6 @@ export default {
                     ),
                 ];
                 this.resourceTypes.unshift('Include ALL');
-
-                // TODO: change this to server side request
-                // TEMP: client-side filtering to get UNIQUE project_id
                 this.projects = [];
                 let mappedProjects = resourcesData.filter(function(resource) {
                     return resource.resource_type === 'project';
@@ -168,8 +155,6 @@ export default {
                     };
                 });
 
-                // TODO: change this to server side request
-                // TEMP: client-side filtering to
                 this.inventoryIndexSnapshots = [];
                 this.inventoryIndexSnapshots = resourcesData.map(function(
                     resourceData
@@ -250,8 +235,6 @@ export default {
         resourceTypes: [],
         projects: [],
         inventoryIndexSnapshots: [],
-
-        useCache: true,
     }),
 };
 </script>

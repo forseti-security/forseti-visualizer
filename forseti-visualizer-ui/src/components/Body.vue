@@ -6,8 +6,6 @@
                     <Navbar
                         v-on:resetZoom="resetZoom"
                         v-on:toggleViolations="toggleViolations"
-                        v-on:toggleCacheEnabled="toggleCacheEnabled"
-                        v-on:toggleJsonEnabled="toggleJsonEnabled"
                         v-on:toggleWideView="toggleWideView"
                         v-on:search="search"
                         v-on:resetParent="resetParent"
@@ -18,7 +16,6 @@
                         v-on:toggleOrientation="toggleOrientation"
                         v-on:explainIdentity="explainIdentity"
                         v-on:filterResources="filterResources"
-                        
                         v-bind:parentData="this"
                     />
 
@@ -50,7 +47,6 @@
 import * as d3 from 'd3';
 
 import DataService from '../services/DataService';
-import TestDataService from '../services/TestDataService';
 import ForsetiSetParentService from '../services/ForsetiSetParentService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import ResourceDataServiceHandler from '../services/ResourceDataServiceHandler';
@@ -221,16 +217,8 @@ export default {
          * @param orientation - [Orientation.Vertical, Orientation.Horizontal]
          */
         init: function(orientation, parentId = undefined) {
-            let dataService;
+            let dataService = new DataService();
 
-            if (this.useCache) {
-                dataService = new TestDataService();
-            } else {
-                // from the database
-                dataService = new DataService();
-            }
-
-            // ELSE: useCache=false: (fetch from the database)
             dataService.getForsetiResources(parentId).then(resourcesData => {
                 // get inventory index id
                 if (resourcesData.length > 0) {
@@ -977,19 +965,9 @@ export default {
             };
 
             // explain - iam user
-            if (this.useCache && !this.useJson) {
-                d3.json(
-                    VisualizerConfig.CACHED_FILE_MAP.iamexplainbyuserFile2
-                ).then(callbackFn);
-            } else if (this.useCache) {
-                d3.json(
-                    VisualizerConfig.CACHED_FILE_MAP.iamexplainbyuserFile
-                ).then(callbackFn);
-            } else {
-                new DataService()
-                    .getExplainIdentity(this.explainIdentitySearchTerm)
-                    .then(callbackFn);
-            }
+            new DataService()
+                .getExplainIdentity(this.explainIdentitySearchTerm)
+                .then(callbackFn);
         },
         /**
          * @function filterResources
@@ -1144,7 +1122,6 @@ export default {
          * @description Refresh the grid: clears and recreates
          */
         _resetSvg: function() {
-
             d3.select('#d3-area')
                 .selectAll('svg')
                 .remove();
@@ -1160,30 +1137,6 @@ export default {
             // reset vars
             this.expand = true;
             this.expandAll = false;
-        },
-
-        /**
-         * @function toggleCacheEnabled
-         * @description Refresh the grid and alternate between live / cached data
-         */
-        toggleCacheEnabled: function(useCache) {
-            this.useCache = useCache;
-
-            this._resetSvg();
-
-            this.init(this.orientation, this.projectId);
-        },
-
-        /**
-         * @function toggleJsonEnabled
-         * @description Refresh the grid and alternate between json / csv file format (only works when useCache true)
-         */
-        toggleJsonEnabled: function(useJson) {
-            this.useJson = useJson;
-
-            this._resetSvg();
-
-            this.init(this.orientation);
         },
 
         /**
@@ -1248,7 +1201,7 @@ export default {
         toggleViolations: function(showViolations) {
             this.showViolations = showViolations;
             let violationsMap = this.violationsMap;
-            
+
             if (this.showViolations) {
                 let nodes = this.svg.selectAll('.node');
 
@@ -1298,15 +1251,13 @@ export default {
                         return d._children ? 1 : 0;
                     })
                     .style('stroke-opacity', function(d) {
-                        return violationsMap[d.data.full_name] !==
-                            undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? 1
                             : 0;
                     })
                     .style('stroke', function(d) {
                         // set to red
-                        return violationsMap[d.data.full_name] !==
-                            undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;
                     });
@@ -1410,9 +1361,6 @@ export default {
      */
     data: () => ({
         // global: set this to use JSON files vs. dynamic
-        // useCache: false, // default to using server data
-        useCache: true, // default to using cached files.json
-        useJson: true, // false defers to using a .csv
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
         // filter variables

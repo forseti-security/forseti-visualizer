@@ -69,16 +69,9 @@ export default ({
             if (error) {
                 console.log('Error: ', error);
             } else {
-                for (let i = 0; i < results.length; i++) {
-                    for (let j = 0; j < results[i].resources.length; j++) {
+                // for (let i = 0; i < results.length; i++) {
+                //     for (let j = 0; j < results[i].resources.length; j++) {
                         
-                    }
-                }
-
-                // for (let i = 0; i < results.accesses.length; i++) {
-                //     for (let j = 0; j < results.accesses[i].resources.length; j++) {
-                //         console.log(results.accesses[i]);
-                //         console.log(results.accesses[i].resources[j]);
                 //     }
                 // }
 
@@ -100,8 +93,6 @@ export default ({
                 console.log('Error: ', error);
             else {
                 console.log(results);
-
-                // TODO:
 
                 res.json(results.accesses);
             }

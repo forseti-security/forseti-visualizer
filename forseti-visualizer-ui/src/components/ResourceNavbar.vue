@@ -128,11 +128,7 @@ export default {
     store: ResourceArrayStore,
 
     computed: mapState(['resourceArray']),
-    watch: {
-        // resourceArray(newValue, oldValue) {
-            //console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
-        // },
-    },
+    watch: {},
 
     /**
      * Vue: mounted() - onload function

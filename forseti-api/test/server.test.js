@@ -75,7 +75,8 @@ describe('Server.js', () => {
                 } catch (e) {
                     console.error(e.message);
 
-                    done(); // TODO : change this to a mock api call / ensure db is up
+                    // TODO : change this to a mock api call / ensure db is up
+                    done(); 
                 }
             });
         });

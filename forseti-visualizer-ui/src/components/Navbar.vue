@@ -32,18 +32,6 @@
                                         ></v-checkbox>
 
                                         <v-checkbox
-                                            :label="`Cached Data Enabled`"
-                                            v-model="parentData.useCache"
-                                            v-on:change="toggleCacheEnabled()"
-                                        ></v-checkbox>
-
-                                        <v-checkbox
-                                            :label="`Json On`"
-                                            v-model="parentData.useJson"
-                                            v-on:change="toggleJsonEnabled()"
-                                        ></v-checkbox>
-
-                                        <v-checkbox
                                             :label="`Use Wide View`"
                                             v-model="parentData.useWideView"
                                             v-on:change="toggleWideView()"
@@ -135,8 +123,6 @@ import { mapState } from 'vuex';
 let componentFunctionMap = {
     resetZoom: 'resetZoom',
     toggleViolations: 'toggleViolations',
-    toggleCacheEnabled: 'toggleCacheEnabled',
-    toggleJsonEnabled: 'toggleJsonEnabled',
     toggleWideView: 'toggleWideView',
     search: 'search',
     resetParent: 'resetParent',
@@ -190,17 +176,6 @@ export default {
         },
 
         /**
-         * @function toggleCacheEnabled
-         * @description Send notification to toggle the useCache setting
-         */
-        toggleCacheEnabled: function() {
-            this.$emit(
-                componentFunctionMap.toggleCacheEnabled,
-                this.parentData.useCache
-            );
-        },
-
-        /**
          * @function explainIdentity
          * @description Executes explain plan via a GRPC call
          *      if (cacheOn) --> then use cached data
@@ -250,17 +225,6 @@ export default {
          */
         setParent: function() {
             this.$emit(componentFunctionMap.setParent, this.nodeName);
-        },
-
-        /**
-         * @function toggleJsonEnabled
-         * @description Refresh the grid and alternate between json / csv file format (only works when useCache true)
-         */
-        toggleJsonEnabled: function() {
-            this.$emit(
-                componentFunctionMap.toggleJsonEnabled,
-                this.parentData.useJson
-            );
         },
 
         /**

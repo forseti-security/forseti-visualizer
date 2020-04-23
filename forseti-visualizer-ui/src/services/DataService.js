@@ -61,28 +61,12 @@ class DataService {
     
     /**
      * @function getExplainRole
-     * @description TODO: Not Ready
-     * @return TODO
+     * @description Gets the roles that a GCP Identity has across an Organization
+     * @return the set of resources that the given Identity has the role on
      */
     getExplainRole(role) {
         let url = `${this.host}/api/forseti/explainRole/${encodeURIComponent(role)}`;
         return $.get(url);
-    }
-
-    /**
-     * @function getForsetiJson
-     * @description [TO BE DEPRECATED]
-     */
-    getForsetiJson() {
-        return $.get(`${this.host}/api/forseti`);
-    }
-
-    /**
-     * @function getForsetiCsv
-     * @description [TO BE DEPRECATED]
-     */
-    getForsetiCsv() {
-        return $.get(`${this.host}/api/forseti/csv`);
     }
 }
 
