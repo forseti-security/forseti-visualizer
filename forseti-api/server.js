@@ -52,6 +52,8 @@ app.use(express.static(publicPath, staticConf));
 
 /* API Route Configuration */
 
+// set up the default /api route
+app.use('/api', api({}));
 
 // set up the main route '/'
 app.get('/', (req, res) => {
@@ -87,10 +89,10 @@ app.get('/', (req, res) => {
     });
 });
 
-// set up the default /api route
-app.use('/api', api({}));
-
 
 // EXPOSE APP using the API_HOST and API_PORT environment variables
-app.listen(process.env['API_PORT'], process.env['API_HOST']);
-console.log(`Running on http://${process.env['API_HOST']}:${process.env['API_PORT']}`);
+let apiHost = process.env['API_HOST'] || '0.0.0.0';
+let apiPort = process.env['API_PORT'] || 8080;
+
+app.listen(apiPort, apiHost);
+console.log(`Running on http://${apiHost}:${apiPort}`);

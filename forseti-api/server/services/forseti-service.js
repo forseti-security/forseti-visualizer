@@ -79,7 +79,7 @@ class ForsetiService extends DatabaseServiceBase {
 
         try {
             let mySqlDbConn = this.getMySqlDbConnection(
-                process.env.CLOUDSQL_HOSTNAME, 
+                process.env.CLOUDSQL_HOSTNAME,
                 process.env.CLOUDSQL_USERNAME,
                 process.env.CLOUDSQL_PASSWORD,
                 process.env.CLOUDSQL_SCHEMA
@@ -121,7 +121,7 @@ class ForsetiService extends DatabaseServiceBase {
 
         try {
             let mySqlDbConn = this.getMySqlDbConnection(
-                process.env.CLOUDSQL_HOSTNAME, 
+                process.env.CLOUDSQL_HOSTNAME,
                 process.env.CLOUDSQL_USERNAME,
                 process.env.CLOUDSQL_PASSWORD,
                 process.env.CLOUDSQL_SCHEMA
@@ -155,19 +155,32 @@ class ForsetiService extends DatabaseServiceBase {
         var ex = protoDescriptor.explain;
 
         let channel = process.env.FORSETI_SERVER_VM_CHANNEL;
-        let res = new ex.Explain(channel, grpc.credentials.createInsecure());
+        let explainClient = new ex.Explain(channel, grpc.credentials.createInsecure());
 
         var meta = new grpc.Metadata();
         meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
-        console.log(ex);
-        console.log(res);
         console.log('channel', channel);
         console.log('channel', process.env.FORSETI_DATA_MODEL_HANDLE);
+        console.log(iamPrefix);
 
-        res.getAccessByMembers({
-            member_name: iamPrefix
-        }, meta, cb);
+        // ref: https://grpc.io/docs/tutorials/basic/node/
+        //iamPrefix='user/garrettwong@gwongcloud.com';
+        let response = explainClient.getAccessByMembers({
+            member_name: iamPrefix,
+            // permission_names: ['iam.serviceAccounts.actAs'], // for filtering
+            expand_resources: true
+        }, meta);
+
+        var results = [];
+        response.on('data', function (result) {
+            console.log('result:', result);
+            results.push(result);
+        })
+        response.on('end', function() {
+            console.log('streamEnd!')
+            cb(undefined, results);
+        });
     }
 
     /**
@@ -176,7 +189,7 @@ class ForsetiService extends DatabaseServiceBase {
      * @param {*} cb function for callback processing
      */
     getExplainRoles(role, cb) {
-        var PROTO_PATH = 'explain.proto';
+        var PROTO_PATH = 'protos/explain.proto';
         var grpc = require('grpc');
         var protoLoader = require('@grpc/proto-loader');
         // Suggested options for similarity to existing grpc.load behavior
@@ -195,19 +208,22 @@ class ForsetiService extends DatabaseServiceBase {
         let channel = process.env.FORSETI_SERVER_VM_CHANNEL;
         let res = new ex.Explain(channel, grpc.credentials.createInsecure());
         console.log(res);
+        console.log(cb);
 
         var meta = new grpc.Metadata();
         meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
-        res.getAccessByPermissions({
-            role_name: 'roles/owner',
-            permission_name: '',
-        }, meta, cb);
-
         res.getPermissionsByRoles({
-            // role_names: ['roles/owner']
-            // role_prefixes: role_prefixes
-        }, meta, cb);
+                role_names: ['roles/owner']
+                // role_prefixes: role_prefixes // for filtering
+            }, meta, function (data, sec) {
+                console.log('success', data, sec);
+                console.log(sec.permissionsbyroles[0].permissions.length)
+                console.log(sec.permissionsbyroles[0].permissions[0])
+            },
+            function (err) {
+                console.log('err', err);
+            });
     }
 
     /*
@@ -225,7 +241,7 @@ class ForsetiService extends DatabaseServiceBase {
 
         try {
             let mySqlDbConn = this.getMySqlDbConnection(
-                process.env.CLOUDSQL_HOSTNAME, 
+                process.env.CLOUDSQL_HOSTNAME,
                 process.env.CLOUDSQL_USERNAME,
                 process.env.CLOUDSQL_PASSWORD,
                 process.env.CLOUDSQL_SCHEMA

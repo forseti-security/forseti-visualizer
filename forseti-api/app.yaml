@@ -1,0 +1,38 @@
+# [START gae_flex_quickstart_yaml]
+runtime: custom 
+env: flex
+env_variables:
+  API_HOST: "0.0.0.0"
+  API_PORT: "8080"
+  CLOUDSQL_HOSTNAME: "172.17.0.1"
+  CLOUDSQL_USERNAME: "root"
+  CLOUDSQL_PASSWORD: ""
+  CLOUDSQL_SCHEMA: "forseti_security"
+  FORSETI_SERVER_VM_CHANNEL: "35.232.32.159:50051"
+  FORSETI_DATA_MODEL_HANDLE: "f240aa3a5bc9fd9acfaf50fdd3620534"
+  PROJECT_ID: "forsetivisualizer"
+
+beta_settings:
+  cloud_sql_instances: devops-shared-vpc:us-central1:forseti-server-db-4ebc72af=tcp:3306
+  
+# This sample incurs costs to run on the App Engine flexible environment.
+# The settings below are to reduce costs during testing and are not appropriate
+# for production use. For more information, see:
+# https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
+network:
+  instance_tag: tag-name
+  name: projects/devops-shared-vpc/global/networks/default
+  subnetwork_name: default
+
+# [END gae_flex_quickstart_yaml]
+
+
+## KNOWN ISSUES:
+## projects without the -compute@ default account
+## ERROR: (gcloud.app.deploy) Error Response: [13] An internal error occurred while creating a Google Cloud Storage bucket.

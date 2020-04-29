@@ -12,10 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import $ from 'jquery';
-import JSONLargeDataService from './JSONLargeDataService';
 import DataService from './DataService';
-import JSONDataService from './JSONDataService';
 
 /**
  * @class DataServiceFactory
@@ -32,20 +29,10 @@ class DataServiceFactory {
     /**
      * @function getDataServiceFactory
      * @description returns the data service factory type depending on flags
-     * @param useJson boolean indicating whether to use JSON data, if false, then use CSV data
-     * @param useCache boolean indicating whether to use .JSON cached data OR data from the Cloud SQL database
      * @return the proper data service factory
      */
-    getDataServiceFactory(useJson, useCache) {
-        if (!useJson) {
-            return new JSONLargeDataService();
-        }
-
-        if (useCache) {
-            return new JSONDataService();
-        } else {
-            return new DataService();
-        }
+    getDataServiceFactory() {
+        return new DataService();
     }
 }
 

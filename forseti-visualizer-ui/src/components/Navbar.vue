@@ -1,140 +1,128 @@
 <template>
-  <v-flex xs3 mb-5>
-    <div class="control-panel">
-      <v-container grid-list-md text-xs-center style="padding: 0;">
-        <v-layout row wrap>
-          <v-flex xs6 style="text-align: left; margin-left: 0;">
-            <v-btn color="info" v-on:click="resetZoom" style="margin-left: 0;">Reset Zoom</v-btn>
-          </v-flex>
+    <v-flex xs3 mb-5>
+        <div class="control-panel">
+            <v-container grid-list-md text-xs-center style="padding: 0;">
+                <v-layout row wrap>
+                    <v-flex xs6 style="text-align: left; margin-left: 0;">
+                        <v-btn
+                            color="info"
+                            v-on:click="resetZoom"
+                            style="margin-left: 0;"
+                        >Reset Zoom</v-btn>
+                    </v-flex>
 
-          <v-flex xs6>
-            <p class="text-lg-right">
-              <v-btn v-on:click="dialog=!dialog">
-                <v-icon>fas fa-cog</v-icon>
-              </v-btn>
+                    <v-flex xs6>
+                        <p class="text-lg-right">
+                            <v-btn v-on:click="parentData.dialog=!parentData.dialog">
+                                <v-icon>fas fa-cog</v-icon>
+                            </v-btn>
 
-              <v-dialog v-model="dialog" width="500">
-                <v-card>
-                  <v-card-title class="headline grey lighten-2" primary-title>Settings</v-card-title>
+                            <v-dialog v-model="parentData.dialog" width="500">
+                                <v-card>
+                                    <v-card-title
+                                        class="headline grey lighten-2"
+                                        primary-title
+                                    >Settings</v-card-title>
 
-                  <v-card-text>
-                    <v-checkbox
-                      :label="`Show Violations`"
-                      v-model="showViolations"
-                      v-on:change="toggleViolations"
-                    ></v-checkbox>
+                                    <v-card-text>
+                                        <v-checkbox
+                                            :label="`Show Violations`"
+                                            v-model="parentData.showViolations"
+                                            v-on:change="toggleViolations"
+                                        ></v-checkbox>
 
-                    <v-checkbox
-                      :label="`Cached Data Enabled`"
-                      v-model="useCache"
-                      v-on:change="toggleCacheEnabled()"
-                    ></v-checkbox>
+                                        <v-checkbox
+                                            :label="`Use Wide View`"
+                                            v-model="parentData.useWideView"
+                                            v-on:change="toggleWideView()"
+                                        ></v-checkbox>
+                                    </v-card-text>
 
-                    <v-checkbox
-                      :label="`Json On`"
-                      v-model="useJson"
-                      v-on:change="toggleJsonEnabled()"
-                    ></v-checkbox>
+                                    <v-divider></v-divider>
 
-                    <v-checkbox
-                      :label="`Use Wide View`"
-                      v-model="useWideView"
-                      v-on:change="toggleWideView()"
-                    ></v-checkbox>
-                  </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            color="primary"
+                                            flat
+                                            @click="parentData.dialog = false"
+                                        >Close</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </p>
+                    </v-flex>
+                </v-layout>
+            </v-container>
 
-                  <v-divider></v-divider>
+            <!--https://vuetifyjs.com/en/components/autocompletes -->
+            <v-autocomplete
+                v-model="nodeName"
+                :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+                :items="resourceArray"
+                :item-text="'resource_name'"
+                :item-value="'resource_name'"
+                :readonly="!isEditing"
+                :label="`Resources`"
+                persistent-hint
+            >
+                <v-slide-x-reverse-transition slot="append-outer" mode="out-in">
+                    <v-icon
+                        :color="isEditing ? 'success' : 'info'"
+                        :key="`icon-${isEditing}`"
+                        @click="isEditing = !isEditing"
+                        v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
+                    ></v-icon>
+                </v-slide-x-reverse-transition>
+            </v-autocomplete>
 
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </p>
-          </v-flex>
-        </v-layout>
-      </v-container>
+            <v-btn color="info" id="btn-search" v-on:click="search">Search</v-btn>
+            <v-btn color="info" id="btn-search" v-on:click="resetParent">Reset to Org</v-btn>
+            <v-btn color="info" id="btn-search" v-on:click="setParent">Set Parent</v-btn>
 
-      <!--https://vuetifyjs.com/en/components/autocompletes -->
-      <v-autocomplete
-        v-model="nodeName"
-        :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
-        :items="resourceArray"
-        :item-text="'resource_name'"
-        :item-value="'resource_name'"
-        :readonly="!isEditing"
-        :label="`Resources`"
-        persistent-hint
-      >
-        <v-slide-x-reverse-transition slot="append-outer" mode="out-in">
-          <v-icon
-            :color="isEditing ? 'success' : 'info'"
-            :key="`icon-${isEditing}`"
-            @click="isEditing = !isEditing"
-            v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
-          ></v-icon>
-        </v-slide-x-reverse-transition>
-      </v-autocomplete>
+            <v-checkbox
+                :label="`Expand/Collapse`"
+                v-model="parentData.expand"
+                v-on:change="toggleExpand"
+            ></v-checkbox>
 
-      <v-btn color="info" id="btn-search" v-on:click="search">Search</v-btn>
-      <v-btn color="info" id="btn-search" v-on:click="resetParent">Reset to Org</v-btn>
-      <v-btn color="info" id="btn-search" v-on:click="setParent">Set Parent</v-btn>
+            <v-checkbox
+                :label="`Expand/Collapse All`"
+                v-model="parentData.expandAll"
+                v-on:change="toggleExpandAll"
+            ></v-checkbox>
 
-      <v-checkbox :label="`Expand/Collapse`" v-model="expand" v-on:change="toggleExpand"></v-checkbox>
+            <v-radio-group v-model="parentData.orientation" v-on:change="toggleOrientation">
+                <v-radio v-for="n in parentData.orientations" :key="n" :label="`${n}`" :value="n"></v-radio>
+            </v-radio-group>
 
-      <v-checkbox :label="`Expand/Collapse All`" v-model="expandAll" v-on:change="toggleExpandAll"></v-checkbox>
+            <v-text-field
+                label="Explain (user/$USER, group/$GROUP, serviceAccount/$SA)"
+                v-model="parentData.explainIdentitySearchTerm"
+            ></v-text-field>
+            <v-btn color="info" v-on:click="explainIdentity">Explain Identity</v-btn>
+        </div>
 
-      <v-radio-group v-model="orientation" v-on:change="toggleOrientation">
-        <v-radio v-for="n in orientations" :key="n" :label="`${n}`" :value="n"></v-radio>
-      </v-radio-group>
-
-      <v-text-field
-        label="Explain (user/$USER, group/$GROUP, serviceAccount/$SA)"
-        v-model="explainIdentitySearchTerm"
-      ></v-text-field>
-      <v-btn color="info" v-on:click="explainIdentity">Explain Identity</v-btn>
-    </div>
-
-    <v-combobox
-      v-model="selectedFilterResources"
-      :items="items"
-      label="Filter by a list of resource types"
-      v-on:input="filterResources"
-      multiple
-      chips
-      :menu-props="{ maxHeight: '400px', overflowY: true }"
-    ></v-combobox>
-  </v-flex>
+        <v-combobox
+            v-model="parentData.selectedFilterResources"
+            :items="parentData.items"
+            label="Filter by a list of resource types"
+            v-on:input="filterResources"
+            multiple
+            chips
+            :menu-props="{ maxHeight: '400px', overflowY: true }"
+        ></v-combobox>
+    </v-flex>
 </template>
 
 <script>
-import $ from 'jquery';
-import * as d3 from 'd3';
-
-import D3Helpers from '../services/D3Helpers';
-import GoogleCloudImageService from '../services/GoogleCloudImageService';
-import DataService from '../services/DataService';
-import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
-import Orientation from '../constants/Orientation';
 import ResourceArrayStore from '../stores/ResourceArray';
 import { mapState } from 'vuex';
 
-let cachedFileMap = {
-    resourcesFile: 'dataset1_resources.json',
-    violationsFile: 'dataset1_violations.json',
-    iamexplainbyuserFile: 'dataset1_iamexplainbyuser.json',
-
-    resourcesFile2: 'dataset2_resources.json',
-    violationsFile2: 'dataset2_violations.json',
-    iamexplainbyuserFile2: 'dataset2_iamexplainbyuser.json',
-};
-
+// map of all emitted function names
 let componentFunctionMap = {
     resetZoom: 'resetZoom',
     toggleViolations: 'toggleViolations',
-    toggleCacheEnabled: 'toggleCacheEnabled',
-    toggleJsonEnabled: 'toggleJsonEnabled',
     toggleWideView: 'toggleWideView',
     search: 'search',
     resetParent: 'resetParent',
@@ -151,10 +139,11 @@ export default {
     store: ResourceArrayStore,
 
     computed: mapState(['resourceArray']),
+
     watch: {
-        resourceArray(newValue, oldValue) {
+        // resourceArray(newValue) {
             // console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
-        },
+        // },
     },
 
     /**
@@ -182,16 +171,8 @@ export default {
         toggleViolations: function() {
             this.$emit(
                 componentFunctionMap.toggleViolations,
-                this.showViolations
+                this.parentData.showViolations
             );
-        },
-
-        /**
-         * @function toggleCacheEnabled
-         * @description Send notification to toggle the useCache setting
-         */
-        toggleCacheEnabled: function() {
-            this.$emit(componentFunctionMap.toggleCacheEnabled, this.useCache);
         },
 
         /**
@@ -207,7 +188,7 @@ export default {
 
             this.$emit(
                 componentFunctionMap.explainIdentity,
-                this.explainIdentitySearchTerm
+                this.parentData.explainIdentitySearchTerm
             );
         },
 
@@ -218,7 +199,7 @@ export default {
         filterResources: function() {
             this.$emit(
                 componentFunctionMap.filterResources,
-                this.selectedFilterResources
+                this.parentData.selectedFilterResources
             );
         },
 
@@ -247,19 +228,14 @@ export default {
         },
 
         /**
-         * @function toggleJsonEnabled
-         * @description Refresh the grid and alternate between json / csv file format (only works when useCache true)
-         */
-        toggleJsonEnabled: function() {
-            this.$emit(componentFunctionMap.toggleJsonEnabled, this.useJson);
-        },
-
-        /**
          * @function toggleWideView
          * @description Update node width
          */
         toggleWideView: function() {
-            this.$emit(componentFunctionMap.toggleWideView, this.useWideView);
+            this.$emit(
+                componentFunctionMap.toggleWideView,
+                this.parentData.useWideView
+            );
         },
 
         /**
@@ -267,7 +243,10 @@ export default {
          * @description Expand/Collapse the [currently expanded] tree hierarchy.
          */
         toggleExpand: function() {
-            this.$emit(componentFunctionMap.toggleExpand, this.expand);
+            this.$emit(
+                componentFunctionMap.toggleExpand,
+                this.parentData.expand
+            );
         },
 
         /**
@@ -275,7 +254,10 @@ export default {
          * @description Expand/Collapse the entire tree hierarchy.
          */
         toggleExpandAll: function() {
-            this.$emit(componentFunctionMap.toggleExpandAll, this.expandAll);
+            this.$emit(
+                componentFunctionMap.toggleExpandAll,
+                this.parentData.expandAll
+            );
         },
 
         /**
@@ -285,57 +267,25 @@ export default {
         toggleOrientation: function() {
             this.$emit(
                 componentFunctionMap.toggleOrientation,
-                this.orientation
+                this.parentData.orientation
             );
         },
     },
 
+    props: {
+        parentData: Object,
+    },
+
     /**
      * Vue: data
+     *  These variables are replicated from Body.vue.
      */
     data: () => ({
-        // global: set this to use JSON files vs. dynamic
-        // useCache: false, // default to using server data
-        useCache: false, // default to using cached files.json
-        useJson: true, // false defers to using a .csv
-        useWideView: false, // false defers to keeping node view default screen (hxw)
-
         // filter variables
         nodeName: '',
-        expand: true,
-        expandAll: false,
-        showViolations: true,
-        orientation: Orientation.Vertical,
-        explainIdentitySearchTerm: '',
-        orientations: Object.keys(Orientation),
-        bottomSheetEnabled: false, // for violations view on the bottom
-        dialog: false, // settings dialog
-        selectedFilterResources: [
-            // 'GCS Bucket',
-            'GCE Instance',
-            'GKE Cluster',
-            'Network',
-            // 'BQ Dataset',
-            // 'App Engine',
-            // 'Service Account',
-            // 'Service Account Key'
-        ],
-        items: [
-            'GCS Bucket',
-            'GCE Instance',
-            'GKE Cluster',
-            'App Engine',
-            'Cloud SQL',
-            'Firewall',
-            'Network',
-            'BQ Dataset',
-            'Service Account',
-            'Service Account Key',
-        ],
 
         // autocomp
         isEditing: true,
-        resources: [], // ['mycloud.com', 'folder1', 'folder2', 'project1', 'project2', 'project1_bucket']
     }),
 };
 </script>
