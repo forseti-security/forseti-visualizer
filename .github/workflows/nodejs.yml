@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, dev, actions ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, dev, actions ]
 
 jobs:
   build:
@@ -36,9 +36,12 @@ jobs:
     - name: Run Test
       working-directory: ./forseti-visualizer-ui
       run: npm test
+    - name: Install Packaages
+      working-directory: ./forseti-api
+      run: npm install
     - name: Run Build
-      working-directory: ${{ env.api-directory }}
+      working-directory: ./forseti-api
       run: npm run build --if-present
     - name: Run Test
-      working-directory: ${{ env.api-directory }}
+      working-directory: ./forseti-api 
       run: npm test

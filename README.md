@@ -99,7 +99,7 @@ npm start
 
 ## Alternative Deployments
 
-There are other solution deployment pipelines described here for Docker, GCE, GKE and Cloud Run.  Each of these are dependent on a Docker Image of Forseti Visualizer.  
+There are other solution deployment pipelines described here for Docker, GCE, GKE and Cloud Run.  Each of these are dependent on a Docker Image of Forseti Visualizer.  A **prerequisite** of these is to first configure your local environment for local development - ensure that you have gone through the Getting Started Section.
 
 ### Docker
 
@@ -113,9 +113,9 @@ cp ../forseti-api/source.env source.env
 ./build-images.sh
 
 # verify that the docker image has been built
-docker images | grep 
+docker images | grep "forseti-visualizer"
 
-# verify that the docker image can be run
+# create a docker readable source file for environment var injection
 cat > dockersource.env << EOF
 API_HOST=0.0.0.0
 API_PORT=8080
@@ -130,9 +130,10 @@ EOF
 
 PROJECT_ID="forseti-visualizer" # << REPLACE THIS WITH YOUR PROJECT_ID
 IMAGE_NAME="forseti-visualizer"
-FULL_IAMGE_NAME="gcr.io/$PROJECT_ID/$IMAGE_NAME"
+FULL_IMAGE_NAME="gcr.io/$PROJECT_ID/$IMAGE_NAME"
 
-docker run --env-file dockersource.env --name forsetivisualizer --rm -d -p 8080:8080 $FULL_IAMGE_NAME
+# You will need to determine how to connect to the Cloud SQL Database.  This can be done via (--network host), which may not work on Mac, via installing Cloud SQL Proxy on the Docker Image, and a number of other methods.  It is not implemented as a default at this time.
+docker run --env-file dockersource.env --name forsetivisualizer --rm -d -p 8080:8080 $FULL_IMAGE_NAME
 docker ps
 
 # navigate to http://localhost:8080/
@@ -156,7 +157,7 @@ docker ps
 
 ### Cloud Run
 
-```bash 
+```bash
 ./deployments/deploy-cloudrun.sh
 ```
 

@@ -6,8 +6,6 @@
                     <Navbar
                         v-on:resetZoom="resetZoom"
                         v-on:toggleViolations="toggleViolations"
-                        v-on:toggleCacheEnabled="toggleCacheEnabled"
-                        v-on:toggleJsonEnabled="toggleJsonEnabled"
                         v-on:toggleWideView="toggleWideView"
                         v-on:search="search"
                         v-on:resetParent="resetParent"
@@ -18,6 +16,7 @@
                         v-on:toggleOrientation="toggleOrientation"
                         v-on:explainIdentity="explainIdentity"
                         v-on:filterResources="filterResources"
+                        v-bind:parentData="this"
                     />
 
                     <v-flex xs9 mb-5 style="position:relative;">
@@ -45,13 +44,9 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import * as d3 from 'd3';
 
-import D3Helpers from '../services/D3Helpers';
-import GoogleCloudImageService from '../services/GoogleCloudImageService';
 import DataService from '../services/DataService';
-import TestDataService from '../services/TestDataService';
 import ForsetiSetParentService from '../services/ForsetiSetParentService';
 import ForsetiResourceConverter from '../services/ForsetiResourceConverter';
 import ResourceDataServiceHandler from '../services/ResourceDataServiceHandler';
@@ -142,11 +137,6 @@ export default {
                 }
                 this.violationsMap[KEY].push(violationsData[i]);
             }
-            console.log(
-                'violationsMap',
-                violationsData,
-                this.violationsMap
-            );
         },
 
         /**
@@ -172,13 +162,9 @@ export default {
          * @returns array of resources
          */
         filterResourceArray: function() {
-            console.log('filterResourceArray1', this.resourceArray, this.selectedFilterResourcess);
-
             let mappedResourceFilter = this.selectedFilterResources.map(
                 ForsetiResourceConverter.convertResource
             );
-
-            console.log('filterResourceArray2', this.mappedResourceFilter);
 
             // apply resource filter.  always include organization/folder/projects so that resource paths are maintained
             this.resourceArray = this.resourceArray.filter(res => {
@@ -211,8 +197,6 @@ export default {
                 );
             }
 
-            console.log('filterResourceArray3', this.parentNode, this.resourceArray);
-
             if (this.parentNode) {
                 let subResourceArray = ForsetiSetParentService.getResourceArraySubset(
                     this.resourceArray,
@@ -233,16 +217,8 @@ export default {
          * @param orientation - [Orientation.Vertical, Orientation.Horizontal]
          */
         init: function(orientation, parentId = undefined) {
-            let dataService;
+            let dataService = new DataService();
 
-            if (this.useCache) {
-                dataService = new TestDataService();
-            } else {
-                // from the database
-                dataService = new DataService();
-            }
-
-            // ELSE: useCache=false: (fetch from the database)
             dataService.getForsetiResources(parentId).then(resourcesData => {
                 // get inventory index id
                 if (resourcesData.length > 0) {
@@ -258,8 +234,6 @@ export default {
                                 curVal.resource_data_name;
                         }
                     });
-
-                    console.log(filteredResourcesData);
 
                     /* end filtered data */
                     let inventoryIndexId =
@@ -305,13 +279,9 @@ export default {
          * }
          */
         initTree: function(orientation, data) {
-            console.log('initTree', orientation, data);
-
             this.tree = d3
                 .tree()
                 .size([this.width - VisualizerConfig.MARGIN.top, this.height]);
-
-            console.log('tree', this.tree, this.treeData);
 
             this.treeData = d3
                 .stratify()
@@ -322,8 +292,6 @@ export default {
                     return d.parent_id;
                 })(data);
 
-            console.log('td', this.treeData);
-
             // assign the name to each node
             this.treeData.each(function(d) {
                 if (d.data.resource_type === ResourceType.SERVICE_ACCOUNT_KEY) {
@@ -332,8 +300,6 @@ export default {
                     d.name = d.data.resource_name;
                 }
             });
-
-            console.log('td2', this.treeData);
 
             // treeData is the root of the tree,
             // and the tree has all the data we need in it now.
@@ -366,16 +332,12 @@ export default {
                     this.zoomScale = d3.event.transform.k;
                 });
 
-            console.log(orientation, this.zoomListener);
-
             // set initial zoom
             if (orientation === Orientation.Vertical) {
                 this.svg.call(
                     this.zoomListener,
                     d3.zoomIdentity.translate(this.width / 2, this.height / 2)
                 );
-
-                console.log('asadf???', data);
 
                 // g "container", initially translated by the margin left and top
                 this.svg.selectAll('g').remove();
@@ -389,8 +351,6 @@ export default {
                             VisualizerConfig.MARGIN.top +
                             ')'
                     );
-                console.log(this.g);
-                window.uh = this.g;
 
                 // prevent dbl click
                 this.svg.on('dblclick.zoom', null);
@@ -463,9 +423,7 @@ export default {
          * @function toggle
          * @description Toggle children on node click (expand, collapse)
          */
-        toggle: function(node, tree, treeData) {
-            console.log('toggle', node);
-
+        toggle: function(node, tree) {
             if (node.children) {
                 node._children = node.children;
                 node.children = null;
@@ -525,12 +483,9 @@ export default {
                 adjustedHeight += 100;
 
                 if (depthArr[i] > VisualizerConfig.MAX_NUMBER_NODES_ACROSS) {
-                    console.log('adjusting.  width: ' + depthArr[i] * 100);
-
                     let newWidth = depthArr[i] * 100;
 
                     if (newWidth > adjustedWidth) {
-                        console.log('adjustedWidth', newWidth);
                         adjustedWidth = newWidth;
                     }
                     adjustSize = true;
@@ -545,34 +500,24 @@ export default {
                 }
                 /* end comment this */
 
-                console.log(adjustedWidth, adjustedHeight);
                 tree.size([adjustedWidth, adjustedHeight]);
                 tree(treeData);
             }
-            console.log('depthArr', depthArr);
 
             let nodeEnter = node
                 .enter()
                 .append('g')
                 .attr('class', 'node')
-                .attr('transform', function(d) {
+                .attr('transform', function() {
                     return 'translate(' + source.x + ',' + source.y + ')';
-
-                    return orientation === Orientation.Vertical
-                        ? 'translate(' + source.x + ',' + source.y + ')'
-                        : 'translate(' + source.y + ',' + source.x + ')';
+                    // return orientation === Orientation.Vertical
+                    //     ? 'translate(' + source.x + ',' + source.y + ')'
+                    //     : 'translate(' + source.y + ',' + source.x + ')';
                 })
                 .on('click', d => {
                     this.toggle(d, tree, treeData);
                 })
                 .on('mouseover', d => {
-                    console.log(
-                        this,
-                        VisualizerConfig.ANIMATION_DURATION,
-                        'mouseover',
-                        d
-                    );
-
                     tooltipDiv
                         .transition()
                         .duration(VisualizerConfig.ANIMATION_DURATION)
@@ -608,7 +553,7 @@ export default {
                         .style('left', d3.event.pageX + 32 + 'px')
                         .style('top', d3.event.pageY - 32 + 'px');
                 })
-                .on('mouseout', function(d) {
+                .on('mouseout', function() {
                     tooltipDiv
                         .transition()
                         .duration(duration)
@@ -643,14 +588,14 @@ export default {
                 .attr('xlink:href', function(d) {
                     return d.data.image;
                 })
-                .attr('x', function(d) {
+                .attr('x', function() {
                     return VisualizerConfig.NODE_IMG_X;
                 })
-                .attr('y', function(d) {
+                .attr('y', function() {
                     return VisualizerConfig.NODE_IMG_Y;
                 })
                 .attr('height', VisualizerConfig.NODE_IMG_HEIGHT)
-                .attr('width', function(d) {
+                .attr('width', function() {
                     return VisualizerConfig.NODE_IMG_WIDTH;
                 });
 
@@ -717,7 +662,7 @@ export default {
                 .exit()
                 .transition()
                 .duration(duration)
-                .attr('transform', function(d) {
+                .attr('transform', function() {
                     return orientation === Orientation.Vertical
                         ? 'translate(' + source.x + ',' + source.y + ')'
                         : 'translate(' + source.y + ',' + source.x + ')';
@@ -741,7 +686,7 @@ export default {
                     'd',
                     d3
                         .linkHorizontal()
-                        .x(function(d) {
+                        .x(function() {
                             return orientation === Orientation.Vertical
                                 ? source.x
                                 : source.y;
@@ -780,12 +725,12 @@ export default {
                     'd',
                     d3
                         .linkHorizontal()
-                        .x(function(d) {
+                        .x(function() {
                             return orientation === Orientation.Vertical
                                 ? source.x
                                 : source.y;
                         })
-                        .y(function(d) {
+                        .y(function() {
                             return orientation === Orientation.Vertical
                                 ? source.y
                                 : source.x;
@@ -804,8 +749,6 @@ export default {
          * @description Resets the SVG zoom to the default.
          */
         resetZoom: function() {
-            console.log('testing resetZoom');
-
             this.svg
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
@@ -817,8 +760,6 @@ export default {
          * @description Pulses a given node
          */
         pulsate: function(filterFn) {
-            console.log('filterFn', filterFn);
-
             this.g
                 .selectAll('.node')
                 .filter(filterFn)
@@ -827,20 +768,20 @@ export default {
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('r', VisualizerConfig.PULSATE_MAX_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function() {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 })
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 //PULSATE CODE
                 .attr('r', VisualizerConfig.PULSATE_MIN_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function() {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 });
         },
@@ -871,8 +812,6 @@ export default {
          * @description Highlights a given node
          */
         highlight: function(filterFn) {
-            console.log('filterFn', filterFn);
-
             this.g
                 .selectAll('.node')
                 .filter(filterFn)
@@ -881,10 +820,10 @@ export default {
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('r', VisualizerConfig.HIGHLIGHT_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function() {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function() {
                     return 1;
                 });
         },
@@ -1026,19 +965,9 @@ export default {
             };
 
             // explain - iam user
-            if (this.useCache && !this.useJson) {
-                d3.json(
-                    VisualizerConfig.CACHED_FILE_MAP.iamexplainbyuserFile2
-                ).then(callbackFn);
-            } else if (this.useCache) {
-                d3.json(
-                    VisualizerConfig.CACHED_FILE_MAP.iamexplainbyuserFile
-                ).then(callbackFn);
-            } else {
-                new DataService()
-                    .getExplainIdentity(this.explainIdentitySearchTerm)
-                    .then(callbackFn);
-            }
+            new DataService()
+                .getExplainIdentity(this.explainIdentitySearchTerm)
+                .then(callbackFn);
         },
         /**
          * @function filterResources
@@ -1071,8 +1000,6 @@ export default {
             // set parent, and find from current tree data
             this.parentNode = this.findResourceNodeByName(nodeName);
 
-            console.log(this.parentNode);
-
             if (!this.parentNode) {
                 alert(nodeName + ' is not found.  Resetting view.');
             }
@@ -1088,8 +1015,6 @@ export default {
          * @description Searches for an exact text match of the node name and pans to that node
          */
         search: function(searchText) {
-            console.log(searchText, this.treeData, 'element', el);
-
             // get the data element
             let el = null;
             this.treeData.each(function(d) {
@@ -1132,7 +1057,7 @@ export default {
             this.g
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
-                .attr('transform', d => {
+                .attr('transform', () => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
@@ -1171,9 +1096,6 @@ export default {
                         this.zoomListener.transform,
                         d3.zoomIdentity.translate(transX, transY).scale(t.k)
                     );
-
-                    console.log(transX, transY, t.k);
-                    console.log(x, y, this.width, this.height);
                 });
 
             // reset existing node fx
@@ -1183,7 +1105,7 @@ export default {
             setTimeout(() => {
                 this.pulsate(
                     (function(el) {
-                        return function(d, i) {
+                        return function(d) {
                             if (d.id === el.id) {
                                 return true;
                             }
@@ -1200,8 +1122,6 @@ export default {
          * @description Refresh the grid: clears and recreates
          */
         _resetSvg: function() {
-            console.log(this.svg);
-
             d3.select('#d3-area')
                 .selectAll('svg')
                 .remove();
@@ -1214,35 +1134,9 @@ export default {
                 .attr('height', this.height)
                 .style('pointer-events', 'all');
 
-            console.log(this.svg);
-
             // reset vars
             this.expand = true;
             this.expandAll = false;
-        },
-
-        /**
-         * @function toggleCacheEnabled
-         * @description Refresh the grid and alternate between live / cached data
-         */
-        toggleCacheEnabled: function(useCache) {
-            this.useCache = useCache;
-
-            this._resetSvg();
-
-            this.init(this.orientation, this.projectId);
-        },
-
-        /**
-         * @function toggleJsonEnabled
-         * @description Refresh the grid and alternate between json / csv file format (only works when useCache true)
-         */
-        toggleJsonEnabled: function(useJson) {
-            this.useJson = useJson;
-
-            this._resetSvg();
-
-            this.init(this.orientation);
         },
 
         /**
@@ -1273,12 +1167,6 @@ export default {
          */
         toggleExpandAll: function(expandAll) {
             this.expandAll = expandAll;
-
-            let nodes = this.svg.selectAll('.node');
-            console.log('node()', nodes.node());
-            console.log('nodes', nodes);
-
-            let firstNode;
 
             if (!this.expandAll) {
                 // collapse all
@@ -1312,15 +1200,14 @@ export default {
          */
         toggleViolations: function(showViolations) {
             this.showViolations = showViolations;
+            let violationsMap = this.violationsMap;
 
             if (this.showViolations) {
                 let nodes = this.svg.selectAll('.node');
 
                 let allCircles = nodes.selectAll('circle');
-                console.log(allCircles.nodes());
 
-                nodes
-                    .selectAll('circle')
+                allCircles
                     .transition(VisualizerConfig.ANIMATION_DURATION)
                     .attr('r', VisualizerConfig.NODE_RADIUS * 2)
                     .attr('cx', 1)
@@ -1344,8 +1231,6 @@ export default {
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;
                     });
-
-                console.log('nodes', nodes);
             } else {
                 let nodes = this.svg.selectAll('.node');
 
@@ -1366,15 +1251,13 @@ export default {
                         return d._children ? 1 : 0;
                     })
                     .style('stroke-opacity', function(d) {
-                        return this.violationsMap[d.data.full_name] !==
-                            undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? 1
                             : 0;
                     })
                     .style('stroke', function(d) {
                         // set to red
-                        return this.violationsMap[d.data.full_name] !==
-                            undefined
+                        return violationsMap[d.data.full_name] !== undefined
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;
                     });
@@ -1392,7 +1275,7 @@ export default {
             this.g
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
-                .attr('transform', d => {
+                .attr('transform', () => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
@@ -1436,7 +1319,7 @@ export default {
             this.g
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
-                .attr('transform', d => {
+                .attr('transform', () => {
                     if (this.orientation === Orientation.Vertical) {
                         return (
                             'translate(' +
@@ -1478,9 +1361,6 @@ export default {
      */
     data: () => ({
         // global: set this to use JSON files vs. dynamic
-        // useCache: false, // default to using server data
-        useCache: false, // default to using cached files.json
-        useJson: true, // false defers to using a .csv
         useWideView: false, // false defers to keeping node view default screen (hxw)
 
         // filter variables

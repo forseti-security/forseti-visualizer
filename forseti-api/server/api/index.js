@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const Telnet = require('telnet-client');
+
 import {
 	version
 } from '../../package.json';
+import RenderHelpers from '../render-helpers';
 import {
 	Router
 } from 'express';
@@ -40,9 +43,12 @@ export default ({
 	}));
 
 
-	
 
-
+	// perhaps expose some API metadata at the root
+	api.get('/version', (req, res) => {
+		res.json({version});
+		return;
+	});
 
 	// perhaps expose some API metadata at the root
 	api.get('/', (req, res) => {
@@ -54,8 +60,9 @@ export default ({
 
 		let connection = new Telnet();
 
-		if (process.env['CLOUDSQL_HOSTNAME'] === '') {
-			res.render('error')
+		if (!process.env['CLOUDSQL_HOSTNAME']) {
+			RenderHelpers.renderError(res, version);
+			return;
 		}
 
 		console.log('Attempting connection to: ' + process.env['CLOUDSQL_HOSTNAME']);
@@ -70,15 +77,15 @@ export default ({
 		connection.connect(params)
 			.then(function (prompt) {
 				console.log('Connected to Cloud SQL');
-				renderIndex(res, true);
+				RenderHelpers.renderIndex(res, version, true);
 			}, function (error) {
 				console.log('Not connected to Cloud SQL', error);
-				renderIndex(res, false);
+				RenderHelpers.renderIndex(res, version, false);
 			})
 			.catch(function (error) {
 				// handle the throw (timeout)
 				console.log('Not connected to Cloud SQL', error);
-				renderIndex(res, false);
+				RenderHelpers.renderIndex(res, version, false);
 			});
 	});
 

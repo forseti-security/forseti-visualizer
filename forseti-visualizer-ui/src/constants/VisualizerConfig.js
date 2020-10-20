@@ -72,13 +72,6 @@ const VisualizerConfig = {
         'kubernetes_cluster',
         'serviceaccount_key'
     ],
-
-    // DEMOABLE
-    CACHED_FILE_MAP: {
-        resourcesFile: 'dataset1_resources.json',
-        violationsFile: 'dataset1_violations.json',
-        iamexplainbyuserFile: 'dataset1_iamexplainbyuser.json',
-    }
 };
 
 export default VisualizerConfig;

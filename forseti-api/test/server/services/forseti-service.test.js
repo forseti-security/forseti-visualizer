@@ -54,14 +54,14 @@ describe('forseti-service.js', () => {
         done()
     })
 
-    it('get resources should call callback', done => {
-        let cb = function (error, results) {
-            // console.log(error, results)
-            assert.isNull(error)
-            done()
-        }
-        sut.getResources(null, cb)
-    })
+    // it('get resources should call callback', done => {
+    //     let cb = function (error, results) {
+    //         // console.log(error, results)
+    //         assert.isNull(error)
+    //         done()
+    //     }
+    //     sut.getResources(null, cb)
+    // })
 
     // it('getExplainIdentity should be called', done => {
     //     sut.getExplainIdentity('user/garrettwong@gwongcloud.com', function (error, results) {

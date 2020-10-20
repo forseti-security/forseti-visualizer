@@ -58,8 +58,6 @@
                                             <v-icon dark title="Edit">fa-edit</v-icon>
                                         </v-btn>
                                     </td>
-
-                                    <!-- <td class="text-xs">{{ props.item }}</td> -->
                                 </tr>
                             </template>
 
@@ -79,23 +77,16 @@
 </template>
 
 <script>
-import $ from 'jquery';
-import * as d3 from 'd3';
 import JSONBeautifier from '../services/JSONBeautifier';
 import ResourceNavbar from './ResourceNavbar';
-import ResourceArrayStore from '../stores/ResourceArray';
 
 // DataServices
 import DataService from '../services/DataService';
-import TestDataService from '../services/TestDataService';
 
 export default {
     components: {
         ResourceNavbar,
     },
-
-    /* TODO: The Resources file should support DataServer functionality pulling data from the Server */
-    /* TODO: The cachedFileMap should support the alternative json file and possibly the .CSV option */
 
     mounted() {
         // load initialization data
@@ -104,8 +95,6 @@ export default {
 
     methods: {
         edit: function(resource, event) {
-            console.log(resource);
-
             if (
                 // resource.resource_type === 'organization' ||
                 // resource.resource_type === 'folder' ||
@@ -129,30 +118,24 @@ export default {
             return JSONBeautifier.beautify(o);
         },
 
+        /**
+         * @function loadData
+         * @description loads data
+         */
         loadData: function() {
-            let dataService;
-
-            if (this.useCache) {
-                dataService = new TestDataService();
-            } else {
-                // from the database
-                dataService = new DataService();
-            }
+            let dataService = new DataService();
 
             dataService.getForsetiResources().then(resourcesData => {
-                console.log('DataService!', resourcesData);
-
                 // set databound variables
                 this.resources = resourcesData.map(function(d) {
                     d.name =
                         d.resource_data_displayname || d.resource_data_name;
                     return d;
                 });
+
                 // this should be set the first time or after a full refresh
                 this.originalResources = this.resources;
 
-                // TODO: change this to server side request
-                // TEMP: client-side filtering to get UNIQUE resource_type
                 this.resourceTypes = [
                     ...new Set(
                         resourcesData.map(function(data) {
@@ -161,11 +144,6 @@ export default {
                     ),
                 ];
                 this.resourceTypes.unshift('Include ALL');
-
-                console.log(this.resourceTypes);
-
-                // TODO: change this to server side request
-                // TEMP: client-side filtering to get UNIQUE project_id
                 this.projects = [];
                 let mappedProjects = resourcesData.filter(function(resource) {
                     return resource.resource_type === 'project';
@@ -176,10 +154,7 @@ export default {
                         name: resourceData.resource_id,
                     };
                 });
-                console.log(this.projects);
 
-                // TODO: change this to server side request
-                // TEMP: client-side filtering to
                 this.inventoryIndexSnapshots = [];
                 this.inventoryIndexSnapshots = resourcesData.map(function(
                     resourceData
@@ -193,64 +168,12 @@ export default {
         },
 
         search: function(filterData) {
-            console.log('Resources: search', filterData);
-
             if (!filterData) {
-                console.log('Filter data is not defined.');
-
-                // TODO: remove dummy data
-                this.resources = [
-                    {
-                        id: 1086937,
-                        resource_type: 'organization',
-                        category: 'resource',
-                        resource_id: '358329783624',
-                        parent_id: null,
-                        resource_data_displayname: 'mycloud.biz',
-                        resource_data_name: 'organizations/358329783624',
-                        lifecycle_state: 'ACTIVE',
-                        inventory_index_id: 1552609278876965,
-                    },
-                    {
-                        id: 1087269,
-                        resource_type: 'folder',
-                        category: 'resource',
-                        resource_id: '379678980128',
-                        parent_id: 1086937,
-                        resource_data_displayname: 'SUPERMAN',
-                        resource_data_name: 'folders/379678980128',
-                        lifecycle_state: 'ACTIVE',
-                        inventory_index_id: 1552609278876965,
-                    },
-
-                    {
-                        id: 1087269,
-                        resource_type: 'project',
-                        category: 'resource',
-                        resource_id: '379678980128',
-                        parent_id: 1086937,
-                        resource_data_displayname: 'PROJECT',
-                        resource_data_name: 'folders/379678980128',
-                        lifecycle_state: 'ACTIVE',
-                        inventory_index_id: 1552609278876965,
-                    },
-                ];
+                this.resources = [];
             } else {
-                console.log(
-                    'Filter data is defined.',
-                    filterData.selectedResourceTypes,
-                    filterData.projectId,
-                    this.originalResources
-                );
-
                 this.resources = this.originalResources.filter(resourceData => {
                     if (filterData.selectedResourceTypes.length > 0) {
-                        // console.log(
-                        //     filterData.selectedResourceTypes,
-                        //     resourceData
-                        // );
-
-                        // Has "Include ALL"
+                        // Has the phrase, "Include ALL"
                         if (
                             filterData.selectedResourceTypes[0] ===
                             'Include ALL'
@@ -284,17 +207,15 @@ export default {
                         return false;
                     }
                 });
-
-                console.log(this.resources);
             }
         },
 
         clear: function() {
-            console.log('Resources: clear');
+            // console.log('clear()');
         },
 
         filterResources: function() {
-            console.log('Resources: filterResources');
+            // console.log('filterResources()');
         },
     },
 
@@ -314,8 +235,6 @@ export default {
         resourceTypes: [],
         projects: [],
         inventoryIndexSnapshots: [],
-
-        useCache: false,
     }),
 };
 </script>

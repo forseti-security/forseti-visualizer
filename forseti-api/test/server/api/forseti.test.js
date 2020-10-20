@@ -27,7 +27,6 @@ import forseti from '../../../server/api/forseti.js';
 describe('forseti.js', () => {
 
   it('should get records', done => {
-    console.log('FORSETI!!!')
     console.log(forseti)
     done()
     
