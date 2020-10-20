@@ -1,0 +1,179 @@
+// Copyright 2017 The Forseti Security Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package explain;
+
+service Explain {
+  rpc Ping(PingRequest) returns (PingReply) {}
+
+  rpc ListResources (ListResourcesRequest) returns (stream Resource) {}
+  rpc ListGroupMembers (ListGroupMembersRequest) returns (stream GroupMember) {}
+  rpc ListRoles (ListRolesRequest) returns (stream Role) {}
+  rpc GetIamPolicy (GetIamPolicyRequest) returns (GetIamPolicyReply) {}
+  rpc CheckIamPolicy (CheckIamPolicyRequest) returns (CheckIamPolicyReply) {}
+
+  rpc GetAccessByPermissions(GetAccessByPermissionsRequest) returns (stream Access) {}
+  rpc GetAccessByResources(GetAccessByResourcesRequest) returns (stream Access) {}
+  rpc GetAccessByMembers(GetAccessByMembersRequest) returns (stream MemberAccess) {}
+  rpc GetPermissionsByRoles(GetPermissionsByRolesRequest) returns (GetPermissionsByRolesReply) {}
+
+  rpc ExplainGranted(ExplainGrantedRequest) returns (ExplainGrantedReply) {}
+  rpc ExplainDenied(ExplainDeniedRequest) returns (stream BindingStrategy) {}
+
+
+}
+message PingRequest {
+  string data = 1;
+}
+
+message PingReply {
+  string data = 1;
+}
+
+message ListResourcesRequest {
+  string prefix = 1;
+}
+
+message Resource {
+  string full_resource_name = 1;
+}
+
+message ListGroupMembersRequest {
+  string prefix = 1;
+}
+
+message GroupMember {
+  string member_name = 1;
+}
+
+message ListRolesRequest {
+  string prefix = 1;
+}
+
+message Role {
+  string role_name = 1;
+}
+
+message GetIamPolicyRequest {
+  string resource = 1;
+}
+
+message GetIamPolicyReply {
+  string resource = 1;
+  Policy policy = 2;
+}
+
+message Policy {
+  repeated BindingOnResource bindings = 1;
+  string etag = 2;
+}
+
+message BindingOnResource {
+  string role = 1;
+  repeated string members = 2;
+}
+
+message CheckIamPolicyRequest {
+  string resource = 1;
+  string permission = 2;
+  string identity = 3;
+}
+
+message CheckIamPolicyReply {
+  bool result = 1;
+}
+
+message ExplainGrantedRequest {
+  string member = 1;
+  string resource = 2;
+  oneof access {
+    string permission = 3;
+    string role = 4;
+  }
+}
+
+message Binding {
+  string member = 1;
+  string resource = 2;
+  string role = 3;
+}
+
+message Membership {
+  string member = 1;
+  repeated string parents = 2;
+}
+
+message ExplainGrantedReply {
+  repeated Binding bindings = 1;
+  repeated Membership memberships = 2;
+  repeated string resource_ancestors = 3;
+}
+
+message BindingStrategy {
+  repeated Binding bindings = 1;
+  int32 overgranting = 2;
+}
+
+message ExplainDeniedRequest {
+  string member = 1;
+  repeated string permissions = 2;
+  repeated string roles = 3;
+  repeated string resources = 4;
+}
+
+message GetPermissionsByRolesRequest {
+  repeated string role_names = 1;
+  repeated string role_prefixes = 2;
+}
+
+message GetPermissionsByRolesReply {
+  message PermissionsByRole {
+    string role = 1;
+    repeated string permissions = 2;
+  }
+  repeated PermissionsByRole permissionsbyroles = 1;
+}
+
+message GetAccessByPermissionsRequest {
+  string role_name = 1;
+  string permission_name = 2;
+  bool expand_groups = 3;
+  bool expand_resources = 4;
+}
+
+message Access {
+  repeated string members = 1;
+  string resource = 2;
+  string role = 3;
+}
+
+message GetAccessByResourcesRequest {
+  string resource_name = 1;
+  repeated string permission_names = 2;
+  bool expand_groups = 3;
+}
+
+message GetAccessByMembersRequest {
+  string member_name = 1;
+  repeated string permission_names = 2;
+  bool expand_resources = 3;
+}
+
+message MemberAccess {
+  string member = 1;
+  repeated string resources = 2;
+  string role = 3;
+}
