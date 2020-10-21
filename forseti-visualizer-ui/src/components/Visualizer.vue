@@ -3,6 +3,7 @@
         <v-layout text-xs-center wrap class="margin-top-30">
             <v-flex xs12 mb-5>
                 <v-layout justify-center>
+                    
                     <Navbar
                         v-on:resetZoom="resetZoom"
                         v-on:toggleViolations="toggleViolations"
@@ -18,6 +19,7 @@
                         v-on:filterResources="filterResources"
                         v-bind:parentData="this"
                     />
+
 
                     <v-flex xs9 mb-5 style="position: relative">
                         <button
@@ -90,8 +92,8 @@ export default {
         selectedFilterResources: [
             'GCE Instance',
             'GKE Cluster',
-            'Network',
-            // 'GCS Bucket',
+            // 'Network',
+            'GCS Bucket',
             // 'BQ Dataset',
             // 'App Engine',
             // 'Service Account',
@@ -132,6 +134,8 @@ export default {
 
         // parent-child-view
         parentNode: null,
+
+        violationsCount: 0,
     }),
 
     /**
@@ -432,6 +436,7 @@ export default {
                         .getViolations(inventoryIndexId)
                         .then((violationsData) => {
                             this.setViolationsMap(violationsData);
+                            this.violationsCount = violationsData.length;
 
                             this.resourceArray = filteredResourcesData
                                 .map(ResourceDataServiceHandler.handle)

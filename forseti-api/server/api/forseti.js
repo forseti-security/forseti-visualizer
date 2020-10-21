@@ -37,6 +37,7 @@ export default ({
                 console.log(error);
                 // throw error;
             }
+            
             let json = results;
             res.json(json);
         });

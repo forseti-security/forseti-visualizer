@@ -37,7 +37,6 @@ app.all('*', function (req, res, next) {
 });
 
 // extend static assets to use the forseti-visualizer-ui UI code distribution
-console.log(__dirname);
 const {
   resolve
 } = require('path');
@@ -67,7 +66,6 @@ app.use('/api', api({}));
 app.get('/', (req, res) => {
   let connection = new Telnet();
 
-  console.log(RenderHelpers);
   if (!process.env['CLOUDSQL_HOSTNAME']) {
     RenderHelpers.renderError(res, version);
     return;
