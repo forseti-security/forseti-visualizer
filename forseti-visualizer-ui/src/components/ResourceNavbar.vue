@@ -1,82 +1,49 @@
 <template>
     <v-flex sm6 md3 mb-5>
         <div class="control-panel">
-            <v-container grid-list-md text-xs-center style="padding: 0">
+            <v-container grid-list-md text-xs-center style="padding: 0;">
                 <v-layout row wrap>
-                    <v-flex xs6 style="text-align: left; margin-left: 0">
+                    <v-flex xs6 style="text-align: left; margin-left: 0;">
                         <h1
                             class="title grey--text text--darken-2"
-                            style="margin-top: 16px"
-                        >
-                            Search Filters
-                        </h1>
+                            style="margin-top:16px;"
+                        >Search Filters</h1>
                     </v-flex>
 
                     <v-flex xs6>
                         <p class="text-lg-right">
-                            <v-btn v-on:click="dialog = !dialog">
+                            <v-btn v-on:click="dialog=!dialog">
                                 <v-icon>fas fa-question-circle</v-icon>
                             </v-btn>
 
                             <v-dialog v-model="dialog" width="500">
                                 <v-card>
-                                    <v-card-title
-                                        class="headline grey lighten-2"
-                                        primary-title
-                                        >Help</v-card-title
-                                    >
+                                    <v-card-title class="headline grey lighten-2" primary-title>Help</v-card-title>
 
                                     <!-- HELP LIST -->
                                     <v-card-text>
                                         <v-list subheader three-line>
-                                            <v-subheader
-                                                >Filter by Resource
-                                                Types</v-subheader
-                                            >
+                                            <v-subheader>Filter by Resource Types</v-subheader>
 
                                             <v-list-item>
                                                 <v-list-item-content>
-                                                    <v-list-item-subtitle
-                                                        >Select the resource
-                                                        types to be searched for
-                                                        - these resource types
-                                                        are defined in
-                                                        Forseti.</v-list-item-subtitle
-                                                    >
+                                                    <v-list-item-subtitle>Select the resource types to be searched for - these resource types are defined in Forseti.</v-list-item-subtitle>
                                                 </v-list-item-content>
                                             </v-list-item>
 
-                                            <v-subheader
-                                                >Filter by Project</v-subheader
-                                            >
+                                            <v-subheader>Filter by Project</v-subheader>
 
                                             <v-list-item>
                                                 <v-list-item-content>
-                                                    <v-list-item-subtitle
-                                                        >Select the Project ID
-                                                        within the target
-                                                        organization.</v-list-item-subtitle
-                                                    >
+                                                    <v-list-item-subtitle>Select the Project ID within the target organization.</v-list-item-subtitle>
                                                 </v-list-item-content>
                                             </v-list-item>
 
-                                            <v-subheader
-                                                >Filter by Inventory Index
-                                                Snapshot</v-subheader
-                                            >
+                                            <v-subheader>Filter by Inventory Index Snapshot</v-subheader>
 
                                             <v-list-item>
                                                 <v-list-item-content>
-                                                    <v-list-item-subtitle
-                                                        >The Inventory Index
-                                                        Snapshot is a Forseti
-                                                        construct for everytime
-                                                        forseti inventories an
-                                                        organization. A snapshot
-                                                        is taken by default
-                                                        every 2
-                                                        hours.</v-list-item-subtitle
-                                                    >
+                                                    <v-list-item-subtitle>The Inventory Index Snapshot is a Forseti construct for everytime forseti inventories an organization. A snapshot is taken by default every 2 hours.</v-list-item-subtitle>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list>
@@ -86,12 +53,7 @@
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn
-                                            color="primary"
-                                            flat
-                                            @click="dialog = false"
-                                            >Close</v-btn
-                                        >
+                                        <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -110,7 +72,7 @@
                 multiple
                 chips
                 :menu-props="{ maxHeight: '400px', overflowY: true }"
-                style="width: 98%"
+                style="width:98%"
             ></v-combobox>
 
             <!--https://vuetifyjs.com/en/components/autocompletes -->
@@ -130,7 +92,7 @@
             <br />
 
             <!--https://vuetifyjs.com/en/components/selects-->
-            {{ filterData.selectedInventoryIndexId }}
+            {{filterData.selectedInventoryIndexId}}
             <v-select
                 v-model="filterData.selectedInventoryIndexId"
                 :items="inventoryIndexSnapshots"
@@ -144,13 +106,9 @@
                 class="select-inventory-index-snapshot"
             ></v-select>
 
-            <v-btn color="danger" class="btn-clear" v-on:click="clear"
-                >Clear</v-btn
-            >
+            <v-btn color="danger" class="btn-clear" v-on:click="clear">Clear</v-btn>
 
-            <v-btn color="info" class="btn-search" v-on:click="search"
-                >Search</v-btn
-            >
+            <v-btn color="info" class="btn-search" v-on:click="search">Search</v-btn>
         </div>
     </v-flex>
 </template>
@@ -170,7 +128,7 @@ let componentFunctionMap = {
 
 export default {
     store: ResourceArrayStore,
-    
+
     computed: mapState(['resourceArray']),
     watch: {},
 
@@ -185,7 +143,7 @@ export default {
      * Vue: methods
      */
     methods: {
-        onVSelectChange: function () {
+        onVSelectChange: function() {
             this.$nextTick(() => {
                 swal('Info', this.filterData.selectedInventoryIndexId, 'info');
             });
@@ -195,11 +153,11 @@ export default {
          * @function search
          * @description Searches for an exact text match of the node name and pans to that node
          */
-        search: function () {
+        search: function() {
             this.$emit(componentFunctionMap.search, this.filterData);
         },
 
-        clear: function () {
+        clear: function() {
             swal('Notice', 'clear', 'error');
         },
     },
@@ -218,7 +176,7 @@ export default {
             selectedResourceTypes: ['Include ALL'],
             // selectedResourceTypes: ['Service Account Key'],
         },
-        // resourceArray: [{}],
+        resourceArray: [{}],
 
         dialog: false, // settings dialog
     }),
