@@ -1,13 +1,46 @@
 {
+    "parser": "vue-eslint-parser",
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module",
         "ecmaFeatures": {
-            "jsx": true
+            "jsx": true,
+            "experimentalObjectRestSpread": true
         }
     },
     "rules": {
         "semi": "error",
-        "no-console": 0
-    }
+        "no-console": 0,
+        "indent": [2, 4],
+        "vue/html-indent": [2, 4],
+        "camelcase": [2, {properties: "always"}],
+        "new-cap": [2, {"newIsCap": true}],
+        "padding-line-between-statements": [
+            "error",
+            {blankLine: "always", prev: ["const", "let", "var"], next: "*"},
+            {blankLine: "any", prev: ["const", "let", "var"], next: ["const", "let", "var"]}
+        ],
+        "space-infix-ops": "error",
+        "no-var": "error",
+        "one-var": [2, "always"],
+        "vars-on-top": "error",
+        "quotes": ["error", "single"],
+        "prefer-template": "error",
+        "eqeqeq": "error",
+        "default-param-last": ["error"],
+        "prefer-arrow-callback": "error",
+        "no-param-reassign": [
+            "error",
+            {
+                "props": true,
+                // ignore vuex files
+                "ignorePropertyModificationsFor": [
+                    "state"
+                ]
+            }
+        ],
+        "import/no-cycle": "off",
+        "import/no-unresolved": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off"
+    },
 }
