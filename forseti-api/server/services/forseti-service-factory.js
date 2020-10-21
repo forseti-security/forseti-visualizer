@@ -12,19 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * ColorConfig
- * @description the color config constants shared across the app for Forseti Visualizer
- */
-const ColorConfig = {
-    DANGER: '#ff8c84', // light red
-    WARNING: '#DB4437',
-    SUCCESS: '#b3d4fc', // green
-    INFO: '#999999', // GRAY
-    WHITE: '#fefefe', // white
-    BLACK: '#222222', // light black
-    NODE_BG_COLOR: '#b3d4fc', //'lightsteelblue'
-    NONE: 'none', // 'none'' is NOT a CSS color (valid only in D3.js)
-};
+/* forseti-service */
+import ForsetiService from './forseti-service.js';
+import ForsetiServiceCache from './forseti-service-cache.js';
 
-export default ColorConfig;
+class ForsetiServiceFactory {
+    constructor() {
+
+    }
+
+    /*
+     * @description gets the Forseti Service based on CACHE_ENABLED
+     * @param cb 
+     */
+    getForsetiService() {
+        if (process.env.CACHE_ENABLED) {
+            // return ForsetiService;
+            return ForsetiServiceCache;
+        } else {
+            return ForsetiService;
+        }
+    }
+}
+
+export default new ForsetiServiceFactory();

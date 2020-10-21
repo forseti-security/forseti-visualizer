@@ -17,7 +17,7 @@ import './plugins/vuetify';
 import VueRouter from 'vue-router';
 
 import App from './App.vue';
-import Viz from './components/Body';
+import Visualizer from './components/Visualizer';
 import Resources from './components/Resources';
 
 Vue.use(VueRouter);
@@ -28,18 +28,18 @@ const routes = [{
   },
   {
     path: '/viz',
-    component: Viz
+    component: Visualizer
   },
   {
     path: '/viz/:projectId',
-    component: Viz,
+    component: Visualizer,
     props: true
   },
   {
     path: '/resources',
     component: Resources
   },
-]
+];
 
 Vue.config.productionTip = false;
 Vue.config.runtimeCompiler = true;

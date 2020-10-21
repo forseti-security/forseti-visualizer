@@ -77,6 +77,8 @@
 </template>
 
 <script>
+import swal from 'sweetalert';
+
 import JSONBeautifier from '../services/JSONBeautifier';
 import ResourceNavbar from './ResourceNavbar';
 
@@ -102,8 +104,10 @@ export default {
             ) {
                 this.$router.push(`viz/${resource.resource_id}`);
             } else {
-                alert(
-                    'Navigating to Visualizer is not supported for non-project resources at this time.'
+                swal(
+                    'Notice',
+                    'Navigating to Visualizer is not supported for non-project resources at this time.',
+                    'error'
                 );
             }
 
@@ -240,4 +244,5 @@ export default {
 </script>
 
 <style>
+.v-btn { padding: 8px; }
 </style>

@@ -22,7 +22,7 @@
 			"node": true
 		},
 		"rules": {
-			"no-console": 0,
+			"no-console": 1,
 			"no-unused-vars": 1
 		}
 	},

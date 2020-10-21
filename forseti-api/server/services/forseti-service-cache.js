@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* forseti-service */
-import DatabaseServiceBase from './database-service-base.js';
+const fs = require("fs");
 
-class ForsetiService extends DatabaseServiceBase {
-    constructor() {
-        super()
-    }
+class ForsetiServiceCache {
+    constructor() {}
 
     /*
      * @param cb 
@@ -29,63 +26,14 @@ class ForsetiService extends DatabaseServiceBase {
         });
      */
     getResources(parentId, cb) {
-        // include parent and its children
-        let parentIdSqlPhrase = parentId ?
-            `AND (g.resource_id = '${parentId}' OR g.parent_id = 
-                (SELECT id 
-                    FROM gcp_inventory 
-                    WHERE inventory_index_id = g.inventory_index_id AND
-                        category = 'resource' AND 
-                        resource_id = '${parentId}'
-                )
-            )` : '';
+        fs.readFile("./public/cached_data/resources.json", function (err, data) {
+            if (err) throw err;
 
-        console.log(parentIdSqlPhrase);
+            // Converting to JSON 
+            const resources = JSON.parse(data);
 
-        // GETS resources from the last successful inventory?
-        let sql = `
-        SELECT g.id, 
-            g.resource_type, 
-            g.category, 
-            g.resource_id, 
-            g.parent_id AS parent_id, 
-            g.full_name AS full_name,
-            IFNULL(g.resource_data->>'$.displayName', '') as resource_data_displayname, 
-            IFNULL(g.resource_data->>'$.name', '') as resource_data_name, g.resource_data->>'$.lifecycleState' as lifecycle_state,
-            g.inventory_index_id
-        FROM gcp_inventory g 
-        WHERE g.inventory_index_id = (SELECT id 
-                FROM inventory_index 
-                WHERE inventory_status IN ('SUCCESS', 'PARTIAL_SUCCESS')
-                ORDER BY completed_at_datetime DESC LIMIT 1) 
-            AND (g.category='resource') 
-
-            AND g.resource_type IN ('organization', 'project', 'folder', 
-                'appengine_app', 'kubernetes_cluster', 'cloudsqlinstance', 'instance', 
-                'dataset', 'firewall', 'bucket', 'serviceaccount', 'serviceaccount_key', 'network')
-            
-            ${parentIdSqlPhrase}
-            
-            -- this will filter out DELETE_REQUESTED projects and the child resources under the DELETE_REQUESTED state resources
-            AND (g.resource_data->>'$.lifecycleState' != 'DELETE_REQUESTED' || g.resource_data->>'$.lifecycleState' is NULL)
-            AND (g.parent_id NOT IN (SELECT id FROM gcp_inventory gsub WHERE gsub.id = g.parent_id AND gsub.resource_data->>'$.lifecycleState' = 'DELETE_REQUESTED'))
-
-            ORDER BY CASE 
-                WHEN g.resource_type = 'organization' THEN 0 
-                WHEN g.resource_type = 'folder' THEN 1 
-                WHEN g.resource_type = 'project' THEN 2 ELSE 3 END ASC;`;
-
-        try {
-            let mySqlDbConn = this.getMySqlDbConnection(
-                process.env.CLOUDSQL_HOSTNAME,
-                process.env.CLOUDSQL_USERNAME,
-                process.env.CLOUDSQL_PASSWORD,
-                process.env.CLOUDSQL_SCHEMA
-            );
-            mySqlDbConn.query(sql, cb);
-        } catch (ex) {
-            console.log(ex);
-        }
+            cb(null, resources)
+        });
     }
 
     /**
@@ -98,36 +46,14 @@ class ForsetiService extends DatabaseServiceBase {
         });
      */
     getViolations(inventoryIndexId, cb) {
-        let getInventoryIndexIdSqlStmt = `(SELECT id 
-            FROM inventory_index 
-            WHERE inventory_status IN ('SUCCESS', 'PARTIAL_SUCCESS') 
-            ORDER BY completed_at_datetime DESC LIMIT 1)`;
+        fs.readFile("./public/cached_data/violations.json", function (err, data) {
+            if (err) throw err;
 
-        if (inventoryIndexId !== null && inventoryIndexId > 0) {
-            getInventoryIndexIdSqlStmt = inventoryIndexId;
-        }
+            // Converting to JSON 
+            const resources = JSON.parse(data);
 
-        let sql = `
-        SELECT ii.id as inventory_index_id, si.id as scanner_index_id, v.* FROM violations v 
-        JOIN scanner_index si
-        ON v.scanner_index_id = si.id
-        JOIN inventory_index ii
-        ON si.inventory_index_id = ii.id
-        WHERE ii.id = ${getInventoryIndexIdSqlStmt}`;
-
-        // console.log('getViolations()', inventoryIndexId, sql);
-
-        try {
-            let mySqlDbConn = this.getMySqlDbConnection(
-                process.env.CLOUDSQL_HOSTNAME,
-                process.env.CLOUDSQL_USERNAME,
-                process.env.CLOUDSQL_PASSWORD,
-                process.env.CLOUDSQL_SCHEMA
-            );
-            mySqlDbConn.query(sql, cb);
-        } catch (ex) {
-            console.log('getViolations', ex);
-        }
+            cb(null, resources)
+        });
     }
 
     /**
@@ -175,7 +101,7 @@ class ForsetiService extends DatabaseServiceBase {
             console.log('result:', result);
             results.push(result);
         })
-        response.on('end', function() {
+        response.on('end', function () {
             console.log('streamEnd!')
             cb(undefined, results);
         });
@@ -249,4 +175,4 @@ class ForsetiService extends DatabaseServiceBase {
     }
 }
 
-export default new ForsetiService();
+export default new ForsetiServiceCache();

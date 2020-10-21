@@ -116,6 +116,8 @@
 </template>
 
 <script>
+import swal from 'sweetalert';
+
 import ResourceArrayStore from '../stores/ResourceArray';
 import { mapState } from 'vuex';
 
@@ -181,8 +183,13 @@ export default {
          *      if (cacheOn) --> then use cached data
          */
         explainIdentity: function() {
-            if (this.explainIdentitySearchTerm === '') {
-                alert('Explain input must not be empty');
+            if (this.explainIdentitySearchTerm === undefined || 
+                this.explainIdentitySearchTerm === '') {
+                swal('Error', 
+                    'Please ensure the explain input field is populated and in ' +
+                    'the form of user/${USER_EMAIL}, group/${GROUP_EMAIL} or ' + 
+                    'serviceAccount{$SA_EMAIL}', 
+                    'error');
                 return;
             }
 
