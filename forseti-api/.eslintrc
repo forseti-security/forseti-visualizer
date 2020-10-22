@@ -1,0 +1,17 @@
+{
+    "parser": "vue-eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "legacyDecorators": true,
+            "modules": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "rules": {
+        "semi": "error",
+        "no-console": 0
+    }
+}
