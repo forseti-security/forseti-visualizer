@@ -42,7 +42,7 @@
 		"lodash.merge": ">=4.6.2",
 		"morgan": "^1.10.0",
 		"mysql": "^2.18.1",
-		"pug": "^2.0.4",
+		"pug": "^3.0.1",
 		"resource-router-middleware": "^0.7.0",
 		"session-file-store": "^1.4.0",
 		"telnet-client": "^1.4.0",
