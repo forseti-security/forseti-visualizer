@@ -26,7 +26,6 @@ export default ({
     forsetiApi.all('*', cors());
 
     let forsetiService = ForsetiServiceFactory.getForsetiService();
-    console.log(forsetiService);
 
     /**
      * @desc returns .json file content
@@ -35,9 +34,8 @@ export default ({
         forsetiService.getResourcesJson(function (error, results) {
             if (error) {
                 console.log(error);
-                // throw error;
             }
-            
+
             let json = results;
             res.json(json);
         });
@@ -47,15 +45,13 @@ export default ({
      * @desc returns resources
      */
     forsetiApi.get('/resources/:parentId?', function (req, res) {
-        console.log(req.params.parentId);
-
         let parentId = req.params.parentId ? req.params.parentId : null;
 
         forsetiService.getResources(parentId, function (error, results) {
             if (error) {
                 console.log(error);
-                // throw error;
             }
+
             let json = results;
             res.json(json);
         });
@@ -71,8 +67,6 @@ export default ({
             if (error) {
                 console.log('Error: ', error);
             } else {
-                // console.log('Results', results);
-
                 res.json(results);
             }
         });
@@ -84,13 +78,10 @@ export default ({
     forsetiApi.get('/getExplainRole/:role', function (req, res) {
         let role = req.params.role;
 
-        console.log('role:', role);
-
         forsetiService.getExplainRoles(role, function (error, results) {
-            if (error)
+            if (error) {
                 console.log('Error: ', error);
-            else {
-                // console.log(results);
+            } else {
                 res.json(results.accesses);
             }
         });
@@ -105,9 +96,7 @@ export default ({
         forsetiService.getViolations(inventoryIndexId, function (error, results) {
             if (error) {
                 console.log(error);
-                // throw error;
             }
-            // console.log('getViolations() results:', results)
 
             let json = results;
             res.json(json);

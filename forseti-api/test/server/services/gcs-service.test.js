@@ -31,18 +31,4 @@ describe('gcs-service.js', async () => {
     beforeEach(async () => {
         
     })
-
-    // it('should have been called', async function(done) {
-    //     this.timeout(5000);
-
-    //     const storage = new Storage({
-    //         projectId: 'forseti-analytics',
-    //     });
-    //     const [buckets] = await storage.getBuckets();
-    //     console.log('Buckets:');
-    //     buckets.forEach(bucket => {
-    //         console.log(bucket.name);
-    //     });
-    // })
-    
 })

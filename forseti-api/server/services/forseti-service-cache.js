@@ -15,7 +15,7 @@
 const fs = require("fs");
 
 class ForsetiServiceCache {
-    constructor() {}
+    constructor() { }
 
     /*
      * @param cb 
@@ -68,12 +68,12 @@ class ForsetiServiceCache {
         // Suggested options for similarity to existing grpc.load behavior
         var packageDefinition = protoLoader.loadSync(
             PROTO_PATH, {
-                keepCase: true,
-                longs: String,
-                enums: String,
-                defaults: true,
-                oneofs: true
-            });
+            keepCase: true,
+            longs: String,
+            enums: String,
+            defaults: true,
+            oneofs: true
+        });
         var protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
         // The protoDescriptor object has the full package hierarchy
         var ex = protoDescriptor.explain;
@@ -83,10 +83,6 @@ class ForsetiServiceCache {
 
         var meta = new grpc.Metadata();
         meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
-
-        console.log('channel', channel);
-        console.log('channel', process.env.FORSETI_DATA_MODEL_HANDLE);
-        console.log(iamPrefix);
 
         // ref: https://grpc.io/docs/tutorials/basic/node/
         //iamPrefix='user/garrettwong@gwongcloud.com';
@@ -98,12 +94,10 @@ class ForsetiServiceCache {
 
         var results = [];
         response.on('data', function (result) {
-            console.log('result:', result);
             results.push(result);
         })
         response.on('end', function () {
-            console.log('streamEnd!')
-            cb(undefined, results);
+            cb(undefined, results); // end of stream
         });
     }
 
@@ -119,35 +113,38 @@ class ForsetiServiceCache {
         // Suggested options for similarity to existing grpc.load behavior
         var packageDefinition = protoLoader.loadSync(
             PROTO_PATH, {
-                keepCase: true,
-                longs: String,
-                enums: String,
-                defaults: true,
-                oneofs: true
-            });
+            keepCase: true,
+            longs: String,
+            enums: String,
+            defaults: true,
+            oneofs: true
+        });
         var protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
         // The protoDescriptor object has the full package hierarchy
         var ex = protoDescriptor.explain;
 
         let channel = process.env.FORSETI_SERVER_VM_CHANNEL;
         let res = new ex.Explain(channel, grpc.credentials.createInsecure());
-        console.log(res);
-        console.log(cb);
 
         var meta = new grpc.Metadata();
         meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
+        var permissions = [];
+
         res.getPermissionsByRoles({
-                role_names: ['roles/owner']
-                // role_prefixes: role_prefixes // for filtering
-            }, meta, function (data, sec) {
-                console.log('success', data, sec);
-                console.log(sec.permissionsbyroles[0].permissions.length)
-                console.log(sec.permissionsbyroles[0].permissions[0])
-            },
+            role_names: ['roles/owner']
+            // role_prefixes: role_prefixes // to enable filtering
+        }, meta, function (data, sec) {
+            // console.log('success', data, sec);
+            // console.log(sec.permissionsbyroles[0].permissions.length)
+            // console.log(sec.permissionsbyroles[0].permissions[0])
+            permissions = sec.permissionsbyroles[0].permissions;
+        },
             function (err) {
                 console.log('err', err);
             });
+
+        return permissions;
     }
 
     /*

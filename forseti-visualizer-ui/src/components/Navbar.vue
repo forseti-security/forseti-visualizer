@@ -180,11 +180,7 @@ export default {
 
     computed: mapState(['resourceArray']),
 
-    watch: {
-        // resourceArray(newValue) {
-        // console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
-        // },
-    },
+    watch: {},
 
     /**
      * Vue: mounted() - onload function

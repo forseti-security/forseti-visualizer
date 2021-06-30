@@ -115,8 +115,6 @@ class ForsetiService extends DatabaseServiceBase {
         ON si.inventory_index_id = ii.id
         WHERE ii.id = ${getInventoryIndexIdSqlStmt}`;
 
-        // console.log('getViolations()', inventoryIndexId, sql);
-
         try {
             let mySqlDbConn = this.getMySqlDbConnection(
                 process.env.CLOUDSQL_HOSTNAME,

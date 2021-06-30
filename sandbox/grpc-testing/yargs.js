@@ -14,8 +14,7 @@
 // console.log(argv.hello);
 // console.log(argv.goodbye);
 
-
-// OPTION / COERCE:
+// option/coerce
 var argv = require('yargs')
   .option('user')
   .coerce('user', opt => {
