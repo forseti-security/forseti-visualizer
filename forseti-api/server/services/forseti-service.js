@@ -25,8 +25,6 @@ class ForsetiService extends DatabaseServiceBase {
         function (error, results, fields) {
             if (error) throw error;
             
-            console.log('durr', results, fields);
-
             return results;
         });
      */
@@ -117,8 +115,6 @@ class ForsetiService extends DatabaseServiceBase {
         ON si.inventory_index_id = ii.id
         WHERE ii.id = ${getInventoryIndexIdSqlStmt}`;
 
-        console.log('gv', inventoryIndexId, sql);
-
         try {
             let mySqlDbConn = this.getMySqlDbConnection(
                 process.env.CLOUDSQL_HOSTNAME,
@@ -165,7 +161,7 @@ class ForsetiService extends DatabaseServiceBase {
         console.log(iamPrefix);
 
         // ref: https://grpc.io/docs/tutorials/basic/node/
-        //iamPrefix='user/garrettwong@gwongcloud.com';
+        //iamPrefix='user/garrettwong@domain.com';
         let response = explainClient.getAccessByMembers({
             member_name: iamPrefix,
             // permission_names: ['iam.serviceAccounts.actAs'], // for filtering
@@ -231,8 +227,6 @@ class ForsetiService extends DatabaseServiceBase {
         function (error, results, fields) {
             if (error) throw error;
             
-            console.log('durr', results, fields);
-
             return results;
         });
      */

@@ -12,8 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-module.exports = {
-  presets: [
-    '@vue/app'
-  ]
-};
+/* forseti-service */
+import {
+    assert
+} from 'chai'
+import chai from 'chai'
+import sinon from 'sinon'
+import sinonChai from 'sinon-chai'
+chai.use(sinonChai)
+
+import regeneratorRuntime from "regenerator-runtime";
+const {Storage} = require('@google-cloud/storage');
+
+describe('gcs-service.js', async () => {
+    let sut
+    let initEventSpy
+
+    beforeEach(async () => {
+        
+    })
+})

@@ -15,7 +15,7 @@
 import {
     Router
 } from 'express';
-import ForsetiService from '../services/forseti-service';
+import ForsetiServiceFactory from '../services/forseti-service-factory';
 import cors from 'cors';
 
 export default ({
@@ -23,18 +23,19 @@ export default ({
     db
 }) => {
     let forsetiApi = Router();
-
     forsetiApi.all('*', cors());
+
+    let forsetiService = ForsetiServiceFactory.getForsetiService();
 
     /**
      * @desc returns .json file content
      */
     forsetiApi.get('/', function (req, res) {
-        ForsetiService.getResourcesJson(function (error, results) {
+        forsetiService.getResourcesJson(function (error, results) {
             if (error) {
                 console.log(error);
-                // throw error;
             }
+
             let json = results;
             res.json(json);
         });
@@ -44,15 +45,13 @@ export default ({
      * @desc returns resources
      */
     forsetiApi.get('/resources/:parentId?', function (req, res) {
-        console.log(req.params.parentId);
-
         let parentId = req.params.parentId ? req.params.parentId : null;
 
-        ForsetiService.getResources(parentId, function (error, results) {
+        forsetiService.getResources(parentId, function (error, results) {
             if (error) {
                 console.log(error);
-                // throw error;
             }
+
             let json = results;
             res.json(json);
         });
@@ -64,12 +63,10 @@ export default ({
     forsetiApi.get('/getExplainIdentity/:iamPrefix', function (req, res) {
         let iamPrefix = req.params.iamPrefix;
 
-        ForsetiService.getExplainIdentity(iamPrefix, function (error, results) {
+        forsetiService.getExplainIdentity(iamPrefix, function (error, results) {
             if (error) {
                 console.log('Error: ', error);
             } else {
-                console.log('Results', results);
-                
                 res.json(results);
             }
         });
@@ -81,14 +78,10 @@ export default ({
     forsetiApi.get('/getExplainRole/:role', function (req, res) {
         let role = req.params.role;
 
-        console.log('rolex', role);
-
-        ForsetiService.getExplainRoles(role, function (error, results) {
-            if (error)
+        forsetiService.getExplainRoles(role, function (error, results) {
+            if (error) {
                 console.log('Error: ', error);
-            else {
-                console.log(results);
-
+            } else {
                 res.json(results.accesses);
             }
         });
@@ -100,12 +93,10 @@ export default ({
     forsetiApi.get('/violations/:inventoryIndexId', function (req, res) {
         let inventoryIndexId = req.params.inventoryIndexId;
 
-        ForsetiService.getViolations(inventoryIndexId, function (error, results) {
+        forsetiService.getViolations(inventoryIndexId, function (error, results) {
             if (error) {
                 console.log(error);
-                // throw error;
             }
-            console.log('getViolations() results:', results)
 
             let json = results;
             res.json(json);

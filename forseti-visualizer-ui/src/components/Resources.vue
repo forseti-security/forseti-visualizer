@@ -27,15 +27,16 @@
                                 <tr @click="props.expanded = !props.expanded">
                                     <td
                                         class="text-xs"
-                                        style="max-width:120px; overflow: auto; text-overflow: ellipsis;"
-                                    >{{ props.item.name }}</td>
+                                        style="max-width:150px; overflow: hidden; text-overflow: ellipsis;"
+                                    >{{ props.item.id }}</td>
                                     <td
                                         class="text-xs"
-                                        style="max-width:120px; overflow: auto; text-overflow: ellipsis;"
-                                    >{{ props.item.resource_data_name }}</td>
+                                        style="max-width:150px; overflow: hidden; text-overflow: ellipsis;"
+                                    >{{ props.item.name !== '' ? props.item.name : props.item.resource_id }}</td>
                                     <td class="text-xs">{{ props.item.resource_type }}</td>
-                                    <td class="text-xs">{{ props.item.resource_id }}</td>
-                                    <td class="text-xs">
+                                    <td class="text-xs" 
+                                        style="max-width:150px; overflow: hidden; text-overflow: ellipsis;" :title="props.item.full_name">{{ props.item.full_name }}</td>
+                                    <td class="text-xs" style="min-width:160px; ">
                                         <v-btn
                                             class="mx-2"
                                             fab
@@ -43,20 +44,11 @@
                                             small
                                             color="primary"
                                             v-on:click="edit(props.item, $event)"
+                                            v-if="props.item.resource_type == 'project'"
                                         >
                                             <v-icon dark title="View in Visualizer">fa-sitemap</v-icon>
                                         </v-btn>
 
-                                        <v-btn
-                                            class="mx-2"
-                                            fab
-                                            dark
-                                            small
-                                            color="primary"
-                                            v-on:click="edit(props.item.resource_id, $event)"
-                                        >
-                                            <v-icon dark title="Edit">fa-edit</v-icon>
-                                        </v-btn>
                                     </td>
                                 </tr>
                             </template>
@@ -77,6 +69,8 @@
 </template>
 
 <script>
+import swal from 'sweetalert';
+
 import JSONBeautifier from '../services/JSONBeautifier';
 import ResourceNavbar from './ResourceNavbar';
 
@@ -102,8 +96,10 @@ export default {
             ) {
                 this.$router.push(`viz/${resource.resource_id}`);
             } else {
-                alert(
-                    'Navigating to Visualizer is not supported for non-project resources at this time.'
+                swal(
+                    'Notice',
+                    'Navigating to Visualizer is not supported for non-project resources at this time.',
+                    'error'
                 );
             }
 
@@ -224,7 +220,7 @@ export default {
             { text: 'Id', value: 'resource_id', align: 'left' },
             { text: 'Name', value: 'resource_data_name', align: 'left' },
             { text: 'Type', value: 'resource_type', align: 'left' },
-            { text: 'Resource', value: 'resource_type', align: 'left' },
+            { text: 'Path', value: 'resource_type', align: 'left' },
             { text: 'Actions', value: '', align: 'left' },
             // { text: '', value: '' },
         ],
@@ -240,4 +236,5 @@ export default {
 </script>
 
 <style>
+.v-btn { padding: 8px; }
 </style>

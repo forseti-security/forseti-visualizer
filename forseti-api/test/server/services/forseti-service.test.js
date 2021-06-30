@@ -64,7 +64,7 @@ describe('forseti-service.js', () => {
     // })
 
     // it('getExplainIdentity should be called', done => {
-    //     sut.getExplainIdentity('user/garrettwong@gwongcloud.com', function (error, results) {
+    //     sut.getExplainIdentity('user/garrettwong@domain.com', function (error, results) {
     //         console.log(error, results)
     //     })
     // })

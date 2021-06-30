@@ -20,6 +20,7 @@ const ColorConfig = {
     DANGER: '#ff8c84', // light red
     WARNING: '#DB4437',
     SUCCESS: '#b3d4fc', // green
+    INFO: '#999999', // GRAY
     WHITE: '#fefefe', // white
     BLACK: '#222222', // light black
     NODE_BG_COLOR: '#b3d4fc', //'lightsteelblue'

@@ -69,7 +69,7 @@ let ResourceTypeTooltipRenderer = {
                 </div>`;
         }
     }
-}
+};
 
 let TooltipRenderer = {
     getTooltipHtml: function (violationExists, d, violationsMap) {

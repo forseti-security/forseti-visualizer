@@ -12,8 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-module.exports = {
-  presets: [
-    '@vue/app'
-  ]
-};
+/* forseti-service */
+import ForsetiService from './forseti-service.js';
+import ForsetiServiceCache from './forseti-service-cache.js';
+
+class ForsetiServiceFactory {
+    constructor() {
+
+    }
+
+    /*
+     * @description gets the Forseti Service based on CACHE_ENABLED
+     * @param cb 
+     */
+    getForsetiService() {
+        if (process.env.CACHE_ENABLED) {
+            // return ForsetiService;
+            return ForsetiServiceCache;
+        } else {
+            return ForsetiService;
+        }
+    }
+}
+
+export default new ForsetiServiceFactory();

@@ -71,7 +71,7 @@ kubectl apply -f ingress.yaml
 # setup HTTPS
 helm install --name cert-manager --version v0.3.2 \
     --namespace kube-system stable/cert-manager
-EMAIL=garrettwong@gwongcloud.com
+EMAIL=garrettwong@domain.com
 cat letsencrypt-issuer.yaml | sed -e "s/email: ''/email: $EMAIL/g" | kubectl apply -f-
 kubectl apply -f ingress-tls.yaml
 

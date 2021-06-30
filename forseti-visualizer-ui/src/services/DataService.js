@@ -22,7 +22,7 @@ class DataService {
     constructor() {
         // THIS SHOULD BE ENABLED THIS WHEN DEPLOYING ALONE WITH forseti-visualizer
         // this.host = 'http://localhost:8080';
-        
+
         // THIS SHOULD BE ENABLED THIS WHEN DEPLOYING VIA FORSETI-API
         this.host = '';
     }
@@ -34,7 +34,6 @@ class DataService {
      * @return promise containing an array of forseti-resources
      */
     getForsetiResources(parentId) {
-        // let url = `${this.host}/api/forseti/resources`;
         let url = `${this.host}/api/forseti/resources/${parentId ? parentId : ''}`;
         return $.get(url);
     }
@@ -58,7 +57,7 @@ class DataService {
         let url = `${this.host}/api/forseti/getExplainIdentity/${encodeURIComponent(iamPrefix)}`;
         return $.get(url);
     }
-    
+
     /**
      * @function getExplainRole
      * @description Gets the roles that a GCP Identity has across an Organization

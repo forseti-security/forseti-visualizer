@@ -1,6 +1,6 @@
 {
   "name": "forseti-visualizer-ui",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build; rm -rf ../forseti-api/dist-forseti-visualizer-ui; cp -R dist/ ../forseti-api/dist-forseti-visualizer-ui;",
@@ -14,6 +14,7 @@
     "eslint-utils": "^1.4.3",
     "jquery": "^3.5.0",
     "npm": "^6.14.8",
+    "sweetalert": "^2.1.2",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vue-select": "^3.9.5",

@@ -1,19 +1,24 @@
 <template>
     <v-flex xs3 mb-5>
         <div class="control-panel">
-            <v-container grid-list-md text-xs-center style="padding: 0;">
+            <v-container grid-list-md text-xs-center style="padding: 0">
                 <v-layout row wrap>
-                    <v-flex xs6 style="text-align: left; margin-left: 0;">
+                    <v-flex xs6 style="text-align: left; margin-left: 0">
                         <v-btn
                             color="info"
                             v-on:click="resetZoom"
-                            style="margin-left: 0;"
-                        >Reset Zoom</v-btn>
+                            style="margin-left: 0"
+                            >Reset Zoom</v-btn
+                        >
                     </v-flex>
 
                     <v-flex xs6>
                         <p class="text-lg-right">
-                            <v-btn v-on:click="parentData.dialog=!parentData.dialog">
+                            <v-btn
+                                v-on:click="
+                                    parentData.dialog = !parentData.dialog
+                                "
+                            >
                                 <v-icon>fas fa-cog</v-icon>
                             </v-btn>
 
@@ -22,7 +27,8 @@
                                     <v-card-title
                                         class="headline grey lighten-2"
                                         primary-title
-                                    >Settings</v-card-title>
+                                        >Settings</v-card-title
+                                    >
 
                                     <v-card-text>
                                         <v-checkbox
@@ -46,7 +52,8 @@
                                             color="primary"
                                             flat
                                             @click="parentData.dialog = false"
-                                        >Close</v-btn>
+                                            >Close</v-btn
+                                        >
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -58,7 +65,11 @@
             <!--https://vuetifyjs.com/en/components/autocompletes -->
             <v-autocomplete
                 v-model="nodeName"
-                :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+                :hint="
+                    !isEditing
+                        ? 'Click the icon to edit'
+                        : 'Click the icon to save'
+                "
                 :items="resourceArray"
                 :item-text="'resource_name'"
                 :item-value="'resource_name'"
@@ -71,14 +82,24 @@
                         :color="isEditing ? 'success' : 'info'"
                         :key="`icon-${isEditing}`"
                         @click="isEditing = !isEditing"
-                        v-text="isEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
+                        v-text="
+                            isEditing
+                                ? 'mdi-check-outline'
+                                : 'mdi-circle-edit-outline'
+                        "
                     ></v-icon>
                 </v-slide-x-reverse-transition>
             </v-autocomplete>
 
-            <v-btn color="info" id="btn-search" v-on:click="search">Search</v-btn>
-            <v-btn color="info" id="btn-search" v-on:click="resetParent">Reset to Org</v-btn>
-            <v-btn color="info" id="btn-search" v-on:click="setParent">Set Parent</v-btn>
+            <v-btn color="info" id="btn-search" v-on:click="search"
+                >Search</v-btn
+            >
+            <v-btn color="info" id="btn-search" v-on:click="resetParent"
+                >Reset to Org</v-btn
+            >
+            <v-btn color="info" id="btn-search" v-on:click="setParent"
+                >Set Parent</v-btn
+            >
 
             <v-checkbox
                 :label="`Expand/Collapse`"
@@ -92,15 +113,25 @@
                 v-on:change="toggleExpandAll"
             ></v-checkbox>
 
-            <v-radio-group v-model="parentData.orientation" v-on:change="toggleOrientation">
-                <v-radio v-for="n in parentData.orientations" :key="n" :label="`${n}`" :value="n"></v-radio>
+            <v-radio-group
+                v-model="parentData.orientation"
+                v-on:change="toggleOrientation"
+            >
+                <v-radio
+                    v-for="n in parentData.orientations"
+                    :key="n"
+                    :label="`${n}`"
+                    :value="n"
+                ></v-radio>
             </v-radio-group>
 
             <v-text-field
                 label="Explain (user/$USER, group/$GROUP, serviceAccount/$SA)"
                 v-model="parentData.explainIdentitySearchTerm"
             ></v-text-field>
-            <v-btn color="info" v-on:click="explainIdentity">Explain Identity</v-btn>
+            <v-btn color="info" v-on:click="explainIdentity"
+                >Explain Identity</v-btn
+            >
         </div>
 
         <v-combobox
@@ -112,10 +143,19 @@
             chips
             :menu-props="{ maxHeight: '400px', overflowY: true }"
         ></v-combobox>
+
+        <v-chip class="ma-2" color="pink" text-color="white">
+            <v-avatar left>
+                <v-icon>fas fa-flag-checkered</v-icon>
+            </v-avatar>
+            Total Violations: {{ parentData.violationsCount }}
+        </v-chip>
     </v-flex>
 </template>
 
 <script>
+import swal from 'sweetalert';
+
 import ResourceArrayStore from '../stores/ResourceArray';
 import { mapState } from 'vuex';
 
@@ -140,11 +180,7 @@ export default {
 
     computed: mapState(['resourceArray']),
 
-    watch: {
-        // resourceArray(newValue) {
-            // console.log(`Watch: Updating from ${oldValue} to ${newValue}`);
-        // },
-    },
+    watch: {},
 
     /**
      * Vue: mounted() - onload function
@@ -159,7 +195,7 @@ export default {
          * @function resetZoom
          * @description Send notification to reset the parent component's svg
          */
-        resetZoom: function() {
+        resetZoom: function () {
             this.$emit(componentFunctionMap.resetZoom);
         },
 
@@ -168,7 +204,7 @@ export default {
          * @description Send notification to toggle the parent's show/hide violations.
          * (represented in the svg by a red circle)
          */
-        toggleViolations: function() {
+        toggleViolations: function () {
             this.$emit(
                 componentFunctionMap.toggleViolations,
                 this.parentData.showViolations
@@ -180,9 +216,18 @@ export default {
          * @description Executes explain plan via a GRPC call
          *      if (cacheOn) --> then use cached data
          */
-        explainIdentity: function() {
-            if (this.explainIdentitySearchTerm === '') {
-                alert('Explain input must not be empty');
+        explainIdentity: function () {
+            if (
+                this.explainIdentitySearchTerm === undefined ||
+                this.explainIdentitySearchTerm === ''
+            ) {
+                swal(
+                    'Error',
+                    'Please ensure the explain input field is populated and in ' +
+                        'the form of user/${USER_EMAIL}, group/${GROUP_EMAIL} or ' +
+                        'serviceAccount{$SA_EMAIL}',
+                    'error'
+                );
                 return;
             }
 
@@ -196,7 +241,7 @@ export default {
          * @function filterResources
          * @description Event executed when the resource filter multiselect box changes
          */
-        filterResources: function() {
+        filterResources: function () {
             this.$emit(
                 componentFunctionMap.filterResources,
                 this.parentData.selectedFilterResources
@@ -207,7 +252,7 @@ export default {
          * @function search
          * @description Searches for an exact text match of the node name and pans to that node
          */
-        search: function() {
+        search: function () {
             this.$emit(componentFunctionMap.search, this.nodeName);
         },
 
@@ -215,7 +260,7 @@ export default {
          * @function resetParent
          * @description Sends a request to reset the parent to the original parent
          */
-        resetParent: function() {
+        resetParent: function () {
             this.$emit(componentFunctionMap.resetParent);
         },
 
@@ -223,7 +268,7 @@ export default {
          * @function setParent
          * @description Emits a request to set the new parent (root) node
          */
-        setParent: function() {
+        setParent: function () {
             this.$emit(componentFunctionMap.setParent, this.nodeName);
         },
 
@@ -231,7 +276,7 @@ export default {
          * @function toggleWideView
          * @description Update node width
          */
-        toggleWideView: function() {
+        toggleWideView: function () {
             this.$emit(
                 componentFunctionMap.toggleWideView,
                 this.parentData.useWideView
@@ -242,7 +287,7 @@ export default {
          * @function toggleExpand
          * @description Expand/Collapse the [currently expanded] tree hierarchy.
          */
-        toggleExpand: function() {
+        toggleExpand: function () {
             this.$emit(
                 componentFunctionMap.toggleExpand,
                 this.parentData.expand
@@ -253,7 +298,7 @@ export default {
          * @function toggleExpandAll
          * @description Expand/Collapse the entire tree hierarchy.
          */
-        toggleExpandAll: function() {
+        toggleExpandAll: function () {
             this.$emit(
                 componentFunctionMap.toggleExpandAll,
                 this.parentData.expandAll
@@ -264,7 +309,7 @@ export default {
          * @function toggleOrientation
          * @description Change direction from horizontal to vertical and vice-versa
          */
-        toggleOrientation: function() {
+        toggleOrientation: function () {
             this.$emit(
                 componentFunctionMap.toggleOrientation,
                 this.parentData.orientation

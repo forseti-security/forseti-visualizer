@@ -3,6 +3,7 @@
         <v-layout text-xs-center wrap class="margin-top-30">
             <v-flex xs12 mb-5>
                 <v-layout justify-center>
+                    
                     <Navbar
                         v-on:resetZoom="resetZoom"
                         v-on:toggleViolations="toggleViolations"
@@ -19,21 +20,26 @@
                         v-bind:parentData="this"
                     />
 
-                    <v-flex xs9 mb-5 style="position:relative;">
+
+                    <v-flex xs9 mb-5 style="position: relative">
                         <button
                             v-on:click="zoomIn"
                             class="zoom-button"
-                            style="position: absolute; left: 15px; top: 11px;"
-                        >+</button>
+                            style="position: absolute; left: 15px; top: 11px"
+                        >
+                            +
+                        </button>
                         <button
                             v-on:click="zoomOut"
                             class="zoom-button"
-                            style="position: absolute; left: 48px; top: 11px;"
-                        >-</button>
+                            style="position: absolute; left: 48px; top: 11px"
+                        >
+                            -
+                        </button>
 
-                        <div
-                            style="position: absolute; right: 48px; top: 11px;"
-                        >{{projectId ? 'Project: ' + projectId : ''}}</div>
+                        <div style="position: absolute; right: 48px; top: 11px">
+                            {{ projectId ? 'Project: ' + projectId : '' }}
+                        </div>
 
                         <section id="d3-area"></section>
                     </v-flex>
@@ -45,6 +51,7 @@
 
 <script>
 import * as d3 from 'd3';
+import swal from 'sweetalert';
 
 import DataService from '../services/DataService';
 import ForsetiSetParentService from '../services/ForsetiSetParentService';
@@ -67,8 +74,69 @@ export default {
     components: {
         Navbar,
     },
-
     store: ResourceArrayStore,
+    props: ['projectId'],
+    data: () => ({
+        // global: set this to use JSON files vs. dynamic
+        useWideView: false, // false defers to keeping node view default screen (hxw)
+
+        // filter variables
+        expand: true,
+        expandAll: false,
+        showViolations: true,
+        orientation: Orientation.Vertical,
+        explainIdentitySearchTerm: '',
+        orientations: Object.keys(Orientation),
+        bottomSheetEnabled: false, // for violations view on the bottom
+        dialog: false, // settings dialog
+        selectedFilterResources: [
+            'GCE Instance',
+            'GKE Cluster',
+            // 'Network',
+            'GCS Bucket',
+            // 'BQ Dataset',
+            // 'App Engine',
+            // 'Service Account',
+            // 'Service Account Key'
+        ],
+        items: [
+            'GCS Bucket',
+            'GCE Instance',
+            'GKE Cluster',
+            'App Engine',
+            'Cloud SQL',
+            'Firewall',
+            'Network',
+            'BQ Dataset',
+            'Service Account',
+            'Service Account Key',
+        ],
+
+        // svg node elements
+        svg: {},
+        g: {},
+        tree: {},
+        zoomListener: {},
+        zoomScale: 1,
+
+        // autocomp
+        resourceArray: [], //[{ text: 'hi', value: 1, resource_name: 'test' }],
+        resources: [], // ['resource', 'org', 'folder', 'project' ]
+
+        // svg data
+        treeData: {},
+        violationsMap: {},
+        nodeIdCounter: 0, // the node id count and duration for animations
+
+        // computed
+        width: 0, //px
+        height: 0, //px
+
+        // parent-child-view
+        parentNode: null,
+
+        violationsCount: 0,
+    }),
 
     /**
      * @function mounted
@@ -76,14 +144,8 @@ export default {
      */
     mounted() {
         // Dynamic height and width computation
-        this.width =
-            VisualizerConfig.DEFAULT_WIDTH -
-            VisualizerConfig.MARGIN.left -
-            VisualizerConfig.MARGIN.right;
-        this.height =
-            VisualizerConfig.DEFAULT_HEIGHT -
-            VisualizerConfig.MARGIN.top -
-            VisualizerConfig.MARGIN.bottom;
+        this.width = this.getWidth();
+        this.height = this.getHeight();
 
         // Append the 'svg' to the '#d3-area' section
         this.svg = d3
@@ -92,10 +154,6 @@ export default {
             .attr('width', '100%') // 100% width provides better responsive behavior
             .attr('height', this.height)
             .style('pointer-events', 'all');
-
-        // if (this.projectId) {
-        //     alert('project id: ' + this.projectId);
-        // }
 
         this.init(this.orientation, this.projectId);
     },
@@ -106,6 +164,141 @@ export default {
      */
     methods: {
         /**
+         * @function getWidth
+         * @description returns width of grid
+         * @returns Number
+         */
+        getWidth() {
+            return (
+                VisualizerConfig.DEFAULT_WIDTH -
+                VisualizerConfig.MARGIN.left -
+                VisualizerConfig.MARGIN.right
+            );
+        },
+
+        /**
+         * @function getHeight
+         * @description returns height of grid
+         * @returns Number
+         */
+        getHeight() {
+            return (
+                VisualizerConfig.DEFAULT_HEIGHT -
+                VisualizerConfig.MARGIN.top -
+                VisualizerConfig.MARGIN.bottom
+            );
+        },
+
+        /**
+         * @function addPulse
+         * @description adds a pulse effect on the passed in node
+         * @param type:ResourceNode (types/ResourceNode.js)
+         */
+        addPulse(node) {
+            let ref = d3.selectAll(node);
+            ref.style('fill', function (d) {
+                return d._children ? ColorConfig.INFO : ColorConfig.WHITE;
+            })
+                .style('fill-opacity', function (d) {
+                    return d._children ? 1 : 0;
+                })
+                .style('stroke', ColorConfig.WHITE)
+                .style('stroke-opacity', 0)
+                .enter()
+                .append('circle')
+                .filter(function (d, i) {
+                    return i === 1;
+                });
+        },
+
+        /**
+         * @function animateMoveToNode
+         * @description moves screen to node and adds a node pulse effect
+         * @param type:ResourceNode (types/ResourceNode.js)
+         */
+        animateMoveToNode(node) {
+            // add PULSE effect
+            this.addPulse(node);
+
+            /*
+             * Notes:
+             * x - the x-coord of the node searched
+             * y - the y-coord of the node searched
+             * w - the width
+             * h - the height
+             * m - the margin
+             */
+            let x = node.x;
+            let y = node.y;
+
+            /* Moving the transform zoom layer on the screen which is tied to the svg */
+            let t = d3.zoomTransform(this.svg.node());
+
+            // move to the node and zoom to it
+            this.g
+                .transition()
+                .duration(VisualizerConfig.ANIMATION_DURATION)
+                .attr('transform', () => {
+                    if (this.orientation === Orientation.Vertical) {
+                        return (
+                            'translate(' +
+                            (-x + this.width / 2) * t.k +
+                            ',' +
+                            (-y + this.height / 3) * t.k +
+                            ')scale(' +
+                            t.k +
+                            ')'
+                        );
+                    } else {
+                        return (
+                            'translate(' +
+                            (-y + this.height / 3) * t.k +
+                            ',' +
+                            (-x + this.width / 2) * t.k +
+                            ')scale(' +
+                            t.k +
+                            ')'
+                        );
+                    }
+                })
+                .on('end', () => {
+                    // move drag position accordingly
+                    // -100: account for margin on the height end
+                    let transX =
+                        this.orientation === Orientation.Vertical
+                            ? (-x + this.width / 2) * t.k
+                            : (-y + this.height / 3) * t.k - 100;
+                    let transY =
+                        this.orientation === Orientation.Vertical
+                            ? (-y + this.height / 3) * t.k - 100
+                            : (-x + this.width / 2) * t.k;
+
+                    this.svg.call(
+                        this.zoomListener.transform,
+                        d3.zoomIdentity.translate(transX, transY).scale(t.k)
+                    );
+                });
+
+            // reset existing node fx
+            this.resetNodeStyles();
+
+            // pulsate effect
+            setTimeout(() => {
+                this.pulsate(
+                    (function (node) {
+                        return function (d) {
+                            if (d.id === node.id) {
+                                return true;
+                            }
+
+                            return false;
+                        };
+                    })(node)
+                );
+            }, 200);
+        },
+
+        /**
          * @function findResourceNodeByName
          * @description returns a resource node by name
          * @returns type:ResourceNode (types/ResourceNode.js)
@@ -115,7 +308,7 @@ export default {
 
             // must expand all nodes
             this.treeData.each(this.expandNodes);
-            this.treeData.each(function(d) {
+            this.treeData.each(function (d) {
                 if (d.name === nodeName) {
                     resourceNode = d;
                 }
@@ -129,7 +322,7 @@ export default {
          * @description convert violationsData to violations map
          * @returns undefined
          */
-        setViolationsMap: function(violationsData) {
+        setViolationsMap: function (violationsData) {
             for (let i = 0; i < violationsData.length; i++) {
                 const KEY = violationsData[i].full_name;
                 if (!this.violationsMap[KEY]) {
@@ -144,10 +337,10 @@ export default {
          * @description gets distinct resource types that exist in this.resourceArray
          * @returns list of strings containing distinct resource types
          */
-        getDistinctResourceTypes: function() {
+        getDistinctResourceTypes: function () {
             var distinctResourceTypes = [
                 ...new Set(
-                    this.resourceArray.map(a => {
+                    this.resourceArray.map((a) => {
                         return a.resource_type;
                     })
                 ),
@@ -161,13 +354,13 @@ export default {
          * @description filters based on user selection, sanitizes and dedupes resource array
          * @returns array of resources
          */
-        filterResourceArray: function() {
+        filterResourceArray: function () {
             let mappedResourceFilter = this.selectedFilterResources.map(
                 ForsetiResourceConverter.convertResource
             );
 
             // apply resource filter.  always include organization/folder/projects so that resource paths are maintained
-            this.resourceArray = this.resourceArray.filter(res => {
+            this.resourceArray = this.resourceArray.filter((res) => {
                 if (
                     res.resource_type === ResourceType.ORGANIZATION ||
                     res.resource_type === ResourceType.FOLDER ||
@@ -216,10 +409,10 @@ export default {
          * @description Initializes the Vue Component and the Tree Visualization
          * @param orientation - [Orientation.Vertical, Orientation.Horizontal]
          */
-        init: function(orientation, parentId = undefined) {
+        init: function (orientation, parentId = undefined) {
             let dataService = new DataService();
 
-            dataService.getForsetiResources(parentId).then(resourcesData => {
+            dataService.getForsetiResources(parentId).then((resourcesData) => {
                 // get inventory index id
                 if (resourcesData.length > 0) {
                     let filteredResourcesData = resourcesData;
@@ -228,22 +421,22 @@ export default {
                     filteredResourcesData = resourcesData.filter(
                         Filters.nonNullAndActive
                     );
-                    resourcesData.forEach(curVal => {
+
+                    resourcesData.forEach((curVal) => {
                         if (curVal.resource_data_displayname === '') {
                             curVal.resource_data_displayname =
                                 curVal.resource_data_name;
                         }
                     });
 
-                    /* end filtered data */
                     let inventoryIndexId =
                         filteredResourcesData[0].inventory_index_id;
 
                     dataService
                         .getViolations(inventoryIndexId)
-                        .then(violationsData => {
-                            // { full_name: { violation } }
+                        .then((violationsData) => {
                             this.setViolationsMap(violationsData);
+                            this.violationsCount = violationsData.length;
 
                             this.resourceArray = filteredResourcesData
                                 .map(ResourceDataServiceHandler.handle)
@@ -252,16 +445,33 @@ export default {
                             let filteredResourceArray = this.filterResourceArray();
 
                             // initialize tree
-                            this.initTree(orientation, filteredResourceArray);
+                            this.initTree(
+                                orientation,
+                                filteredResourceArray,
+                                function (d) {
+                                    if (
+                                        d.data.resource_type ===
+                                        ResourceType.SERVICE_ACCOUNT_KEY
+                                    ) {
+                                        d.name = d.data.resource_id;
+                                    } else {
+                                        d.name = d.data.resource_name;
+                                    }
+                                }
+                            );
                         });
                 } else {
                     if (parentId) {
-                        alert(
-                            `No resources found for the project: ${parentId}`
+                        swal(
+                            'Error',
+                            `No resources found for the project: ${parentId}`,
+                            'error'
                         );
                     } else {
-                        alert(
-                            'No resources found for the Forseti GCP Organization'
+                        swal(
+                            'Error',
+                            'No resources found for the Forseti GCP Organization',
+                            'error'
                         );
                     }
                 }
@@ -278,33 +488,42 @@ export default {
          *      resource_data_name, qq, image, resource_name
          * }
          */
-        initTree: function(orientation, data) {
+        initTree: function (orientation, data, fnSetName) {
             this.tree = d3
                 .tree()
                 .size([this.width - VisualizerConfig.MARGIN.top, this.height]);
 
             this.treeData = d3
                 .stratify()
-                .id(function(d) {
+                .id(function (d) {
                     return d.id;
                 })
-                .parentId(function(d) {
+                .parentId(function (d) {
                     return d.parent_id;
                 })(data);
 
-            // assign the name to each node
-            this.treeData.each(function(d) {
-                if (d.data.resource_type === ResourceType.SERVICE_ACCOUNT_KEY) {
-                    d.name = d.data.resource_id;
-                } else {
-                    d.name = d.data.resource_name;
-                }
-            });
+            // set the .name prop for each node
+            this.treeData.each(fnSetName);
 
-            // treeData is the root of the tree,
-            // and the tree has all the data we need in it now.
-            // let's draw that thing...
+            // configure zoom capabilities
+            this.configureZoomListener(orientation);
+            
+            // configure grid
+            this.configureGridPanel(ColorConfig.WHITE);
 
+            // Collapse after the second level
+            if (this.treeData.children) {
+                this.treeData.children.forEach(this.collapse);
+            }
+
+            this.update(this.tree, this.treeData, this.treeData);
+        },
+
+        /**
+         * @function configureZoomListener
+         * @description creates a zoom layer, allowing zoom-in/out
+         */
+        configureZoomListener(orientation) {
             // set up zoomListener function
             this.zoomListener = d3
                 .zoom()
@@ -380,26 +599,26 @@ export default {
                 // prevent dbl click
                 this.svg.on('dblclick.zoom', null);
             }
+        },
 
-            // DEBUG: add rectangle representing the "g" dimension
+        /**
+         * @function configureGridPanel
+         * @description sets the grid's size and background color
+         */
+        configureGridPanel(backgroundColor) {
             this.g
                 .append('rect')
                 .attr('width', '100%')
                 .attr('height', '100%')
-                .attr('fill', ColorConfig.WHITE)
+                .attr('fill', backgroundColor)
                 .attr('fill-opacity', '0.0');
-
-            // Collapse after the second level
-            if (this.treeData.children)
-                this.treeData.children.forEach(this.collapse);
-            this.update(this.tree, this.treeData, this.treeData);
         },
 
         /**
          * @function collapse
          * @description Collapse the node and all of it's children
          */
-        collapse: function(node) {
+        collapse: function (node) {
             if (node.children) {
                 node._children = node.children;
                 node._children.forEach(this.collapse);
@@ -411,7 +630,7 @@ export default {
          * @function expandNodes
          * @description Expand the node to the next tier or if the org node; then the previous position
          */
-        expandNodes: function(node) {
+        expandNodes: function (node) {
             if (node._children) {
                 node.children = node._children;
                 node.children.forEach(this.expandNodes);
@@ -423,7 +642,7 @@ export default {
          * @function toggle
          * @description Toggle children on node click (expand, collapse)
          */
-        toggle: function(node, tree) {
+        toggle: function (node, tree) {
             if (node.children) {
                 node._children = node.children;
                 node.children = null;
@@ -439,7 +658,7 @@ export default {
          * @function update
          * @description Handles the majority of D3 Visualization Interactivity
          */
-        update: function(tree, treeData, source) {
+        update: function (tree, treeData, source) {
             let orientation = this.orientation;
             let duration = VisualizerConfig.ANIMATION_DURATION;
 
@@ -453,7 +672,7 @@ export default {
 
             tree(treeData);
 
-            treeData.each(function(d) {
+            treeData.each(function (d) {
                 d.y = d.depth * VisualizerConfig.DISTANCE_BETWEEN_NODE_LEVELS; // compute depth
             });
 
@@ -465,7 +684,7 @@ export default {
 
             let node = this.g
                 .selectAll('.node')
-                .data(treeData.descendants(), function(d) {
+                .data(treeData.descendants(), function (d) {
                     // console.log('descendant', d);
                     depthArr[d.depth]++;
 
@@ -508,16 +727,16 @@ export default {
                 .enter()
                 .append('g')
                 .attr('class', 'node')
-                .attr('transform', function() {
+                .attr('transform', function () {
                     return 'translate(' + source.x + ',' + source.y + ')';
                     // return orientation === Orientation.Vertical
                     //     ? 'translate(' + source.x + ',' + source.y + ')'
                     //     : 'translate(' + source.y + ',' + source.x + ')';
                 })
-                .on('click', d => {
+                .on('click', (d) => {
                     this.toggle(d, tree, treeData);
                 })
-                .on('mouseover', d => {
+                .on('mouseover', (d) => {
                     tooltipDiv
                         .transition()
                         .duration(VisualizerConfig.ANIMATION_DURATION)
@@ -553,7 +772,7 @@ export default {
                         .style('left', d3.event.pageX + 32 + 'px')
                         .style('top', d3.event.pageY - 32 + 'px');
                 })
-                .on('mouseout', function() {
+                .on('mouseout', function () {
                     tooltipDiv
                         .transition()
                         .duration(duration)
@@ -563,20 +782,20 @@ export default {
             nodeEnter
                 .append('circle')
                 .attr('r', VisualizerConfig.NODE_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function (d) {
                     return d._children
                         ? ColorConfig.NODE_BG_COLOR
                         : ColorConfig.NONE;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function (d) {
                     return d._children ? 1 : 0;
                 })
-                .style('stroke-opacity', d => {
+                .style('stroke-opacity', (d) => {
                     return this.violationsMap[d.data.full_name] !== undefined
                         ? 1
                         : 0;
                 })
-                .style('stroke', d => {
+                .style('stroke', (d) => {
                     return this.violationsMap[d.data.full_name] !== undefined
                         ? ColorConfig.DANGER
                         : ColorConfig.BLACK;
@@ -585,31 +804,31 @@ export default {
             // adds the image to the node
             nodeEnter
                 .append('image')
-                .attr('xlink:href', function(d) {
+                .attr('xlink:href', function (d) {
                     return d.data.image;
                 })
-                .attr('x', function() {
+                .attr('x', function () {
                     return VisualizerConfig.NODE_IMG_X;
                 })
-                .attr('y', function() {
+                .attr('y', function () {
                     return VisualizerConfig.NODE_IMG_Y;
                 })
                 .attr('height', VisualizerConfig.NODE_IMG_HEIGHT)
-                .attr('width', function() {
+                .attr('width', function () {
                     return VisualizerConfig.NODE_IMG_WIDTH;
                 });
 
             // adds the text to the node
             nodeEnter
                 .append('text')
-                .attr('x', function(d) {
+                .attr('x', function (d) {
                     return d.children ? -25 : 25;
                 })
                 .attr('dy', '.35em')
-                .style('text-anchor', function(d) {
+                .style('text-anchor', function (d) {
                     return d.children ? 'end' : 'start';
                 })
-                .attr('transform', function(d) {
+                .attr('transform', function (d) {
                     if (d.data.resource_type === ResourceType.ORGANIZATION) {
                         // there is only one of these
                         return 'translate(100, -100) rotate(-45)';
@@ -618,7 +837,7 @@ export default {
                         ? 'translate(0,0) rotate(-45)'
                         : 'translate(0,0) rotate(0)';
                 })
-                .text(function(d) {
+                .text(function (d) {
                     return d.name;
                 });
 
@@ -627,7 +846,7 @@ export default {
             nodeUpdate
                 .transition()
                 .duration(duration)
-                .attr('transform', function(d) {
+                .attr('transform', function (d) {
                     return orientation === Orientation.Vertical
                         ? 'translate(' + d.x + ',' + d.y + ')'
                         : 'translate(' + d.y + ',' + d.x + ')';
@@ -636,20 +855,20 @@ export default {
             nodeUpdate
                 .select('circle')
                 .attr('r', VisualizerConfig.NODE_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function (d) {
                     return d._children
                         ? ColorConfig.NODE_BG_COLOR
                         : ColorConfig.WHITE;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function (d) {
                     return d._children ? 1 : 0;
                 })
-                .style('stroke-opacity', d => {
+                .style('stroke-opacity', (d) => {
                     return this.violationsMap[d.data.full_name] !== undefined
                         ? 1
                         : 0;
                 })
-                .style('stroke', d => {
+                .style('stroke', (d) => {
                     // set to red
                     return this.violationsMap[d.data.full_name] !== undefined
                         ? ColorConfig.DANGER
@@ -662,7 +881,7 @@ export default {
                 .exit()
                 .transition()
                 .duration(duration)
-                .attr('transform', function() {
+                .attr('transform', function () {
                     return orientation === Orientation.Vertical
                         ? 'translate(' + source.x + ',' + source.y + ')'
                         : 'translate(' + source.y + ',' + source.x + ')';
@@ -674,7 +893,7 @@ export default {
 
             let link = this.g
                 .selectAll('.link')
-                .data(treeData.links(), function(d) {
+                .data(treeData.links(), function (d) {
                     return d.target.id;
                 });
             let linkEnter = link
@@ -686,12 +905,12 @@ export default {
                     'd',
                     d3
                         .linkHorizontal()
-                        .x(function() {
+                        .x(function () {
                             return orientation === Orientation.Vertical
                                 ? source.x
                                 : source.y;
                         })
-                        .y(function(d) {
+                        .y(function (d) {
                             return orientation === Orientation.Vertical
                                 ? d.y
                                 : d.x;
@@ -706,12 +925,12 @@ export default {
                     'd',
                     d3
                         .linkHorizontal()
-                        .x(function(d) {
+                        .x(function (d) {
                             return orientation === Orientation.Vertical
                                 ? d.x
                                 : d.y;
                         })
-                        .y(function(d) {
+                        .y(function (d) {
                             return orientation === Orientation.Vertical
                                 ? d.y
                                 : d.x;
@@ -725,12 +944,12 @@ export default {
                     'd',
                     d3
                         .linkHorizontal()
-                        .x(function() {
+                        .x(function () {
                             return orientation === Orientation.Vertical
                                 ? source.x
                                 : source.y;
                         })
-                        .y(function() {
+                        .y(function () {
                             return orientation === Orientation.Vertical
                                 ? source.y
                                 : source.x;
@@ -738,7 +957,7 @@ export default {
                 )
                 .remove();
 
-            node.each(function(d) {
+            node.each(function (d) {
                 d.x0 = d.x;
                 d.y0 = d.y;
             });
@@ -748,7 +967,7 @@ export default {
          * @function resetZoom
          * @description Resets the SVG zoom to the default.
          */
-        resetZoom: function() {
+        resetZoom: function () {
             this.svg
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
@@ -759,7 +978,7 @@ export default {
          * @function pulsate
          * @description Pulses a given node
          */
-        pulsate: function(filterFn) {
+        pulsate: function (filterFn) {
             this.g
                 .selectAll('.node')
                 .filter(filterFn)
@@ -768,20 +987,20 @@ export default {
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('r', VisualizerConfig.PULSATE_MAX_RADIUS)
-                .style('fill', function() {
+                .style('fill', function () {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function() {
+                .style('fill-opacity', function () {
                     return 1;
                 })
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 //PULSATE CODE
                 .attr('r', VisualizerConfig.PULSATE_MIN_RADIUS)
-                .style('fill', function() {
+                .style('fill', function () {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function() {
+                .style('fill-opacity', function () {
                     return 1;
                 });
         },
@@ -790,19 +1009,19 @@ export default {
          * @function resetNodeStyles
          * @description Resets node styles to the default
          */
-        resetNodeStyles: function() {
+        resetNodeStyles: function () {
             this.g
                 .selectAll('.node')
                 .selectAll('circle')
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('r', VisualizerConfig.NODE_RADIUS)
-                .style('fill', function(d) {
+                .style('fill', function (d) {
                     return d._children
                         ? ColorConfig.NODE_BG_COLOR
                         : ColorConfig.NONE;
                 })
-                .style('fill-opacity', function(d) {
+                .style('fill-opacity', function (d) {
                     return d._children ? 1 : 0;
                 });
         },
@@ -811,7 +1030,7 @@ export default {
          * @function highlight
          * @description Highlights a given node
          */
-        highlight: function(filterFn) {
+        highlight: function (filterFn) {
             this.g
                 .selectAll('.node')
                 .filter(filterFn)
@@ -820,10 +1039,10 @@ export default {
                 .transition()
                 .duration(VisualizerConfig.ANIMATION_DURATION)
                 .attr('r', VisualizerConfig.HIGHLIGHT_RADIUS)
-                .style('fill', function() {
+                .style('fill', function () {
                     return ColorConfig.SUCCESS;
                 })
-                .style('fill-opacity', function() {
+                .style('fill-opacity', function () {
                     return 1;
                 });
         },
@@ -833,16 +1052,16 @@ export default {
          * @description Executes explain plan via a GRPC call
          *      if (cacheOn) --> then use cached data
          */
-        explainIdentity: function(explainIdentitySearchTerm) {
+        explainIdentity: function (explainIdentitySearchTerm) {
             this.explainIdentitySearchTerm = explainIdentitySearchTerm;
 
-            let callbackFn = resources => {
+            let callbackFn = (resources) => {
                 // make nodes jump up or highlighted or something notable
                 let matchingDataElements = [];
                 let matchingDataMap = {}; // { resourceName: [violations] }
 
                 // get all matching data elements
-                this.treeData.each(d => {
+                this.treeData.each((d) => {
                     for (let i = 0; i < resources.length; i++) {
                         let match = resources[i].resources[0]
                             .replace(ResourceType.ORGANIZATION, 'organizations')
@@ -866,7 +1085,7 @@ export default {
 
                 // filter down our elements into only unique nodes
                 let uniqueMatchingDataElements = {}; // dictionary to track unique elements
-                matchingDataElements.forEach(function(d) {
+                matchingDataElements.forEach(function (d) {
                     if (!uniqueMatchingDataElements[d.name]) {
                         uniqueMatchingDataElements[d.name] = [];
                     }
@@ -904,8 +1123,8 @@ export default {
                     setTimeout(() => {
                         // update data
                         this.pulsate(
-                            (function(el) {
-                                return function(d) {
+                            (function (el) {
+                                return function (d) {
                                     if (d.id === el.id) {
                                         matchingCollection.push(d.id);
                                         return true;
@@ -973,10 +1192,10 @@ export default {
          * @function filterResources
          * @description Event executed when the resource filter multiselect box changes
          */
-        filterResources: function(selectedFilterResources) {
+        filterResources: function (selectedFilterResources) {
             this.selectedFilterResources = selectedFilterResources;
 
-            this._resetSvg();
+            this.resetSvg();
             this.init(this.orientation, this.projectId);
         },
 
@@ -984,11 +1203,11 @@ export default {
          * @function setParent
          * @description Sets the parent resource of the folder node
          */
-        resetParent: function() {
+        resetParent: function () {
             this.parentNode = null;
             this.projectId = null;
 
-            this._resetSvg();
+            this.resetSvg();
             this.init(this.orientation, this.projectId);
         },
 
@@ -996,16 +1215,16 @@ export default {
          * @function setParent
          * @description Sets to a new parent (root) and refreshes visualization
          */
-        setParent: function(nodeName) {
+        setParent: function (nodeName) {
             // set parent, and find from current tree data
             this.parentNode = this.findResourceNodeByName(nodeName);
 
             if (!this.parentNode) {
-                alert(nodeName + ' is not found.  Resetting view.');
+                swal(nodeName + ' is not found.  Resetting view.');
             }
 
             // so we have the Audit Node, we just want to reconstruct treeData SUCH THAT it begins with Audit
-            this._resetSvg();
+            this.resetSvg();
 
             this.init(this.orientation);
         },
@@ -1014,119 +1233,29 @@ export default {
          * @function resetZoom
          * @description Searches for an exact text match of the node name and pans to that node
          */
-        search: function(searchText) {
-            // get the data element
-            let el = null;
-            this.treeData.each(function(d) {
-                if (d.name === searchText) {
-                    el = d;
-                }
-            });
+        search: function (searchText) {
+            // expand the entire search grid
+            this.toggleExpandAll(true);
 
-            // add PULSE effect
-            let ref = d3.selectAll(el);
-            ref.style('fill', function(d) {
-                return d._children ? ColorConfig.SUCCESS : ColorConfig.WHITE;
-            })
-                .style('fill-opacity', function(d) {
-                    return d._children ? 1 : 0;
-                })
-                .style('stroke', ColorConfig.WHITE)
-                .style('stroke-opacity', 0)
-                .enter()
-                .append('circle')
-                .filter(function(d, i) {
-                    return i === 1;
-                });
+            let node = this.findResourceNodeByName(searchText);
 
-            /*
-             * Notes:
-             * x - the x-coord of the node searched
-             * y - the y-coord of the node searched
-             * w - the width
-             * h - the height
-             * m - the margin
-             */
-            let x = el.x;
-            let y = el.y;
+            if (node === null) {
+                swal('Error', 'No matching element by the name: ' + searchText, 'error');
+                return;
+            }
 
-            /* Moving the transform zoom layer on the screen which is tied to the svg */
-            let t = d3.zoomTransform(this.svg.node());
-
-            // move to the node and zoom to it
-            this.g
-                .transition()
-                .duration(VisualizerConfig.ANIMATION_DURATION)
-                .attr('transform', () => {
-                    if (this.orientation === Orientation.Vertical) {
-                        return (
-                            'translate(' +
-                            (-x + this.width / 2) * t.k +
-                            ',' +
-                            (-y + this.height / 3) * t.k +
-                            ')scale(' +
-                            t.k +
-                            ')'
-                        );
-                    } else {
-                        return (
-                            'translate(' +
-                            (-y + this.height / 3) * t.k +
-                            ',' +
-                            (-x + this.width / 2) * t.k +
-                            ')scale(' +
-                            t.k +
-                            ')'
-                        );
-                    }
-                })
-                .on('end', () => {
-                    // move drag position accordingly
-                    // -100: account for margin on the height end
-                    let transX =
-                        this.orientation === Orientation.Vertical
-                            ? (-x + this.width / 2) * t.k
-                            : (-y + this.height / 3) * t.k - 100;
-                    let transY =
-                        this.orientation === Orientation.Vertical
-                            ? (-y + this.height / 3) * t.k - 100
-                            : (-x + this.width / 2) * t.k;
-
-                    this.svg.call(
-                        this.zoomListener.transform,
-                        d3.zoomIdentity.translate(transX, transY).scale(t.k)
-                    );
-                });
-
-            // reset existing node fx
-            this.resetNodeStyles();
-
-            // pulsate effect
-            setTimeout(() => {
-                this.pulsate(
-                    (function(el) {
-                        return function(d) {
-                            if (d.id === el.id) {
-                                return true;
-                            }
-
-                            return false;
-                        };
-                    })(el)
-                );
-            }, 200);
+            // Node Animation
+            this.animateMoveToNode(node);
         },
 
         /**
-         * @function _resetSvg
-         * @description Refresh the grid: clears and recreates
+         * @function resetSvg
+         * @description refreshes the grid: clears and recreates
          */
-        _resetSvg: function() {
-            d3.select('#d3-area')
-                .selectAll('svg')
-                .remove();
+        resetSvg: function () {
+            d3.select('#d3-area').selectAll('svg').remove();
 
-            // append a new svg?
+            // append a new svg
             this.svg = d3
                 .select('#d3-area')
                 .append('svg')
@@ -1141,12 +1270,12 @@ export default {
 
         /**
          * @function toggleWideView
-         * @description Update node width
+         * @description updates node width and reloads entire grid
          */
-        toggleWideView: function(useWideView) {
+        toggleWideView: function (useWideView) {
             this.useWideView = useWideView;
 
-            this._resetSvg();
+            this.resetSvg();
 
             this.init(this.orientation);
         },
@@ -1155,7 +1284,7 @@ export default {
          * @function toggleExpand
          * @description Expand/Collapse the [currently expanded] tree hierarchy.
          */
-        toggleExpand: function() {
+        toggleExpand: function () {
             document
                 .getElementsByClassName('node')[0]
                 .dispatchEvent(new Event('click'));
@@ -1165,7 +1294,7 @@ export default {
          * @function toggleExpandAll
          * @description Expand/Collapse the entire tree hierarchy.
          */
-        toggleExpandAll: function(expandAll) {
+        toggleExpandAll: function (expandAll) {
             this.expandAll = expandAll;
 
             if (!this.expandAll) {
@@ -1186,10 +1315,10 @@ export default {
          * @function toggleOrientation
          * @description Change direction from horizontal to vertical and vice-versa
          */
-        toggleOrientation: function(orientation) {
+        toggleOrientation: function (orientation) {
             this.orientation = orientation;
 
-            this._resetSvg();
+            this.resetSvg();
 
             this.init(this.orientation);
         },
@@ -1198,7 +1327,7 @@ export default {
          * @function toggleViolations
          * @description show or hide violations
          */
-        toggleViolations: function(showViolations) {
+        toggleViolations: function (showViolations) {
             this.showViolations = showViolations;
             let violationsMap = this.violationsMap;
 
@@ -1213,20 +1342,20 @@ export default {
                     .attr('cx', 1)
                     .attr('cy', 2)
 
-                    .style('fill', function(d) {
+                    .style('fill', function (d) {
                         return d._children
                             ? ColorConfig.NODE_BG_COLOR
                             : ColorConfig.NONE;
                     })
-                    .style('fill-opacity', function(d) {
+                    .style('fill-opacity', function (d) {
                         return d._children ? 1 : 0;
                     })
-                    .style('stroke-opacity', function(d) {
+                    .style('stroke-opacity', function (d) {
                         return violationsMap[d.data.full_name] !== undefined
                             ? 1
                             : 0;
                     })
-                    .style('stroke', function(d) {
+                    .style('stroke', function (d) {
                         return violationsMap[d.data.full_name] !== undefined
                             ? ColorConfig.DANGER
                             : ColorConfig.BLACK;
@@ -1242,20 +1371,20 @@ export default {
                     .attr('cy', 2)
 
                     .attr('r', VisualizerConfig.NODE_RADIUS)
-                    .style('fill', function(d) {
+                    .style('fill', function (d) {
                         return d._children
                             ? ColorConfig.NODE_BG_COLOR
                             : ColorConfig.NONE;
                     })
-                    .style('fill-opacity', function(d) {
+                    .style('fill-opacity', function (d) {
                         return d._children ? 1 : 0;
                     })
-                    .style('stroke-opacity', function(d) {
+                    .style('stroke-opacity', function (d) {
                         return violationsMap[d.data.full_name] !== undefined
                             ? 1
                             : 0;
                     })
-                    .style('stroke', function(d) {
+                    .style('stroke', function (d) {
                         // set to red
                         return violationsMap[d.data.full_name] !== undefined
                             ? ColorConfig.DANGER
@@ -1267,7 +1396,7 @@ export default {
         /**
          * Zoom Button (+) in
          */
-        zoomIn: function() {
+        zoomIn: function () {
             /* Moving the transform zoom layer on the screen which is tied to the svg */
             let t = d3.zoomTransform(this.svg.node());
 
@@ -1312,7 +1441,7 @@ export default {
         /**
          * Zoom Button (-) out
          */
-        zoomOut: function() {
+        zoomOut: function () {
             let t = d3.zoomTransform(this.svg.node());
 
             // move to the node and zoom to it
@@ -1353,71 +1482,6 @@ export default {
                 });
         },
     },
-
-    props: ['projectId'],
-
-    /**
-     * Vue: data
-     */
-    data: () => ({
-        // global: set this to use JSON files vs. dynamic
-        useWideView: false, // false defers to keeping node view default screen (hxw)
-
-        // filter variables
-        expand: true,
-        expandAll: false,
-        showViolations: true,
-        orientation: Orientation.Vertical,
-        explainIdentitySearchTerm: '',
-        orientations: Object.keys(Orientation),
-        bottomSheetEnabled: false, // for violations view on the bottom
-        dialog: false, // settings dialog
-        selectedFilterResources: [
-            'GCE Instance',
-            'GKE Cluster',
-            'Network',
-            // 'GCS Bucket',
-            // 'BQ Dataset',
-            // 'App Engine',
-            // 'Service Account',
-            // 'Service Account Key'
-        ],
-        items: [
-            'GCS Bucket',
-            'GCE Instance',
-            'GKE Cluster',
-            'App Engine',
-            'Cloud SQL',
-            'Firewall',
-            'Network',
-            'BQ Dataset',
-            'Service Account',
-            'Service Account Key',
-        ],
-
-        // svg node elements
-        svg: {},
-        g: {},
-        tree: {},
-        zoomListener: {},
-        zoomScale: 1,
-
-        // autocomp
-        resourceArray: [], //[{ text: 'hi', value: 1, resource_name: 'test' }],
-        resources: [], // ['dia-dog-flow', 'mycloud.com', 'Machine Learning', 'Common Services', 'sandbox' ]
-
-        // svg data
-        treeData: {},
-        violationsMap: {},
-        nodeIdCounter: 0, // the node id count and duration for animations
-
-        // computed
-        width: 0, //px
-        height: 0, //px
-
-        // parent-child-view
-        parentNode: null,
-    }),
 };
 </script>
 

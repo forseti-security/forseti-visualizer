@@ -114,6 +114,8 @@
 </template>
 
 <script>
+import swal from 'sweetalert';
+
 import ResourceArrayStore from '../stores/ResourceArray';
 import { mapState } from 'vuex';
 
@@ -143,7 +145,7 @@ export default {
     methods: {
         onVSelectChange: function() {
             this.$nextTick(() => {
-                alert(this.filterData.selectedInventoryIndexId);
+                swal('Info', this.filterData.selectedInventoryIndexId, 'info');
             });
         },
 
@@ -156,7 +158,7 @@ export default {
         },
 
         clear: function() {
-            alert('clear');
+            swal('Notice', 'clear', 'error');
         },
     },
 

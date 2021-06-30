@@ -37,11 +37,18 @@ app.all('*', function (req, res, next) {
 });
 
 // extend static assets to use the forseti-visualizer-ui UI code distribution
-console.log(__dirname);
 const {
   resolve
 } = require('path');
-const publicPath = resolve(__dirname, 'dist-forseti-visualizer-ui');
+
+// IF using Local Deploy, use this VAR instead
+let publicPath = resolve(__dirname, '../forseti-visualizer-ui/dist');
+// IF using Docker Deploy, use this VAR instead
+const fs = require("fs"); // Or `import fs from "fs";` with ESM
+if (!fs.existsSync(publicPath)) {
+  publicPath = resolve(__dirname, 'dist-forseti-visualizer-ui');
+}
+
 const staticConf = {
   maxAge: '1y',
   etag: false
@@ -59,7 +66,6 @@ app.use('/api', api({}));
 app.get('/', (req, res) => {
   let connection = new Telnet();
 
-  console.log(RenderHelpers);
   if (!process.env['CLOUDSQL_HOSTNAME']) {
     RenderHelpers.renderError(res, version);
     return;

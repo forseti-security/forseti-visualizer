@@ -22,11 +22,12 @@
 			"node": true
 		},
 		"rules": {
-			"no-console": 0,
+			"no-console": 1,
 			"no-unused-vars": 1
 		}
 	},
 	"dependencies": {
+		"@google-cloud/storage": "^5.3.0",
 		"@grpc/proto-loader": "^0.5.4",
 		"acorn-globals": "^6.0.0",
 		"axios": "^0.21.1",
