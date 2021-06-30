@@ -85,7 +85,7 @@ class ForsetiServiceCache {
         meta.add('handle', process.env.FORSETI_DATA_MODEL_HANDLE);
 
         // ref: https://grpc.io/docs/tutorials/basic/node/
-        //iamPrefix='user/garrettwong@gwongcloud.com';
+        //iamPrefix='user/garrettwong@domain.com';
         let response = explainClient.getAccessByMembers({
             member_name: iamPrefix,
             // permission_names: ['iam.serviceAccounts.actAs'], // for filtering

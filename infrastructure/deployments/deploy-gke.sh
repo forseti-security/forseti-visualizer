@@ -148,7 +148,7 @@ helm install --name cert-manager --version v0.5.2 \
 #   --version v0.11.0 \
 #   jetstack/cert-manager
 
-EMAIL=garrettwong@gwongcloud.com
+EMAIL=garrettwong@domain.com
 cat letsencrypt-issuer.yaml | sed -e "s/email: ''/email: $EMAIL/g" | kubectl apply -f-
 kubectl apply -f ingress-tls.yaml
 
