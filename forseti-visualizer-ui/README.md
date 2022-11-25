@@ -16,6 +16,19 @@ npm install
 npm start # app served on :8081
 ```
 
+## Connecting to Visualizer API
+
+```bash
+# If Mac OSX/Linux
+npm run build
+rm -rf ../forseti-api/dist-forseti-visualizer-ui && cp -R dist/ ../forseti-api/dist-forseti-visualizer-ui
+
+# If Windows
+npm run build-windows
+rmdir -r ../forseti-api/dist-forseti-visualizer-ui && cp -R dist/ ../forseti-api/dist-forseti-visualizer-ui
+
+```
+
 ## Testing
 
 Tests written in jest.
