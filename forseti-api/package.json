@@ -36,7 +36,7 @@
 		"compression": "^1.7.3",
 		"cors": "^2.8.4",
 		"eslint-utils": "^1.4.3",
-		"express": "^4.16.1",
+		"express": "^4.17.3",
 		"express-session": "^1.17.0",
 		"grpc": "^1.24.9",
 		"lodash": ">=4.17.19",
